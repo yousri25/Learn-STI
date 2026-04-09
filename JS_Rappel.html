@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>JavaScript — Tutoriel Complet</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --js:       #d4a017;
+    --js-dark:  #a07000;
+    --js-mid:   #c49010;
+    --js-light: #fffde8;
+    --js-glow:  rgba(212,160,23,0.10);
+    --bg:    #fdfcf4;
+    --card:  #ffffff;
+    --text:  #241f00;
+    --muted: #7a6a30;
+    --border:#ede8c0;
+    --code-bg: #faf7e0;
+    --shadow:    0 2px 20px rgba(212,160,23,0.10);
+    --shadow-lg: 0 6px 32px rgba(212,160,23,0.16);
+    --radius:    16px;
+    --radius-sm: 10px;
+
+    --html-c: #c84000; --html-bg: #fff3e0; --html-bd: #ffb74d;
+    --css-c:  #1255a0; --css-bg:  #e3f2fd; --css-bd:  #64b5f6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─────────────────────────────────────
+     HEADER
+  ───────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #c49010 0%, #f0b429 55%, #f5d020 100%);
+    padding: 52px 24px 48px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 24px);
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .badge {
+    display: inline-block;
+    background: rgba(0,0,0,0.14); border: 1px solid rgba(0,0,0,0.22);
+    border-radius: 99px; padding: 4px 18px;
+    font-size: 0.75rem; font-weight: 700; color: #3a2800;
+    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px;
+    font-family: 'Fira Code', monospace;
+  }
+  .header h1 {
+    font-size: 2.8rem; font-weight: 800; color: #1a1400;
+    letter-spacing: -1px; text-shadow: 0 3px 14px rgba(255,255,255,.2);
+    margin-bottom: 10px; line-height: 1.1;
+  }
+  .header p { color: rgba(0,0,0,0.62); font-size: 1rem; }
+  .back-link {
+    position: absolute; top: 18px; left: 24px; z-index: 2;
+    text-decoration: none;
+    background: rgba(0,0,0,0.12); border: 1px solid rgba(0,0,0,0.2);
+    color: #3a2800; padding: 6px 14px; border-radius: 99px;
+    font-size: 0.78rem; font-weight: 600;
+    font-family: 'Fira Code', monospace; transition: background .18s;
+  }
+  .back-link:hover { background: rgba(0,0,0,0.2); }
+
+  /* ─────────────────────────────────────
+     PROGRESS NAV
+  ───────────────────────────────────── */
+  .progress-nav {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 0 24px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); overflow-x: auto;
+  }
+  .progress-nav-inner {
+    display: flex; align-items: stretch;
+    max-width: 1100px; margin: 0 auto; gap: 0;
+  }
+  .pnav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 14px 18px; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--muted); font-size: 0.8rem; font-weight: 600;
+    white-space: nowrap; transition: all .18s; flex-shrink: 0;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: 'Sora', sans-serif;
+  }
+  .pnav-item:hover { color: var(--text); background: var(--js-glow); }
+  .pnav-item.active { color: var(--js-dark); border-bottom-color: var(--js); }
+  .pnav-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    background: var(--js-light); color: var(--js-dark); border: 1px solid var(--border);
+  }
+  .pnav-item.active .pnav-num { background: var(--js); color: #1a1400; border-color: var(--js); }
+
+  /* ─────────────────────────────────────
+     PAGE & PANELS
+  ───────────────────────────────────── */
+  .page { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ─────────────────────────────────────
+     CHAPTER HEADER
+  ───────────────────────────────────── */
+  .chapter-header {
+    margin-bottom: 36px; padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem; font-weight: 700; color: var(--js-dark);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
+  }
+  .chapter-title {
+    font-size: 2rem; font-weight: 800; color: var(--text);
+    letter-spacing: -.5px; line-height: 1.15; margin-bottom: 10px;
+  }
+  .chapter-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.7; max-width: 640px; }
+
+  /* ─────────────────────────────────────
+     CONTENT BLOCKS
+  ───────────────────────────────────── */
+
+  /* info card */
+  .info-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 4px solid var(--js); border-radius: var(--radius-sm);
+    padding: 16px 20px; margin-bottom: 24px;
+    font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+    box-shadow: var(--shadow);
+  }
+  .info-card strong { color: var(--text); }
+
+  /* concept box */
+  .concept-box {
+    background: var(--js-light); border: 1.5px solid var(--js);
+    border-radius: var(--radius); padding: 22px 24px; margin-bottom: 28px;
+  }
+  .concept-box .cb-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--js-dark); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px;
+  }
+  .concept-box p { font-size: 0.9rem; color: var(--text); line-height: 1.7; }
+  .concept-box p strong { color: var(--js-dark); }
+
+  /* sub-heading */
+  .sub-heading {
+    font-size: 1.05rem; font-weight: 800; color: var(--text);
+    margin: 36px 0 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .sub-heading .sh-bar {
+    width: 4px; height: 20px; border-radius: 2px;
+    background: var(--js); flex-shrink: 0;
+  }
+
+  /* analogy */
+  .analogy {
+    background: #f0f7ff; border: 1.5px solid #64b5f6;
+    border-radius: var(--radius); padding: 20px 22px; margin-bottom: 24px;
+    font-size: 0.88rem; line-height: 1.65;
+  }
+  .analogy .a-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: #1255a0; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 7px;
+  }
+  .analogy p { color: #1a3050; }
+  .analogy strong { color: #0d3060; }
+
+  /* code block */
+  .code-block {
+    background: #1a1600; border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-lg);
+  }
+  .code-block-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; background: #120f00;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .code-block-dots { display: flex; gap: 6px; }
+  .code-block-dots span { width: 11px; height: 11px; border-radius: 50%; }
+  .code-block-dots span:nth-child(1) { background: #ff5f56; }
+  .code-block-dots span:nth-child(2) { background: #ffbd2e; }
+  .code-block-dots span:nth-child(3) { background: #27c93f; }
+  .code-block-filename {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem; color: rgba(255,255,255,0.3);
+  }
+  .code-block pre {
+    padding: 20px 22px; font-family: 'Fira Code', monospace;
+    font-size: 0.83rem; line-height: 1.8;
+    color: #e8d98a; overflow-x: auto; white-space: pre;
+  }
+  /* syntax */
+  .kw  { color: #ff9e6d; }   /* keyword: var, if, function */
+  .fn  { color: #79c0ff; }   /* function name */
+  .str { color: #a8ff78; }   /* string */
+  .num { color: #ffd580; }   /* number */
+  .cm  { color: #5a5020; font-style: italic; } /* comment */
+  .op  { color: #ffb3de; }   /* operator */
+  .tx  { color: #e8d98a; }   /* plain text */
+  .mt  { color: #d2a8ff; }   /* method / built-in */
+  .bl  { color: #ff9e6d; }   /* boolean */
+  .ob  { color: #79c0ff; }   /* object / property */
+
+  /* inline code */
+  code {
+    font-family: 'Fira Code', monospace; background: var(--code-bg);
+    color: #7a5000; padding: 3px 8px; border-radius: 6px;
+    font-size: 0.82rem; border: 1px solid #edd88a; white-space: nowrap;
+  }
+
+  /* prop cards */
+  .prop-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px; margin-bottom: 28px;
+  }
+  .prop-card {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 18px 18px 16px;
+    box-shadow: var(--shadow); transition: transform .18s, border-color .18s, box-shadow .18s;
+  }
+  .prop-card:hover { transform: translateY(-3px); border-color: var(--js); box-shadow: var(--shadow-lg); }
+  .prop-card-name {
+    font-family: 'Fira Code', monospace; font-size: 0.88rem; font-weight: 700;
+    color: var(--js-dark); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .prop-card-name .pc-type {
+    font-size: 0.63rem; font-weight: 700;
+    background: var(--js-light); border: 1px solid var(--border);
+    color: var(--js-dark); padding: 2px 7px; border-radius: 99px;
+  }
+  .prop-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+  .prop-card-example {
+    margin-top: 10px; background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 7px; padding: 8px 11px;
+    font-family: 'Fira Code', monospace; font-size: 0.76rem; color: #7a5000; line-height: 1.5;
+  }
+  .prop-card-values { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .val-chip {
+    background: var(--js-light); border: 1px solid var(--border);
+    color: var(--js-dark); font-size: 0.72rem; font-weight: 600;
+    padding: 2px 9px; border-radius: 99px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* table */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  thead tr { background: var(--js); }
+  thead th {
+    color: #1a1400; font-weight: 700; font-size: 0.82rem;
+    letter-spacing: .5px; text-transform: uppercase;
+    padding: 12px 16px; text-align: left;
+  }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: var(--js-glow); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+  td { padding: 11px 16px; font-size: 0.88rem; vertical-align: top; line-height: 1.5; }
+  td:first-child { font-family: 'Fira Code', monospace; font-size: 0.82rem; font-weight: 700; color: var(--js-dark); white-space: nowrap; }
+
+  /* lab */
+  .lab-wrap {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow-lg); margin-bottom: 28px;
+  }
+  .lab-header {
+    background: var(--js); padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lab-title { font-family: 'Fira Code', monospace; font-size: 0.78rem; font-weight: 700; color: #1a1400; }
+  .lab-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    background: rgba(0,0,0,0.18); color: #1a1400; padding: 3px 10px; border-radius: 99px;
+  }
+  .lab-body { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 620px) { .lab-body { grid-template-columns: 1fr; } }
+  .lab-editor { border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+  .lab-editor-label, .lab-preview-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 14px; background: #fdfcf4; border-bottom: 1px solid var(--border);
+  }
+  .lab-editor textarea {
+    flex: 1; width: 100%; min-height: 160px;
+    border: none; resize: none; outline: none; padding: 14px;
+    font-family: 'Fira Code', monospace; font-size: 0.8rem;
+    color: var(--text); background: #fefdf5; line-height: 1.6;
+  }
+  .lab-editor textarea:focus { background: #fff; }
+  .lab-run {
+    padding: 8px 14px; background: #fdfcf4;
+    border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+  }
+  .run-btn {
+    padding: 6px 16px; background: var(--js); color: #1a1400; border: none;
+    border-radius: 7px; cursor: pointer; font-size: 0.78rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; transition: background .15s, transform .1s;
+  }
+  .run-btn:hover { background: var(--js-dark); color: #fff; transform: translateY(-1px); }
+  .run-hint { font-size: 0.73rem; color: var(--muted); }
+  .lab-preview { display: flex; flex-direction: column; }
+  .lab-result { flex: 1; padding: 14px; min-height: 160px; font-size: 0.88rem; background: #fff; }
+
+  /* quiz */
+  .quiz-box {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    margin-bottom: 28px; box-shadow: var(--shadow);
+  }
+  .quiz-head {
+    background: linear-gradient(135deg, #c49010, #f0b429);
+    padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .quiz-head-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: rgba(0,0,0,0.15);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .quiz-head-title { font-weight: 800; font-size: 0.92rem; color: #1a1400; }
+  .quiz-head-sub { font-size: 0.75rem; color: rgba(0,0,0,0.5); margin-top: 1px; }
+  .quiz-body { padding: 20px; }
+  .quiz-q { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 9px; }
+  .quiz-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 15px; background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 9px; cursor: pointer; font-size: 0.84rem; color: var(--text);
+    transition: all .15s; font-family: 'Sora', sans-serif; text-align: left; width: 100%;
+  }
+  .quiz-opt:hover { border-color: var(--js); background: var(--js-light); }
+  .quiz-opt.correct { border-color: #00a87e; background: #e0fff6; color: #00614a; }
+  .quiz-opt.wrong   { border-color: #ff5252; background: #ffebee; color: #b71c1c; }
+  .quiz-opt-letter {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--border); color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+  }
+  .quiz-opt.correct .quiz-opt-letter { background: #00c896; color: #fff; }
+  .quiz-opt.wrong   .quiz-opt-letter { background: #ff5252; color: #fff; }
+  .quiz-feedback {
+    margin-top: 14px; padding: 12px 15px; border-radius: 9px;
+    font-size: 0.83rem; display: none; line-height: 1.55;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: #e0fff6; color: #00614a; border: 1px solid #00c896; }
+  .quiz-feedback.ko { background: #ffebee; color: #b71c1c; border: 1px solid #ff5252; }
+
+  /* fill exercise */
+  .fill-ex {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 20px 22px;
+    margin-bottom: 24px; box-shadow: var(--shadow);
+  }
+  .fill-ex-title {
+    font-weight: 800; font-size: 0.92rem; color: var(--text);
+    margin-bottom: 14px; display: flex; align-items: center; gap: 9px;
+  }
+  .fe-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    background: var(--js-light); border: 1px solid var(--border);
+    color: var(--js-dark); padding: 3px 9px; border-radius: 99px;
+  }
+  .fill-blank {
+    display: inline-block; border-bottom: 2px solid var(--js);
+    min-width: 90px; padding: 2px 6px;
+    font-family: 'Fira Code', monospace; font-size: 0.82rem;
+    color: var(--js-dark); background: var(--js-light);
+    border-radius: 4px 4px 0 0; outline: none; transition: background .15s;
+  }
+  .fill-blank:focus { background: #f5e87a; }
+  .fill-check {
+    margin-top: 14px; padding: 7px 18px;
+    background: var(--js); color: #1a1400; border: none;
+    border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; transition: background .15s;
+  }
+  .fill-check:hover { background: var(--js-dark); color: #fff; }
+  .fill-result {
+    margin-top: 10px; font-size: 0.83rem;
+    padding: 9px 13px; border-radius: 8px; display: none;
+  }
+  .fill-result.show { display: block; }
+  .fill-result.ok { background: #e0fff6; color: #00614a; border: 1px solid #00c896; }
+  .fill-result.ko { background: #ffebee; color: #b71c1c; border: 1px solid #ff5252; }
+
+  /* nav buttons */
+  .nav-buttons {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid var(--border); gap: 12px; flex-wrap: wrap;
+  }
+  .btn-prev, .btn-next {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 28px; font-size: 0.88rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; border-radius: 99px; cursor: pointer; border: none;
+    transition: all .2s; text-decoration: none;
+  }
+  .btn-prev {
+    background: var(--bg); color: var(--muted); border: 1.5px solid var(--border);
+  }
+  .btn-prev:hover { color: var(--text); border-color: var(--js); background: var(--js-light); }
+  .btn-next {
+    background: linear-gradient(135deg, #c49010, #a07000); color: #fff;
+    box-shadow: 0 4px 18px rgba(212,160,23,0.35); margin-left: auto;
+  }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,160,23,0.45); }
+  .btn-next .arrow { transition: transform .2s; }
+  .btn-next:hover .arrow { transform: translateX(4px); }
+
+  /* output box */
+  .output-box {
+    background: #1a1600; border-radius: var(--radius-sm);
+    padding: 14px 18px; margin-top: 8px;
+    font-family: 'Fira Code', monospace; font-size: 0.82rem;
+    color: #a8ff78; line-height: 1.7; margin-bottom: 20px;
+  }
+  .output-box .out-label {
+    font-size: 0.65rem; font-weight: 700; color: #5a5020;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+
+  /* two-col */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px;
+  }
+  @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
+
+  footer {
+    text-align: center; padding: 28px;
+    font-size: 0.78rem; color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    .chapter-title { font-size: 1.6rem; }
+    .prop-grid { grid-template-columns: 1fr; }
+    .lab-body { grid-template-columns: 1fr; }
+    .lab-editor { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <a href="CSS_Rapel.html" class="back-link">← CSS3</a>
+  <div class="header-inner">
+    <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+    <h1>Apprendre JavaScript</h1>
+    <p>Un guide pas à pas pour rendre tes pages web interactives et dynamiques</p>
+  </div>
+</div>
+
+<!-- PROGRESS NAV -->
+<nav class="progress-nav">
+  <div class="progress-nav-inner">
+    <button class="pnav-item active" onclick="goTo(0)"><span class="pnav-num">1</span>C'est quoi JS ?</button>
+    <button class="pnav-item" onclick="goTo(1)"><span class="pnav-num">2</span>Variables &amp; Types</button>
+    <button class="pnav-item" onclick="goTo(2)"><span class="pnav-num">3</span>Opérateurs</button>
+    <button class="pnav-item" onclick="goTo(3)"><span class="pnav-num">4</span>Fonctions &amp; DOM</button>
+    <button class="pnav-item" onclick="goTo(4)"><span class="pnav-num">5</span>Chaînes &amp; Maths</button>
+    <button class="pnav-item" onclick="goTo(5)"><span class="pnav-num">6</span>Tableaux &amp; Dates</button>
+    <button class="pnav-item" onclick="goTo(6)"><span class="pnav-num">7</span>Événements HTML</button>
+    <button class="pnav-item" onclick="goTo(7)"><span class="pnav-num">8</span>Pratique &amp; Exercices</button>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ╔════════════════════════════════════╗
+     ║  PANEL 1 — C'EST QUOI JS ?        ║
+     ╚════════════════════════════════════╝ -->
+<div class="panel active" id="panel-0">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 1 · Introduction</div>
+    <h1 class="chapter-title">C'est quoi JavaScript ?</h1>
+    <p class="chapter-desc">HTML structure, CSS stylise — mais qui fait bouger la page ? C'est le rôle de JavaScript.</p>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-label">// Définition</div>
+    <p><strong>JavaScript</strong> (JS) est un langage de programmation qui s'exécute dans le <strong>navigateur</strong>. Il permet de rendre les pages web <strong>interactives et dynamiques</strong> : réagir aux clics, modifier le contenu, valider des formulaires, afficher des alertes, et bien plus encore.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="a-label">💡 Rappel du trio web</div>
+    <p>
+      <strong>HTML</strong> = les murs, les portes (la structure).<br>
+      <strong>CSS</strong> = la peinture, les meubles (l'apparence).<br>
+      <strong>JavaScript</strong> = l'électricité, la domotique (le <strong>comportement</strong> — tout ce qui réagit et se déplace).
+    </p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Comment intégrer JavaScript dans une page</div>
+
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name">JS Inline <span class="pc-type">dans la balise</span></div>
+      <div class="prop-card-desc">Directement dans un attribut d'événement HTML. Pratique pour des actions simples, déconseillé en production.</div>
+      <div class="prop-card-example">&lt;button onclick="alert('Bonjour')"&gt;Clic&lt;/button&gt;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name">JS Interne <span class="pc-type">balise &lt;script&gt;</span></div>
+      <div class="prop-card-desc">Dans une balise <code>&lt;script&gt;</code> à la fin du <code>&lt;body&gt;</code>. Pratique pour une seule page.</div>
+      <div class="prop-card-example">&lt;script&gt;<br>&nbsp;&nbsp;// code ici<br>&lt;/script&gt;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name">JS Externe <span class="pc-type">fichier .js ✅</span></div>
+      <div class="prop-card-desc">Dans un fichier <code>script.js</code> lié avec l'attribut <code>src</code>. Méthode <strong>recommandée</strong> — séparation du code.</div>
+      <div class="prop-card-example">&lt;script src="script.js"&gt;&lt;/script&gt;</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les premières instructions</div>
+  <div class="info-card">
+    Avant d'aller plus loin, voici les deux façons les plus simples d'<strong>afficher un résultat</strong> en JavaScript.
+  </div>
+
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">script.js</div></div>
+    <pre><span class="cm">// Affiche une boîte de dialogue</span>
+<span class="mt">alert</span>(<span class="str">"Bonjour le monde !"</span>);
+
+<span class="cm">// Affiche directement dans le document HTML</span>
+<span class="ob">document</span>.<span class="mt">write</span>(<span class="str">"&lt;h2&gt;Bienvenue !&lt;/h2&gt;"</span>);
+
+<span class="cm">// Affiche dans la console développeur (F12)</span>
+<span class="ob">console</span>.<span class="mt">log</span>(<span class="str">"Message de debug"</span>);
+
+<span class="cm">// Modifie le contenu d'un élément HTML via son id</span>
+<span class="ob">document</span>.<span class="mt">getElementById</span>(<span class="str">"resultat"</span>).innerHTML <span class="op">=</span> <span class="str">"Nouveau contenu"</span>;</pre>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Premiers affichages — modifie et teste</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + JS</div>
+        <textarea id="lab-intro">&lt;p id="msg"&gt;Clique le bouton !&lt;/p&gt;
+&lt;button onclick="changerMessage()"&gt;Clique-moi&lt;/button&gt;
+
+&lt;script&gt;
+  function changerMessage() {
+    document.getElementById("msg").innerHTML =
+      "&lt;strong&gt;Bonjour ! JS fonctionne 🎉&lt;/strong&gt;";
+    document.getElementById("msg").style.color = "#d4a017";
+  }
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-intro','result-intro')">▶ Run</button><span class="run-hint">Lance et clique le bouton !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-intro"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz1">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Question rapide</div><div class="quiz-head-sub">Vérifie ta compréhension</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-q">Quel rôle joue JavaScript dans une page web ?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">A</span>Définir la structure (titres, paragraphes, images)</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">B</span>Gérer les couleurs et la mise en forme visuelle</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,true)"><span class="quiz-opt-letter">C</span>Rendre la page interactive et dynamique</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">D</span>Stocker les données dans la base de données</button>
+      </div>
+      <div class="quiz-feedback" id="quiz1-fb"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons"><span></span><button class="btn-next" onclick="goTo(1)">Variables &amp; Types <span class="arrow">→</span></button></div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 2 — VARIABLES & TYPES        ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-1">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 2 · Les données</div>
+    <h1 class="chapter-title">Variables &amp; Types de données</h1>
+    <p class="chapter-desc">Une variable est une boîte qui stocke une valeur. En JS, on la déclare avec <code>var</code>, <code>let</code> ou <code>const</code>.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Déclarer une variable</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">variables.js</div></div>
+    <pre><span class="cm">// var — ancienne façon (portée fonction)</span>
+<span class="kw">var</span> prenom <span class="op">=</span> <span class="str">"Ali"</span>;
+
+<span class="cm">// let — moderne, peut être modifié (portée bloc)</span>
+<span class="kw">let</span> age <span class="op">=</span> <span class="num">17</span>;
+age <span class="op">=</span> <span class="num">18</span>; <span class="cm">// ✅ modification autorisée</span>
+
+<span class="cm">// const — constante, ne peut pas être modifiée</span>
+<span class="kw">const</span> PI <span class="op">=</span> <span class="num">3.14</span>;
+<span class="cm">// PI = 3; ❌ erreur !</span></pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les types de données</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>String</td><td>Chaîne de caractères — toujours entre guillemets</td><td><code>"Bonjour"</code> · <code>'Ali'</code></td></tr>
+        <tr><td>Number</td><td>Nombre entier ou décimal</td><td><code>17</code> · <code>3.14</code></td></tr>
+        <tr><td>Boolean</td><td>Valeur logique — vrai ou faux</td><td><code>true</code> · <code>false</code></td></tr>
+        <tr><td>Array</td><td>Tableau — liste de valeurs indexées à partir de 0</td><td><code>[10, 20, 30]</code></td></tr>
+        <tr><td>Object</td><td>Objet — paires clé : valeur</td><td><code>{nom: "Ali", age: 17}</code></td></tr>
+        <tr><td>null</td><td>Valeur vide intentionnelle</td><td><code>let x = null;</code></td></tr>
+        <tr><td>undefined</td><td>Variable déclarée mais sans valeur</td><td><code>let y;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Conversion de types</div>
+  <div class="info-card">
+    JS est un langage <strong>typé dynamiquement</strong> : une variable peut changer de type. Mais il faut parfois convertir <strong>explicitement</strong> une valeur d'un type à un autre.
+  </div>
+
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>Number(ch)</code></div>
+      <div class="prop-card-desc">Convertit une chaîne en nombre. Si impossible, retourne <code>NaN</code>.</div>
+      <div class="prop-card-example">Number("42")  → 42<br>Number("abc") → NaN</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>parseInt(ch [,b])</code></div>
+      <div class="prop-card-desc">Convertit en entier dans la base b. Ignore la partie décimale.</div>
+      <div class="prop-card-example">parseInt("3.9")  → 3<br>parseInt("FF",16) → 255</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>parseFloat(ch)</code></div>
+      <div class="prop-card-desc">Convertit une chaîne en nombre réel (décimal).</div>
+      <div class="prop-card-example">parseFloat("3.14") → 3.14</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>String(a)</code></div>
+      <div class="prop-card-desc">Convertit n'importe quelle valeur en chaîne de caractères.</div>
+      <div class="prop-card-example">String(42)    → "42"<br>String(true)  → "true"</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>isNaN(ch)</code></div>
+      <div class="prop-card-desc">Retourne <code>true</code> si la valeur n'est <strong>pas</strong> un nombre convertible.</div>
+      <div class="prop-card-example">isNaN("abc") → true<br>isNaN("42")  → false</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>prompt()</code></div>
+      <div class="prop-card-desc">Affiche une boîte de dialogue pour saisir une valeur. Retourne toujours une <strong>chaîne</strong>.</div>
+      <div class="prop-card-example">let n = prompt("Entrez un nb:");<br>n = Number(n);</div>
+    </div>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Variables — modifie et observe</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + JS</div>
+        <textarea id="lab-var">&lt;p id="out"&gt;&lt;/p&gt;
+&lt;script&gt;
+  let prenom = "Ali";
+  let age    = 17;
+  let note   = 18.5;
+  let reussi = true;
+
+  // Concaténation
+  let msg = "Nom : " + prenom +
+    "&lt;br&gt;Âge : " + age +
+    "&lt;br&gt;Note : " + note +
+    "&lt;br&gt;Réussi : " + reussi;
+
+  document.getElementById("out").innerHTML = msg;
+
+  // Conversion
+  let texte = "42";
+  let nb    = Number(texte);
+  document.getElementById("out").innerHTML +=
+    "&lt;br&gt;Conversion : " + texte + " → " + nb;
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-var','result-var')">▶ Run</button><span class="run-hint">Change les valeurs et relance !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-var"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(0)">← C'est quoi JS ?</button>
+    <button class="btn-next" onclick="goTo(2)">Opérateurs <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 3 — OPÉRATEURS               ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-2">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 3 · Calculs &amp; Comparaisons</div>
+    <h1 class="chapter-title">Les opérateurs</h1>
+    <p class="chapter-desc">Les opérateurs permettent de faire des calculs, des comparaisons et des tests logiques sur les variables.</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="sub-heading"><span class="sh-bar"></span>Opérateurs arithmétiques</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Op.</th><th>Nom</th><th>Exemple</th></tr></thead>
+          <tbody>
+            <tr><td>+</td><td>Addition / Concaténation</td><td><code>3 + 4 = 7</code></td></tr>
+            <tr><td>-</td><td>Soustraction</td><td><code>10 - 3 = 7</code></td></tr>
+            <tr><td>*</td><td>Multiplication</td><td><code>4 * 5 = 20</code></td></tr>
+            <tr><td>/</td><td>Division</td><td><code>10 / 2 = 5</code></td></tr>
+            <tr><td>%</td><td>Modulo (reste)</td><td><code>10 % 3 = 1</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="sub-heading"><span class="sh-bar"></span>Opérateurs de comparaison</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Op.</th><th>Signification</th></tr></thead>
+          <tbody>
+            <tr><td>==</td><td>Égal à (valeur)</td></tr>
+            <tr><td>!=</td><td>Différent de</td></tr>
+            <tr><td>&gt;</td><td>Supérieur à</td></tr>
+            <tr><td>&gt;=</td><td>Supérieur ou égal à</td></tr>
+            <tr><td>&lt;</td><td>Inférieur à</td></tr>
+            <tr><td>&lt;=</td><td>Inférieur ou égal à</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Opérateurs logiques</div>
+  <div class="prop-grid" style="grid-template-columns: repeat(3,1fr)">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>&amp;&amp;</code> — ET</div>
+      <div class="prop-card-desc">Vrai si les <strong>deux</strong> conditions sont vraies.</div>
+      <div class="prop-card-example">age &gt;= 18 &amp;&amp; permis == true</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>||</code> — OU</div>
+      <div class="prop-card-desc">Vrai si <strong>au moins une</strong> condition est vraie.</div>
+      <div class="prop-card-example">jour == "sam" || jour == "dim"</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>!</code> — NON</div>
+      <div class="prop-card-desc"><strong>Inverse</strong> la valeur logique.</div>
+      <div class="prop-card-example">!estConnecte → true si déconnecté</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Structures de contrôle</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">conditions.js</div></div>
+    <pre><span class="cm">// ─── if / else if / else ───</span>
+<span class="kw">let</span> note <span class="op">=</span> <span class="num">14</span>;
+
+<span class="kw">if</span> (note <span class="op">&gt;=</span> <span class="num">16</span>) {
+  <span class="ob">document</span>.<span class="mt">write</span>(<span class="str">"Très bien"</span>);
+} <span class="kw">else if</span> (note <span class="op">&gt;=</span> <span class="num">12</span>) {
+  <span class="ob">document</span>.<span class="mt">write</span>(<span class="str">"Bien"</span>);
+} <span class="kw">else</span> {
+  <span class="ob">document</span>.<span class="mt">write</span>(<span class="str">"À améliorer"</span>);
+}
+
+<span class="cm">// ─── Boucle for ───</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> <span class="num">5</span>; i<span class="op">++</span>) {
+  <span class="ob">document</span>.<span class="mt">write</span>(<span class="str">"i = "</span> <span class="op">+</span> i <span class="op">+</span> <span class="str">"&lt;br&gt;"</span>);
+}
+
+<span class="cm">// ─── Boucle while ───</span>
+<span class="kw">let</span> n <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">while</span> (n <span class="op">&lt;</span> <span class="num">3</span>) {
+  <span class="ob">document</span>.<span class="mt">write</span>(<span class="str">"n = "</span> <span class="op">+</span> n <span class="op">+</span> <span class="str">"&lt;br&gt;"</span>);
+  n<span class="op">++</span>;
+}</pre>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Conditions &amp; Boucles — teste en direct</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + JS</div>
+        <textarea id="lab-op">&lt;div id="res"&gt;&lt;/div&gt;
+&lt;script&gt;
+  let note = 15;
+  let mention;
+
+  if (note >= 16) {
+    mention = "Très bien";
+  } else if (note >= 14) {
+    mention = "Bien";
+  } else if (note >= 12) {
+    mention = "Assez bien";
+  } else {
+    mention = "Passable";
+  }
+
+  let html = "&lt;b&gt;Note : " + note + "/20 — " + mention + "&lt;/b&gt;&lt;br&gt;&lt;br&gt;";
+
+  // Table de multiplication de note
+  for (let i = 1; i <= 5; i++) {
+    html += note + " × " + i + " = " + (note * i) + "&lt;br&gt;";
+  }
+
+  document.getElementById("res").innerHTML = html;
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-op','result-op')">▶ Run</button><span class="run-hint">Change la note et relance !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-op"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(1)">← Variables &amp; Types</button>
+    <button class="btn-next" onclick="goTo(3)">Fonctions &amp; DOM <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 4 — FONCTIONS & DOM          ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-3">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 4 · Fonctions &amp; DOM</div>
+    <h1 class="chapter-title">Fonctions &amp; Manipulation du DOM</h1>
+    <p class="chapter-desc">Les fonctions permettent de réutiliser du code. Le DOM (Document Object Model) permet de modifier les éléments HTML depuis JavaScript.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les fonctions</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">fonctions.js</div></div>
+    <pre><span class="cm">// Déclaration d'une fonction</span>
+<span class="kw">function</span> <span class="fn">bonjour</span>(prenom) {
+  <span class="kw">let</span> message <span class="op">=</span> <span class="str">"Bonjour, "</span> <span class="op">+</span> prenom <span class="op">+</span> <span class="str">" !"</span>;
+  <span class="kw">return</span> message;
+}
+
+<span class="cm">// Appel de la fonction</span>
+<span class="kw">let</span> res <span class="op">=</span> <span class="fn">bonjour</span>(<span class="str">"Ali"</span>); <span class="cm">// → "Bonjour, Ali !"</span>
+<span class="ob">document</span>.<span class="mt">write</span>(res);
+
+<span class="cm">// Fonction avec plusieurs paramètres</span>
+<span class="kw">function</span> <span class="fn">addition</span>(a, b) {
+  <span class="kw">return</span> a <span class="op">+</span> b;
+}
+<span class="ob">document</span>.<span class="mt">write</span>(<span class="fn">addition</span>(<span class="num">5</span>, <span class="num">3</span>)); <span class="cm">// → 8</span></pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Sélectionner des éléments HTML</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>getElementById()</code></div>
+      <div class="prop-card-desc">Sélectionne un élément unique par son <strong>id</strong>. Retourne <code>null</code> si non trouvé.</div>
+      <div class="prop-card-example">document.getElementById("titre")</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>getElementsByName()</code></div>
+      <div class="prop-card-desc">Sélectionne tous les éléments ayant le même <strong>name</strong>. Retourne une liste.</div>
+      <div class="prop-card-example">document.getElementsByName("choix")</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Modifier le contenu, les attributs et les styles</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété / Méthode</th><th>Rôle</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>element.innerHTML</td><td>Lire/modifier le contenu HTML d'un élément</td><td><code>el.innerHTML = "&lt;b&gt;Texte&lt;/b&gt;"</code></td></tr>
+        <tr><td>element.value</td><td>Lire/modifier la valeur d'un champ de formulaire</td><td><code>el.value = "Ali"</code></td></tr>
+        <tr><td>element.checked</td><td>Cocher/décocher une case checkbox ou radio</td><td><code>el.checked = true</code></td></tr>
+        <tr><td>element.disabled</td><td>Désactiver / réactiver un élément de formulaire</td><td><code>el.disabled = true</code></td></tr>
+        <tr><td>element.src</td><td>Modifier la source d'une image ou vidéo</td><td><code>el.src = "photo.jpg"</code></td></tr>
+        <tr><td>element.style.couleur</td><td>Modifier le style CSS d'un élément (camelCase)</td><td><code>el.style.color = "red"</code></td></tr>
+        <tr><td>element.style.background</td><td>Modifier la couleur de fond</td><td><code>el.style.background = "#fff"</code></td></tr>
+        <tr><td>element.style.fontSize</td><td>Modifier la taille de police (camelCase)</td><td><code>el.style.fontSize = "20px"</code></td></tr>
+        <tr><td>element.play()</td><td>Lancer la lecture d'un audio ou d'une vidéo</td><td><code>el.play()</code></td></tr>
+        <tr><td>element.pause()</td><td>Mettre en pause un audio ou une vidéo</td><td><code>el.pause()</code></td></tr>
+        <tr><td>select.selectedIndex</td><td>Récupérer l'indice de l'option sélectionnée d'un &lt;select&gt;</td><td><code>sel.selectedIndex</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 DOM — modifie des éléments HTML en direct</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + JS</div>
+        <textarea id="lab-dom">&lt;h3 id="titre"&gt;Titre original&lt;/h3&gt;
+&lt;p  id="para"&gt;Paragraphe original&lt;/p&gt;
+&lt;input type="text" id="saisie" placeholder="Tape ton prénom"&gt;
+&lt;button onclick="modifier()"&gt;Modifier&lt;/button&gt;
+
+&lt;script&gt;
+  function modifier() {
+    let prenom = document.getElementById("saisie").value;
+
+    document.getElementById("titre").innerHTML =
+      "Bonjour, " + prenom + " !";
+    document.getElementById("titre").style.color = "#c49010";
+
+    document.getElementById("para").innerHTML =
+      "Tu as modifié cette page avec JavaScript 🎉";
+    document.getElementById("para").style.fontWeight = "bold";
+  }
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-dom','result-dom')">▶ Run</button><span class="run-hint">Lance, tape un prénom et clique Modifier !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-dom"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz2">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Question rapide</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-q">Pour modifier le contenu HTML d'un élément ayant <code>id="msg"</code>, on écrit :</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">A</span><code>document.getElement("msg").text = "…"</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,true)"><span class="quiz-opt-letter">B</span><code>document.getElementById("msg").innerHTML = "…"</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">C</span><code>document.getElementById("msg").value = "…"</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">D</span><code>getElementById("msg").html = "…"</code></button>
+      </div>
+      <div class="quiz-feedback" id="quiz2-fb"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(2)">← Opérateurs</button>
+    <button class="btn-next" onclick="goTo(4)">Chaînes &amp; Maths <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 5 — CHAÎNES & MATHS          ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-4">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 5 · Objets intégrés</div>
+    <h1 class="chapter-title">Chaînes de caractères &amp; Objet Math</h1>
+    <p class="chapter-desc">JS fournit des méthodes intégrées pour manipuler les textes et effectuer des calculs mathématiques.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Méthodes des chaînes de caractères</div>
+  <div class="info-card">
+    <code>ch</code> désigne ici un objet String (une chaîne de caractères). L'opérateur <code>+</code> sert à la concaténation.
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété / Méthode</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>ch.length</td><td>Retourne la longueur de la chaîne</td><td><code>"Bonjour".length → 7</code></td></tr>
+        <tr><td>ch.indexOf(ch1 [,p])</td><td>Position de la 1ère occurrence de ch1 (à partir de p, sinon -1)</td><td><code>"Bonjour".indexOf("o") → 1</code></td></tr>
+        <tr><td>ch.lastIndexOf(ch1 [,p])</td><td>Position de la dernière occurrence de ch1</td><td><code>"Bonjour".lastIndexOf("o") → 4</code></td></tr>
+        <tr><td>ch.substring(d, f)</td><td>Retourne une sous-chaîne de la position d à f (non incluse)</td><td><code>"Bonjour".substring(0,3) → "Bon"</code></td></tr>
+        <tr><td>ch.replace(ch1, ch2)</td><td>Remplace la 1ère occurrence de ch1 par ch2</td><td><code>"Bonjour".replace("jour","soir") → "Bonsoir"</code></td></tr>
+        <tr><td>ch.toLowerCase()</td><td>Convertit en minuscules</td><td><code>"BONJOUR".toLowerCase() → "bonjour"</code></td></tr>
+        <tr><td>ch.toUpperCase()</td><td>Convertit en majuscules</td><td><code>"bonjour".toUpperCase() → "BONJOUR"</code></td></tr>
+        <tr><td>ch.trim()</td><td>Supprime les espaces en début et fin de chaîne</td><td><code>"  Ali  ".trim() → "Ali"</code></td></tr>
+        <tr><td>String.fromCharCode(n)</td><td>Retourne le caractère correspondant au code ASCII n</td><td><code>String.fromCharCode(65) → "A"</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>L'objet Math</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>Math.abs(x)</code></div>
+      <div class="prop-card-desc">Retourne la valeur absolue (positive) de x.</div>
+      <div class="prop-card-example">Math.abs(-5) → 5</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>Math.sqrt(x)</code></div>
+      <div class="prop-card-desc">Retourne la racine carrée de x.</div>
+      <div class="prop-card-example">Math.sqrt(16) → 4</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>Math.round(x)</code></div>
+      <div class="prop-card-desc">Arrondit x à l'entier le plus proche.</div>
+      <div class="prop-card-example">Math.round(3.7) → 4</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>Math.trunc(x)</code></div>
+      <div class="prop-card-desc">Retourne la partie entière de x en retirant les décimales.</div>
+      <div class="prop-card-example">Math.trunc(3.9) → 3</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>Math.random()</code></div>
+      <div class="prop-card-desc">Retourne un nombre aléatoire réel dans [0, 1[.</div>
+      <div class="prop-card-example">Math.floor(Math.random()*6)+1 → dé</div>
+    </div>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Chaînes &amp; Maths — teste les méthodes</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + JS</div>
+        <textarea id="lab-str">&lt;div id="out"&gt;&lt;/div&gt;
+&lt;script&gt;
+  let ch = "  Bac Sciences Informatique  ";
+  let res = "";
+
+  res += "Original  : '" + ch + "'&lt;br&gt;";
+  res += "Trim      : '" + ch.trim() + "'&lt;br&gt;";
+  res += "Longueur  : " + ch.trim().length + "&lt;br&gt;";
+  res += "Majuscules: " + ch.trim().toUpperCase() + "&lt;br&gt;";
+  res += "Sous-chaîne (4,7) : " + ch.trim().substring(4,7) + "&lt;br&gt;";
+  res += "&lt;br&gt;";
+  res += "Math.sqrt(144) = " + Math.sqrt(144) + "&lt;br&gt;";
+  res += "Math.round(4.6) = " + Math.round(4.6) + "&lt;br&gt;";
+  res += "Dé aléatoire : " + (Math.floor(Math.random()*6)+1);
+
+  document.getElementById("out").innerHTML = res;
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-str','result-str')">▶ Run</button><span class="run-hint">Relance plusieurs fois pour voir le dé changer !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-str"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(3)">← Fonctions &amp; DOM</button>
+    <button class="btn-next" onclick="goTo(5)">Tableaux &amp; Dates <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 6 — TABLEAUX & DATES         ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-5">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 6 · Collections &amp; Temps</div>
+    <h1 class="chapter-title">Tableaux &amp; Objet Date</h1>
+    <p class="chapter-desc">Les tableaux permettent de stocker plusieurs valeurs dans une seule variable. L'objet Date permet de travailler avec les dates et heures.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>L'objet Array — les tableaux</div>
+  <div class="info-card">
+    En JavaScript, un tableau se crée avec des crochets <code>[]</code>. Les indices commencent à <strong>0</strong>. La propriété <code>length</code> donne le nombre d'éléments.
+  </div>
+
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">tableaux.js</div></div>
+    <pre><span class="cm">// Créer un tableau</span>
+<span class="kw">let</span> notes <span class="op">=</span> [<span class="num">14</span>, <span class="num">18</span>, <span class="num">11</span>, <span class="num">16</span>, <span class="num">9</span>];
+
+<span class="cm">// Accéder à un élément (indice 0 = premier)</span>
+<span class="ob">document</span>.<span class="mt">write</span>(notes[<span class="num">0</span>]); <span class="cm">// → 14</span>
+<span class="ob">document</span>.<span class="mt">write</span>(notes[<span class="num">2</span>]); <span class="cm">// → 11</span>
+
+<span class="cm">// Nombre d'éléments</span>
+<span class="ob">document</span>.<span class="mt">write</span>(notes.length); <span class="cm">// → 5</span>
+
+<span class="cm">// Parcourir avec une boucle</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> notes.length; i<span class="op">++</span>) {
+  <span class="ob">document</span>.<span class="mt">write</span>(<span class="str">"Note["</span><span class="op">+</span>i<span class="op">+</span><span class="str">"] = "</span> <span class="op">+</span> notes[i] <span class="op">+</span> <span class="str">"&lt;br&gt;"</span>);
+}</pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>L'objet Date</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>new Date()</code></div>
+      <div class="prop-card-desc">Crée un objet Date représentant la <strong>date et heure actuelles</strong>.</div>
+      <div class="prop-card-example">let d = new Date();</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>new Date(ch)</code></div>
+      <div class="prop-card-desc">Crée un objet Date à partir d'une chaîne représentant une date.</div>
+      <div class="prop-card-example">let d = new Date("2025-06-15");</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>d.getDate()</code></div>
+      <div class="prop-card-desc">Retourne le jour du mois (entre 1 et 31).</div>
+      <div class="prop-card-example">d.getDate() → 15</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>d.getMonth()</code></div>
+      <div class="prop-card-desc">Retourne le numéro du mois (entre <strong>0 et 11</strong> — attention !).</div>
+      <div class="prop-card-example">d.getMonth() + 1 → mois réel</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>d.getFullYear()</code></div>
+      <div class="prop-card-desc">Retourne l'année sur 4 chiffres.</div>
+      <div class="prop-card-example">d.getFullYear() → 2025</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>d.toString()</code></div>
+      <div class="prop-card-desc">Retourne la date sous forme de chaîne de caractères lisible.</div>
+      <div class="prop-card-example">d.toString() → "Mon Jun 15..."</div>
+    </div>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Tableaux &amp; Dates — teste en direct</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + JS</div>
+        <textarea id="lab-arr">&lt;div id="out"&gt;&lt;/div&gt;
+&lt;script&gt;
+  // Tableau de notes
+  let notes = [14, 18, 11, 16, 9, 17];
+  let somme = 0;
+  let affichage = "&lt;b&gt;Notes :&lt;/b&gt; ";
+
+  for (let i = 0; i &lt; notes.length; i++) {
+    affichage += notes[i];
+    if (i &lt; notes.length - 1) affichage += ", ";
+    somme += notes[i];
+  }
+
+  let moy = somme / notes.length;
+  affichage += "&lt;br&gt;&lt;b&gt;Moyenne :&lt;/b&gt; " +
+    Math.round(moy * 10) / 10 + "/20";
+
+  // Date actuelle
+  let d = new Date();
+  affichage += "&lt;br&gt;&lt;br&gt;&lt;b&gt;Aujourd'hui :&lt;/b&gt; " +
+    d.getDate() + "/" +
+    (d.getMonth() + 1) + "/" +
+    d.getFullYear();
+
+  document.getElementById("out").innerHTML = affichage;
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-arr','result-arr')">▶ Run</button><span class="run-hint">Lance pour voir la date d'aujourd'hui !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-arr"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(4)">← Chaînes &amp; Maths</button>
+    <button class="btn-next" onclick="goTo(6)">Événements HTML <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 7 — ÉVÉNEMENTS HTML          ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-6">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 7 · Réactivité</div>
+    <h1 class="chapter-title">Les événements HTML</h1>
+    <p class="chapter-desc">Un événement est une action déclenchée par l'utilisateur. JavaScript écoute ces actions pour y répondre en temps réel.</p>
+  </div>
+
+  <div class="info-card">
+    Les événements s'écrivent comme attributs HTML (<code>onclick="maFonction()"</code>) ou via <code>addEventListener</code> en JS pur.
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Tableau complet des événements</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Événement</th><th>Se déclenche quand…</th><th>Utilisé sur</th></tr></thead>
+      <tbody>
+        <tr><td>onclick</td><td>L'utilisateur clique sur l'élément</td><td>Boutons, liens, images…</td></tr>
+        <tr><td>onmouseover</td><td>Le pointeur survole l'élément</td><td>Menus, cartes, images</td></tr>
+        <tr><td>onmouseout</td><td>Le pointeur quitte l'élément</td><td>Menus, survols</td></tr>
+        <tr><td>onfocus</td><td>L'élément obtient le focus (clavier/clic)</td><td>Champs de formulaire</td></tr>
+        <tr><td>onblur</td><td>L'élément perd le focus</td><td>Champs de formulaire</td></tr>
+        <tr><td>onchange</td><td>La valeur change ET l'élément perd le focus</td><td>Select, input, textarea</td></tr>
+        <tr><td>oninput</td><td>La valeur change en temps réel (sans attendre blur)</td><td>Input text, textarea</td></tr>
+        <tr><td>onsubmit</td><td>Le formulaire est soumis</td><td>Balise &lt;form&gt;</td></tr>
+        <tr><td>onkeydown</td><td>Une touche du clavier est pressée</td><td>Input, document</td></tr>
+        <tr><td>onkeyup</td><td>Une touche du clavier est relâchée</td><td>Input, document</td></tr>
+        <tr><td>onload</td><td>La page (ou une image) est complètement chargée</td><td>&lt;body&gt;, &lt;img&gt;</td></tr>
+        <tr><td>onplay</td><td>La lecture d'un média commence</td><td>&lt;audio&gt;, &lt;video&gt;</td></tr>
+        <tr><td>onpause</td><td>Un média est mis en pause</td><td>&lt;audio&gt;, &lt;video&gt;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Événements — teste tous les déclencheurs</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + JS</div>
+        <textarea id="lab-ev">&lt;style&gt;
+  #log { background:#fffde8; border:1px solid #ffd54f;
+    padding:10px; border-radius:8px; min-height:60px;
+    font-family:monospace; font-size:0.82rem; margin-top:10px; }
+  input, button, select {
+    padding:7px 12px; border-radius:6px; margin:4px;
+    border:1px solid #ddd; font-family:inherit;
+  }
+  button { background:#d4a017; color:#fff; border:none; cursor:pointer; }
+&lt;/style&gt;
+
+&lt;div id="log"&gt;Les événements s'afficheront ici...&lt;/div&gt;
+
+&lt;button onclick="log('onclick → clic sur le bouton')"&gt;
+  Clique-moi
+&lt;/button&gt;
+
+&lt;input type="text" placeholder="Tape ici"
+  oninput="log('oninput → valeur: ' + this.value)"
+  onfocus="log('onfocus → champ actif')"
+  onblur="log('onblur → focus perdu')"&gt;
+
+&lt;select onchange="log('onchange → choix: ' + this.value)"&gt;
+  &lt;option value=""&gt;Choisis...&lt;/option&gt;
+  &lt;option value="HTML"&gt;HTML&lt;/option&gt;
+  &lt;option value="CSS"&gt;CSS&lt;/option&gt;
+  &lt;option value="JS"&gt;JavaScript&lt;/option&gt;
+&lt;/select&gt;
+
+&lt;script&gt;
+  function log(msg) {
+    document.getElementById("log").innerHTML =
+      "🔔 " + msg;
+  }
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-ev','result-ev')">▶ Run</button><span class="run-hint">Lance puis interagis avec les éléments !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-ev"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(5)">← Tableaux &amp; Dates</button>
+    <button class="btn-next" onclick="goTo(7)">Pratique &amp; Exercices <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════╗
+     ║  PANEL 8 — PRATIQUE & EXERCICES       ║
+     ╚════════════════════════════════════════╝ -->
+<div class="panel" id="panel-7">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 8 · Mise en pratique</div>
+    <h1 class="chapter-title">Pratique &amp; Exercices</h1>
+    <p class="chapter-desc">Consolide tout ce que tu as appris avec ces exercices interactifs.</p>
+  </div>
+
+  <!-- Fill in -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice 1 — Complète le code</div>
+  <div class="fill-ex" id="ex1">
+    <div class="fill-ex-title">Complète les déclarations manquantes <span class="fe-badge">Exercice</span></div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.83rem;line-height:2.4;background:var(--code-bg);padding:18px;border-radius:10px;border:1px solid var(--border);">
+      <span style="color:#ff9e6d">let</span> nom <span style="color:#ffb3de">=</span> <span style="color:#a8ff78">"Ali"</span>;<br>
+      <span style="color:#ff9e6d">let</span> note <span style="color:#ffb3de">=</span> <span style="color:#ffd580">16</span>;<br><br>
+      <span style="color:#5a5020">// Afficher dans l'élément id="res"</span><br>
+      <span style="color:#79c0ff">document</span>.<input class="fill-blank" id="ex1-1" style="width:140px" placeholder="???">(<span style="color:#a8ff78">"res"</span>)
+      .<input class="fill-blank" id="ex1-2" style="width:110px" placeholder="???"> <span style="color:#ffb3de">=</span> nom <span style="color:#ffb3de">+</span> <span style="color:#a8ff78">" : "</span> <span style="color:#ffb3de">+</span> note;<br><br>
+      <span style="color:#5a5020">// Changer la couleur de l'élément</span><br>
+      <span style="color:#79c0ff">document</span>.getElementById(<span style="color:#a8ff78">"res"</span>).style.<input class="fill-blank" id="ex1-3" style="width:80px" placeholder="???"> <span style="color:#ffb3de">=</span> <span style="color:#a8ff78">"green"</span>;
+    </div>
+    <button class="fill-check" onclick="checkEx1()">Vérifier</button>
+    <div class="fill-result" id="ex1-result"></div>
+  </div>
+
+  <!-- Quizzes -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice 2 — Questions de compréhension</div>
+
+  <div class="quiz-box" id="quiz3">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quelle est la valeur de <code>Math.round(4.5)</code> ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">A</span>4</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,true)"><span class="quiz-opt-letter">B</span>5</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">C</span>4.5</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">D</span>NaN</button>
+      </div>
+      <div class="quiz-feedback" id="quiz3-fb"></div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz4">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quel événement se déclenche en temps réel à chaque frappe dans un champ texte ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">A</span><code>onchange</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">B</span><code>onkeydown</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,true)"><span class="quiz-opt-letter">C</span><code>oninput</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">D</span><code>onfocus</code></button>
+      </div>
+      <div class="quiz-feedback" id="quiz4-fb"></div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz5">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quel est l'indice du premier élément d'un tableau JS ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">A</span>1</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,true)"><span class="quiz-opt-letter">B</span>0</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">C</span>-1</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">D</span>Dépend du tableau</button>
+      </div>
+      <div class="quiz-feedback" id="quiz5-fb"></div>
+    </div>
+  </div>
+
+  <!-- Exercice final -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice final — Mini calculatrice interactive</div>
+  <div class="info-card">
+    Crée une mini calculatrice complète avec deux champs de saisie, une liste déroulante pour l'opération, et un bouton Calculer qui affiche le résultat.
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🏆 Exercice final — Ma calculatrice JS</div><div class="lab-badge">Libre</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">Écris ton HTML + JS ici</div>
+        <textarea id="lab-final" style="min-height:280px">&lt;style&gt;
+  body { font-family: Arial; background:#fdfcf4; padding:16px; }
+  .calc { background:#fff; border:2px solid #ffd54f;
+    border-radius:14px; padding:22px; max-width:280px; margin:0 auto; }
+  h3 { color:#c49010; margin-bottom:16px; text-align:center; }
+  input, select { width:100%; padding:8px; margin:5px 0;
+    border:1px solid #edd88a; border-radius:7px; font-size:0.9rem; }
+  button { width:100%; padding:10px; background:#d4a017;
+    color:#1a1400; border:none; border-radius:8px;
+    font-weight:bold; font-size:1rem; cursor:pointer; margin-top:8px; }
+  button:hover { background:#c49010; }
+  #resultat { margin-top:12px; padding:10px; background:#fffde8;
+    border-radius:8px; text-align:center; font-weight:bold;
+    font-size:1.1rem; color:#7a5000; min-height:36px; }
+&lt;/style&gt;
+
+&lt;div class="calc"&gt;
+  &lt;h3&gt;🧮 Calculatrice JS&lt;/h3&gt;
+  &lt;input type="number" id="nb1" placeholder="Nombre 1"&gt;
+  &lt;select id="op"&gt;
+    &lt;option value="+"&gt;+ Addition&lt;/option&gt;
+    &lt;option value="-"&gt;- Soustraction&lt;/option&gt;
+    &lt;option value="*"&gt;× Multiplication&lt;/option&gt;
+    &lt;option value="/"&gt;÷ Division&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;input type="number" id="nb2" placeholder="Nombre 2"&gt;
+  &lt;button onclick="calculer()"&gt;= Calculer&lt;/button&gt;
+  &lt;div id="resultat"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  function calculer() {
+    let a  = Number(document.getElementById("nb1").value);
+    let b  = Number(document.getElementById("nb2").value);
+    let op = document.getElementById("op").value;
+    let res;
+
+    if (op == "+") res = a + b;
+    else if (op == "-") res = a - b;
+    else if (op == "*") res = a * b;
+    else if (op == "/") {
+      if (b == 0) { res = "Division par 0 impossible !"; }
+      else { res = a / b; }
+    }
+
+    document.getElementById("resultat").innerHTML =
+      a + " " + op + " " + b + " = " + res;
+  }
+&lt;/script&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-final','result-final')">▶ Run</button><span class="run-hint">Lance et utilise ta calculatrice !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Ta calculatrice</div>
+        <div class="lab-result" id="result-final"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bilan -->
+  <div class="sub-heading"><span class="sh-bar"></span>Récapitulatif — Ce que tu as appris</div>
+  <div class="concept-box">
+    <div class="cb-label">✅ Bilan JavaScript</div>
+    <p>
+      Tu maîtrises maintenant les bases de JavaScript : comment <strong>intégrer JS</strong> dans une page, déclarer des <strong>variables</strong> et les convertir, utiliser les <strong>opérateurs</strong> et les structures <code>if/for/while</code>, écrire des <strong>fonctions</strong>, manipuler le <strong>DOM</strong> pour modifier HTML et CSS, utiliser les méthodes des <strong>chaînes</strong>, de <strong>Math</strong>, des <strong>tableaux</strong> et de l'objet <strong>Date</strong>, et réagir aux <strong>événements</strong> utilisateur. Tu es prêt pour découvrir <strong>PHP</strong>.
+    </p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(6)">← Événements HTML</button>
+    <a href="SQL_Rappel.html" class="btn-next" style="opacity:0.5;">Next - SQL<span class="arrow">→</span></a>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<footer>
+  JavaScript — Apprendre · Annexe 2024-2025 &nbsp;·&nbsp; Bac Sciences de l'informatique &nbsp;·&nbsp; Yousri Ben Hariz
+</footer>
+
+<script>
+  const PANELS = 8;
+
+  function goTo(n) {
+    for (let i = 0; i < PANELS; i++) {
+      document.getElementById('panel-' + i).classList.remove('active');
+      document.querySelectorAll('.pnav-item')[i].classList.remove('active');
+    }
+    document.getElementById('panel-' + n).classList.add('active');
+    document.querySelectorAll('.pnav-item')[n].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function runLab(textareaId, resultId) {
+    document.getElementById(resultId).innerHTML =
+      document.getElementById(textareaId).value;
+  }
+
+  function checkQuiz(quizId, btn, correct) {
+    const box = document.getElementById(quizId);
+    if (box.dataset.answered) return;
+    box.dataset.answered = 'yes';
+    const opts = box.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const fb = document.getElementById(quizId + '-fb');
+    if (correct) {
+      btn.classList.add('correct');
+      fb.textContent = '✅ Correct ! Bonne réponse.';
+      fb.className = 'quiz-feedback show ok';
+    } else {
+      btn.classList.add('wrong');
+      opts.forEach(o => {
+        if (o.getAttribute('onclick').includes('true')) o.classList.add('correct');
+      });
+      fb.textContent = '❌ Pas tout à fait. Regarde la bonne réponse en vert.';
+      fb.className = 'quiz-feedback show ko';
+    }
+  }
+
+  function checkEx1() {
+    const a1 = document.getElementById('ex1-1').value.trim();
+    const a2 = document.getElementById('ex1-2').value.trim();
+    const a3 = document.getElementById('ex1-3').value.trim();
+    const ok = a1 === 'getElementById' && a2 === 'innerHTML' && a3 === 'color';
+    const result = document.getElementById('ex1-result');
+    if (ok) {
+      result.textContent = '✅ Parfait ! getElementById · innerHTML · color — tout est correct.';
+      result.className = 'fill-result show ok';
+    } else {
+      result.textContent = '❌ Rappel : getElementById("res") · .innerHTML = … · .style.color = …';
+      result.className = 'fill-result show ko';
+    }
+  }
+</script>
+</body>
+</html>

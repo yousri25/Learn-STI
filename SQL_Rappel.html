@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SQL — Tutoriel Complet</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sql:       #1b9e50;
+    --sql-dark:  #1b6120;
+    --sql-mid:   #218a45;
+    --sql-light: #e8f5e9;
+    --sql-glow:  rgba(27,158,80,0.09);
+    --bg:    #f4fbf6;
+    --card:  #ffffff;
+    --text:  #0d200f;
+    --muted: #4a6a50;
+    --border:#c2e8cc;
+    --code-bg: #e4f5e9;
+    --shadow:    0 2px 20px rgba(27,158,80,0.09);
+    --shadow-lg: 0 6px 32px rgba(27,158,80,0.14);
+    --radius:    16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #1b6120 0%, #2e9b4e 55%, #00c896 100%);
+    padding: 52px 24px 48px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 24px);
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 99px; padding: 4px 18px;
+    font-size: 0.75rem; font-weight: 700; color: #fff;
+    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px;
+    font-family: 'Fira Code', monospace;
+  }
+  .header h1 {
+    font-size: 2.8rem; font-weight: 800; color: #fff;
+    letter-spacing: -1px; text-shadow: 0 3px 14px rgba(0,0,0,.18);
+    margin-bottom: 10px; line-height: 1.1;
+  }
+  .header p { color: rgba(255,255,255,0.88); font-size: 1rem; }
+  .back-link {
+    position: absolute; top: 18px; left: 24px; z-index: 2;
+    text-decoration: none;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+    color: #fff; padding: 6px 14px; border-radius: 99px;
+    font-size: 0.78rem; font-weight: 600;
+    font-family: 'Fira Code', monospace; transition: background .18s;
+  }
+  .back-link:hover { background: rgba(255,255,255,0.3); }
+
+  /* ─── PROGRESS NAV ─── */
+  .progress-nav {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 0 24px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); overflow-x: auto;
+  }
+  .progress-nav-inner {
+    display: flex; align-items: stretch;
+    max-width: 1100px; margin: 0 auto; gap: 0;
+  }
+  .pnav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 14px 18px; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--muted); font-size: 0.8rem; font-weight: 600;
+    white-space: nowrap; transition: all .18s; flex-shrink: 0;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: 'Sora', sans-serif;
+  }
+  .pnav-item:hover { color: var(--text); background: var(--sql-glow); }
+  .pnav-item.active { color: var(--sql-dark); border-bottom-color: var(--sql); }
+  .pnav-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    background: var(--sql-light); color: var(--sql-dark); border: 1px solid var(--border);
+  }
+  .pnav-item.active .pnav-num { background: var(--sql); color: #fff; border-color: var(--sql); }
+
+  /* ─── PAGE & PANELS ─── */
+  .page { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ─── CHAPTER HEADER ─── */
+  .chapter-header {
+    margin-bottom: 36px; padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem; font-weight: 700; color: var(--sql-dark);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
+  }
+  .chapter-title {
+    font-size: 2rem; font-weight: 800; color: var(--text);
+    letter-spacing: -.5px; line-height: 1.15; margin-bottom: 10px;
+  }
+  .chapter-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.7; max-width: 640px; }
+
+  /* ─── CONTENT BLOCKS ─── */
+  .info-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 4px solid var(--sql); border-radius: var(--radius-sm);
+    padding: 16px 20px; margin-bottom: 24px;
+    font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+    box-shadow: var(--shadow);
+  }
+  .info-card strong { color: var(--text); }
+
+  .concept-box {
+    background: var(--sql-light); border: 1.5px solid var(--sql);
+    border-radius: var(--radius); padding: 22px 24px; margin-bottom: 28px;
+  }
+  .concept-box .cb-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--sql-dark); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px;
+  }
+  .concept-box p { font-size: 0.9rem; color: var(--text); line-height: 1.7; }
+  .concept-box p strong { color: var(--sql-dark); }
+
+  .sub-heading {
+    font-size: 1.05rem; font-weight: 800; color: var(--text);
+    margin: 36px 0 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .sub-heading .sh-bar {
+    width: 4px; height: 20px; border-radius: 2px;
+    background: var(--sql); flex-shrink: 0;
+  }
+
+  .analogy {
+    background: #fffde8; border: 1.5px solid #ffd54f;
+    border-radius: var(--radius); padding: 20px 22px; margin-bottom: 24px;
+    font-size: 0.88rem; line-height: 1.65;
+  }
+  .analogy .a-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: #a07000; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 7px;
+  }
+  .analogy p { color: #5a4200; }
+  .analogy strong { color: #3a2800; }
+
+  /* ─── CODE BLOCK ─── */
+  .code-block {
+    background: #0d1f11; border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-lg);
+  }
+  .code-block-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; background: #071409;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .code-block-dots { display: flex; gap: 6px; }
+  .code-block-dots span { width: 11px; height: 11px; border-radius: 50%; }
+  .code-block-dots span:nth-child(1) { background: #ff5f56; }
+  .code-block-dots span:nth-child(2) { background: #ffbd2e; }
+  .code-block-dots span:nth-child(3) { background: #27c93f; }
+  .code-block-filename {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem; color: rgba(255,255,255,0.3);
+  }
+  .code-block pre {
+    padding: 20px 22px; font-family: 'Fira Code', monospace;
+    font-size: 0.83rem; line-height: 1.85;
+    color: #a8d8b0; overflow-x: auto; white-space: pre;
+  }
+  /* SQL syntax colors */
+  .kw  { color: #79c0ff; font-weight: 600; }  /* keywords: SELECT, FROM, WHERE */
+  .fn  { color: #ffa657; }                     /* functions: COUNT, AVG, SUM */
+  .str { color: #a8ff78; }                     /* string values */
+  .num { color: #ffd580; }                     /* numbers */
+  .cm  { color: #3a5a3a; font-style: italic; } /* comments */
+  .op  { color: #ffb3de; }                     /* operators: =, <>, >, < */
+  .tb  { color: #d2a8ff; }                     /* table/column names */
+  .tx  { color: #a8d8b0; }                     /* plain text */
+  .dt  { color: #79c0ff; }                     /* data types: INT, VARCHAR */
+
+  /* inline code */
+  code {
+    font-family: 'Fira Code', monospace; background: var(--code-bg);
+    color: #1b6120; padding: 3px 8px; border-radius: 6px;
+    font-size: 0.82rem; border: 1px solid #9ad4aa; white-space: nowrap;
+  }
+
+  /* prop/type cards */
+  .prop-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px; margin-bottom: 28px;
+  }
+  .prop-card {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 18px 18px 16px;
+    box-shadow: var(--shadow); transition: transform .18s, border-color .18s, box-shadow .18s;
+  }
+  .prop-card:hover { transform: translateY(-3px); border-color: var(--sql); box-shadow: var(--shadow-lg); }
+  .prop-card-name {
+    font-family: 'Fira Code', monospace; font-size: 0.88rem; font-weight: 700;
+    color: var(--sql-dark); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .prop-card-name .pc-type {
+    font-size: 0.63rem; font-weight: 700;
+    background: var(--sql-light); border: 1px solid var(--border);
+    color: var(--sql-dark); padding: 2px 7px; border-radius: 99px;
+  }
+  .prop-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+  .prop-card-example {
+    margin-top: 10px; background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 7px; padding: 8px 11px;
+    font-family: 'Fira Code', monospace; font-size: 0.76rem; color: #1b6120; line-height: 1.5;
+  }
+  .prop-card-values { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .val-chip {
+    background: var(--sql-light); border: 1px solid var(--border);
+    color: var(--sql-dark); font-size: 0.72rem; font-weight: 600;
+    padding: 2px 9px; border-radius: 99px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* table */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  thead tr { background: var(--sql); }
+  thead th {
+    color: #fff; font-weight: 700; font-size: 0.82rem;
+    letter-spacing: .5px; text-transform: uppercase;
+    padding: 12px 16px; text-align: left;
+  }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: var(--sql-glow); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+  td { padding: 11px 16px; font-size: 0.88rem; vertical-align: top; line-height: 1.5; }
+  td:first-child { font-family: 'Fira Code', monospace; font-size: 0.82rem; font-weight: 700; color: var(--sql-dark); white-space: nowrap; }
+
+  /* interactive SQL runner */
+  .lab-wrap {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow-lg); margin-bottom: 28px;
+  }
+  .lab-header {
+    background: var(--sql); padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lab-title { font-family: 'Fira Code', monospace; font-size: 0.78rem; font-weight: 700; color: #fff; }
+  .lab-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    background: rgba(255,255,255,0.22); color: #fff; padding: 3px 10px; border-radius: 99px;
+  }
+  /* SQL simulator layout */
+  .sql-sim { display: flex; flex-direction: column; }
+  .sql-editor-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 14px; background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  .sql-textarea {
+    width: 100%; min-height: 90px;
+    border: none; resize: vertical; outline: none; padding: 14px;
+    font-family: 'Fira Code', monospace; font-size: 0.82rem;
+    color: var(--text); background: #f8fdf9; line-height: 1.6;
+    border-bottom: 1px solid var(--border);
+  }
+  .sql-textarea:focus { background: #fff; }
+  .sql-run-bar {
+    padding: 9px 14px; background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .run-btn {
+    padding: 6px 18px; background: var(--sql); color: #fff; border: none;
+    border-radius: 7px; cursor: pointer; font-size: 0.78rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; transition: background .15s, transform .1s;
+  }
+  .run-btn:hover { background: var(--sql-dark); transform: translateY(-1px); }
+  .run-hint { font-size: 0.73rem; color: var(--muted); }
+  .sql-result-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 14px; background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  .sql-result-table { overflow-x: auto; }
+  .sql-result-table table { border-radius: 0; }
+  .sql-result-table thead tr { background: var(--sql-mid); }
+
+  /* visual table diagram */
+  .db-diagram {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    box-shadow: var(--shadow); margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .db-diagram-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--sql-dark); text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .db-tables { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+  .db-table {
+    border: 2px solid var(--sql); border-radius: 10px;
+    overflow: hidden; min-width: 180px;
+    box-shadow: var(--shadow);
+  }
+  .db-table-name {
+    background: var(--sql); color: #fff;
+    font-family: 'Fira Code', monospace; font-weight: 700; font-size: 0.82rem;
+    padding: 8px 14px; letter-spacing: 0.5px;
+  }
+  .db-col {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 14px; font-family: 'Fira Code', monospace;
+    font-size: 0.78rem; border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  .db-col:last-child { border-bottom: none; }
+  .db-col:hover { background: var(--sql-glow); }
+  .db-col-name { font-weight: 700; color: var(--sql-dark); flex: 1; }
+  .db-col-type { color: var(--muted); font-size: 0.72rem; }
+  .db-pk { background: #ffd54f; color: #7a5000; font-size: 0.6rem; font-weight: 800;
+    padding: 1px 5px; border-radius: 4px; letter-spacing: 0.5px; }
+  .db-fk { background: var(--sql-light); color: var(--sql-dark); font-size: 0.6rem; font-weight: 800;
+    padding: 1px 5px; border-radius: 4px; letter-spacing: 0.5px; border: 1px solid var(--border); }
+  .db-arrow {
+    display: flex; align-items: center; padding: 0 8px;
+    color: var(--muted); font-size: 1.4rem; align-self: center;
+  }
+
+  /* quiz */
+  .quiz-box {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    margin-bottom: 28px; box-shadow: var(--shadow);
+  }
+  .quiz-head {
+    background: linear-gradient(135deg, #1b6120, #2e9b4e);
+    padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .quiz-head-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .quiz-head-title { font-weight: 800; font-size: 0.92rem; color: #fff; }
+  .quiz-head-sub { font-size: 0.75rem; color: rgba(255,255,255,0.8); margin-top: 1px; }
+  .quiz-body { padding: 20px; }
+  .quiz-q { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 9px; }
+  .quiz-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 15px; background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 9px; cursor: pointer; font-size: 0.84rem; color: var(--text);
+    transition: all .15s; font-family: 'Sora', sans-serif; text-align: left; width: 100%;
+  }
+  .quiz-opt:hover { border-color: var(--sql); background: var(--sql-light); }
+  .quiz-opt.correct { border-color: #1b9e50; background: #e8f5e9; color: #1b6120; }
+  .quiz-opt.wrong   { border-color: #ff5252; background: #ffebee; color: #b71c1c; }
+  .quiz-opt-letter {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--border); color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+  }
+  .quiz-opt.correct .quiz-opt-letter { background: var(--sql); color: #fff; }
+  .quiz-opt.wrong   .quiz-opt-letter { background: #ff5252; color: #fff; }
+  .quiz-feedback {
+    margin-top: 14px; padding: 12px 15px; border-radius: 9px;
+    font-size: 0.83rem; display: none; line-height: 1.55;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: #e8f5e9; color: #1b6120; border: 1px solid var(--sql); }
+  .quiz-feedback.ko { background: #ffebee; color: #b71c1c; border: 1px solid #ff5252; }
+
+  /* fill exercise */
+  .fill-ex {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 20px 22px;
+    margin-bottom: 24px; box-shadow: var(--shadow);
+  }
+  .fill-ex-title {
+    font-weight: 800; font-size: 0.92rem; color: var(--text);
+    margin-bottom: 14px; display: flex; align-items: center; gap: 9px;
+  }
+  .fe-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    background: var(--sql-light); border: 1px solid var(--border);
+    color: var(--sql-dark); padding: 3px 9px; border-radius: 99px;
+  }
+  .fill-blank {
+    display: inline-block; border-bottom: 2px solid var(--sql);
+    min-width: 100px; padding: 2px 6px;
+    font-family: 'Fira Code', monospace; font-size: 0.82rem;
+    color: var(--sql-dark); background: var(--sql-light);
+    border-radius: 4px 4px 0 0; outline: none; transition: background .15s;
+  }
+  .fill-blank:focus { background: #b7e8c0; }
+  .fill-check {
+    margin-top: 14px; padding: 7px 18px;
+    background: var(--sql); color: #fff; border: none;
+    border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; transition: background .15s;
+  }
+  .fill-check:hover { background: var(--sql-dark); }
+  .fill-result {
+    margin-top: 10px; font-size: 0.83rem;
+    padding: 9px 13px; border-radius: 8px; display: none;
+  }
+  .fill-result.show { display: block; }
+  .fill-result.ok { background: #e8f5e9; color: #1b6120; border: 1px solid var(--sql); }
+  .fill-result.ko { background: #ffebee; color: #b71c1c; border: 1px solid #ff5252; }
+
+  /* nav buttons */
+  .nav-buttons {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid var(--border); gap: 12px; flex-wrap: wrap;
+  }
+  .btn-prev, .btn-next {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 28px; font-size: 0.88rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; border-radius: 99px; cursor: pointer; border: none;
+    transition: all .2s; text-decoration: none;
+  }
+  .btn-prev {
+    background: var(--bg); color: var(--muted); border: 1.5px solid var(--border);
+  }
+  .btn-prev:hover { color: var(--text); border-color: var(--sql); background: var(--sql-light); }
+  .btn-next {
+    background: linear-gradient(135deg, #1b9e50, #1b6120); color: #fff;
+    box-shadow: 0 4px 18px rgba(27,158,80,0.3); margin-left: auto;
+  }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(27,158,80,0.4); }
+  .btn-next .arrow { transition: transform .2s; }
+  .btn-next:hover .arrow { transform: translateX(4px); }
+
+  /* two-col */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px;
+  }
+  @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
+
+  footer {
+    text-align: center; padding: 28px;
+    font-size: 0.78rem; color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    .chapter-title { font-size: 1.6rem; }
+    .prop-grid { grid-template-columns: 1fr; }
+    .db-tables { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <a href="JS_Rappel.html" class="back-link">← JavaScript</a>
+  <div class="header-inner">
+    <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+    <h1>Apprendre SQL</h1>
+    <p>Un guide pas à pas pour créer, gérer et interroger une base de données</p>
+  </div>
+</div>
+
+<!-- PROGRESS NAV -->
+<nav class="progress-nav">
+  <div class="progress-nav-inner">
+    <button class="pnav-item active" onclick="goTo(0)"><span class="pnav-num">1</span>C'est quoi SQL ?</button>
+    <button class="pnav-item" onclick="goTo(1)"><span class="pnav-num">2</span>Types &amp; Contraintes</button>
+    <button class="pnav-item" onclick="goTo(2)"><span class="pnav-num">3</span>Définir les données</button>
+    <button class="pnav-item" onclick="goTo(3)"><span class="pnav-num">4</span>SELECT</button>
+    <button class="pnav-item" onclick="goTo(4)"><span class="pnav-num">5</span>INSERT / UPDATE / DELETE</button>
+    <button class="pnav-item" onclick="goTo(5)"><span class="pnav-num">6</span>Fonctions &amp; Groupes</button>
+    <button class="pnav-item" onclick="goTo(6)"><span class="pnav-num">7</span>Jointures &amp; Relations</button>
+    <button class="pnav-item" onclick="goTo(7)"><span class="pnav-num">8</span>Pratique &amp; Exercices</button>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 1 — C'EST QUOI SQL ?          ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel active" id="panel-0">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 1 · Introduction</div>
+    <h1 class="chapter-title">C'est quoi SQL ?</h1>
+    <p class="chapter-desc">Avant de stocker des données dans une base, il faut comprendre ce qu'est SQL et comment les données sont organisées.</p>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-label">// Définition</div>
+    <p><strong>SQL</strong> signifie <strong>Structured Query Language</strong> (langage de requêtes structurées). C'est le langage standard pour <strong>créer, modifier et interroger</strong> une base de données relationnelle comme <strong>MySQL</strong> ou MariaDB.</p>
+  </div>
+
+  <div class="analogy">
+    <div class="a-label">💡 Analogie</div>
+    <p>Une <strong>base de données</strong> est comme un <strong>classeur Excel</strong>. Chaque <strong>table</strong> est une feuille. Chaque <strong>colonne</strong> est un champ (Nom, Âge, Note…). Chaque <strong>ligne</strong> est un enregistrement (les données d'un élève). SQL est le langage qui permet de lire, ajouter ou modifier ces données.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les 3 rôles de SQL</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name">DDL <span class="pc-type">Définition</span></div>
+      <div class="prop-card-desc"><strong>Data Definition Language</strong> — Crée et modifie la structure des tables.</div>
+      <div class="prop-card-values"><span class="val-chip">CREATE</span><span class="val-chip">ALTER</span><span class="val-chip">DROP</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name">DML <span class="pc-type">Manipulation</span></div>
+      <div class="prop-card-desc"><strong>Data Manipulation Language</strong> — Lit et modifie les données dans les tables.</div>
+      <div class="prop-card-values"><span class="val-chip">SELECT</span><span class="val-chip">INSERT</span><span class="val-chip">UPDATE</span><span class="val-chip">DELETE</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name">MySQL via XAMPP</div>
+      <div class="prop-card-desc">Dans le cours, on utilise <strong>MySQL</strong> (via XAMPP) et son interface <strong>phpMyAdmin</strong> pour gérer les bases de données.</div>
+      <div class="prop-card-values"><span class="val-chip">XAMPP</span><span class="val-chip">phpMyAdmin</span><span class="val-chip">MySQLi</span></div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Structure d'une base de données</div>
+  <div class="db-diagram">
+    <div class="db-diagram-label">Exemple — Base de données "ecole"</div>
+    <div class="db-tables">
+      <div class="db-table">
+        <div class="db-table-name">📋 eleve</div>
+        <div class="db-col"><span class="db-pk">PK</span><span class="db-col-name">id_eleve</span><span class="db-col-type">INT</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">nom</span><span class="db-col-type">VARCHAR(50)</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">prenom</span><span class="db-col-type">VARCHAR(50)</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">date_naissance</span><span class="db-col-type">DATE</span></div>
+        <div class="db-col"><span class="db-fk">FK</span><span class="db-col-name">id_classe</span><span class="db-col-type">INT</span></div>
+      </div>
+      <div class="db-arrow">→</div>
+      <div class="db-table">
+        <div class="db-table-name">📋 classe</div>
+        <div class="db-col"><span class="db-pk">PK</span><span class="db-col-name">id_classe</span><span class="db-col-type">INT</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">libelle</span><span class="db-col-type">VARCHAR(30)</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">niveau</span><span class="db-col-type">VARCHAR(20)</span></div>
+      </div>
+      <div class="db-arrow" style="opacity:0.3;font-size:0.8rem;writing-mode:vertical-lr;transform:none;padding:0">PK = Clé primaire<br>FK = Clé étrangère</div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz1">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Question rapide</div><div class="quiz-head-sub">Vérifie ta compréhension</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-q">Que signifie SQL ?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">A</span>Simple Query List</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,true)"><span class="quiz-opt-letter">B</span>Structured Query Language</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">C</span>Standard Query Logic</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">D</span>Server Query Language</button>
+      </div>
+      <div class="quiz-feedback" id="quiz1-fb"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons"><span></span><button class="btn-next" onclick="goTo(1)">Types &amp; Contraintes <span class="arrow">→</span></button></div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 2 — TYPES & CONTRAINTES       ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-1">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 2 · Définir les colonnes</div>
+    <h1 class="chapter-title">Types de données &amp; Contraintes</h1>
+    <p class="chapter-desc">Chaque colonne d'une table doit avoir un <strong>type</strong> précis. Les contraintes garantissent l'<strong>intégrité</strong> des données.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les types de données</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Type SQL</th><th>Catégorie</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>INT</td><td>Numérique</td><td>Entier (positif ou négatif)</td><td><code>age INT</code></td></tr>
+        <tr><td>DECIMAL</td><td>Numérique</td><td>Nombre réel avec décimales précises</td><td><code>prix DECIMAL(8,2)</code></td></tr>
+        <tr><td>CHAR(n)</td><td>Texte</td><td>Chaîne de caractères de <strong>longueur fixe</strong> n</td><td><code>code CHAR(5)</code></td></tr>
+        <tr><td>VARCHAR(n)</td><td>Texte</td><td>Chaîne de caractères de longueur <strong>variable</strong> (max n)</td><td><code>nom VARCHAR(100)</code></td></tr>
+        <tr><td>TEXT</td><td>Texte</td><td>Texte long de longueur variable sans limite fixe</td><td><code>description TEXT</code></td></tr>
+        <tr><td>DATE</td><td>Date/Heure</td><td>Date uniquement au format <code>YYYY-MM-DD</code></td><td><code>2025-06-15</code></td></tr>
+        <tr><td>TIME</td><td>Date/Heure</td><td>Heure au format <code>HH:MM:SS</code></td><td><code>14:30:00</code></td></tr>
+        <tr><td>DATETIME</td><td>Date/Heure</td><td>Date et heure combinées</td><td><code>2025-06-15 14:30:00</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les contraintes d'intégrité</div>
+  <div class="info-card">
+    Les contraintes s'ajoutent lors de la création d'une colonne pour <strong>garantir la qualité des données</strong> : empêcher les valeurs nulles, imposer l'unicité, définir des clés…
+  </div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>NOT NULL</code></div>
+      <div class="prop-card-desc">La colonne ne peut <strong>pas contenir</strong> de valeur nulle. Obligatoire pour les champs essentiels.</div>
+      <div class="prop-card-example">nom VARCHAR(50) NOT NULL</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>DEFAULT valeur</code></div>
+      <div class="prop-card-desc">Attribue une <strong>valeur par défaut</strong> si aucune valeur n'est fournie lors de l'insertion.</div>
+      <div class="prop-card-example">actif BOOLEAN DEFAULT true</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>CHECK (condition)</code></div>
+      <div class="prop-card-desc">Vérifie que les valeurs respectent une <strong>condition</strong> logique avant insertion.</div>
+      <div class="prop-card-example">note DECIMAL CHECK (note BETWEEN 0 AND 20)</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>UNIQUE</code></div>
+      <div class="prop-card-desc">Garantit que toutes les valeurs de la colonne sont <strong>différentes</strong> (pas de doublons).</div>
+      <div class="prop-card-example">email VARCHAR(100) UNIQUE</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>PRIMARY KEY</code> <span class="pc-type">PK</span></div>
+      <div class="prop-card-desc">Identifiant <strong>unique et non nul</strong> de chaque ligne. Chaque table doit en avoir une.</div>
+      <div class="prop-card-example">id INT PRIMARY KEY AUTO_INCREMENT</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>FOREIGN KEY</code> <span class="pc-type">FK</span></div>
+      <div class="prop-card-desc">Lien vers la clé primaire d'une <strong>autre table</strong>. Garantit la cohérence entre tables.</div>
+      <div class="prop-card-example">FOREIGN KEY (id_classe) REFERENCES classe(id_classe)</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>ON UPDATE CASCADE</code></div>
+      <div class="prop-card-desc">Met à jour automatiquement la clé étrangère si la clé primaire référencée est modifiée.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>ON DELETE CASCADE</code></div>
+      <div class="prop-card-desc">Supprime automatiquement les enregistrements de la table fille si l'enregistrement parent est supprimé.</div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz2">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Question rapide</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-q">Quelle contrainte garantit qu'une colonne ne peut pas contenir de valeur nulle ?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">A</span>UNIQUE</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">B</span>DEFAULT</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,true)"><span class="quiz-opt-letter">C</span>NOT NULL</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">D</span>CHECK</button>
+      </div>
+      <div class="quiz-feedback" id="quiz2-fb"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(0)">← C'est quoi SQL ?</button>
+    <button class="btn-next" onclick="goTo(2)">Définir les données <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 3 — DDL : CRÉER / MODIFIER   ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-2">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 3 · DDL — Définition des données</div>
+    <h1 class="chapter-title">Créer &amp; Modifier la structure</h1>
+    <p class="chapter-desc">Le DDL (Data Definition Language) permet de créer des bases, des tables et de modifier leur structure avec <code>CREATE</code>, <code>ALTER</code> et <code>DROP</code>.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>CREATE — Créer une base et une table</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">DDL_create.sql</div></div>
+    <pre><span class="cm">-- Créer une base de données</span>
+<span class="kw">CREATE DATABASE</span> <span class="tb">ecole</span>;
+
+<span class="cm">-- Créer une table avec types et contraintes</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">eleve</span> (
+  <span class="tb">id_eleve</span>  <span class="dt">INT</span>           <span class="kw">PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="tb">nom</span>       <span class="dt">VARCHAR</span>(<span class="num">50</span>)  <span class="kw">NOT NULL</span>,
+  <span class="tb">prenom</span>    <span class="dt">VARCHAR</span>(<span class="num">50</span>)  <span class="kw">NOT NULL</span>,
+  <span class="tb">email</span>     <span class="dt">VARCHAR</span>(<span class="num">100</span>) <span class="kw">UNIQUE</span>,
+  <span class="tb">note</span>      <span class="dt">DECIMAL</span>(<span class="num">4</span>,<span class="num">2</span>) <span class="kw">CHECK</span> (<span class="tb">note</span> <span class="kw">BETWEEN</span> <span class="num">0</span> <span class="kw">AND</span> <span class="num">20</span>),
+  <span class="tb">id_classe</span> <span class="dt">INT</span>,
+  <span class="kw">CONSTRAINT</span> <span class="tb">fk_classe</span>
+    <span class="kw">FOREIGN KEY</span> (<span class="tb">id_classe</span>) <span class="kw">REFERENCES</span> <span class="tb">classe</span>(<span class="tb">id_classe</span>)
+    <span class="kw">ON UPDATE CASCADE ON DELETE CASCADE</span>
+);</pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>ALTER — Modifier une table existante</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Commande</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>ALTER TABLE t ADD col type [contrainte]</td><td>Ajouter une nouvelle colonne</td></tr>
+        <tr><td>ALTER TABLE t DROP col</td><td>Supprimer une colonne</td></tr>
+        <tr><td>ALTER TABLE t ALTER* col type</td><td>Modifier le type d'une colonne (* ou MODIFY)</td></tr>
+        <tr><td>ALTER TABLE t RENAME** nom1 TO nom2</td><td>Renommer une colonne (** ou CHANGE)</td></tr>
+        <tr><td>ALTER TABLE t ADD CONSTRAINT nom c</td><td>Ajouter une contrainte sur une colonne</td></tr>
+        <tr><td>ALTER TABLE t DROP CONSTRAINT nom</td><td>Supprimer une contrainte</td></tr>
+        <tr><td>ALTER TABLE t ENABLE CONSTRAINT nom</td><td>Activer une contrainte</td></tr>
+        <tr><td>ALTER TABLE t DISABLE CONSTRAINT nom</td><td>Désactiver une contrainte</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>DROP — Supprimer</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">DDL_drop.sql</div></div>
+    <pre><span class="cm">-- Supprimer une table</span>
+<span class="kw">DROP TABLE</span> <span class="tb">eleve</span>;
+
+<span class="cm">-- Supprimer une base de données</span>
+<span class="kw">DROP DATABASE</span> <span class="tb">ecole</span>;
+
+<span class="cm">-- Exemple ALTER TABLE complet</span>
+<span class="kw">ALTER TABLE</span> <span class="tb">eleve</span>
+  <span class="kw">ADD</span> <span class="tb">telephone</span> <span class="dt">VARCHAR</span>(<span class="num">15</span>);
+
+<span class="kw">ALTER TABLE</span> <span class="tb">eleve</span>
+  <span class="kw">DROP</span> <span class="tb">telephone</span>;</pre>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(1)">← Types &amp; Contraintes</button>
+    <button class="btn-next" onclick="goTo(3)">SELECT <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 4 — SELECT                   ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-3">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 4 · Lire les données</div>
+    <h1 class="chapter-title">La requête SELECT</h1>
+    <p class="chapter-desc">SELECT est la commande la plus importante — elle permet de <strong>lire et filtrer les données</strong> d'une ou plusieurs tables.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Structure complète d'un SELECT</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">SELECT_structure.sql</div></div>
+    <pre><span class="kw">SELECT</span> [<span class="kw">DISTINCT</span>] <span class="tb">expression</span> [, <span class="tb">col</span>, ... <span class="kw">ou</span> <span class="op">*</span>] [[<span class="kw">AS</span>] <span class="tb">alias</span>]
+<span class="kw">FROM</span>    <span class="tb">table1</span> [[<span class="kw">AS</span>] <span class="tb">alias</span>] [, <span class="tb">table2</span>, ...]
+[<span class="kw">WHERE</span>   <span class="tb">condition</span>]
+[<span class="kw">GROUP BY</span> <span class="tb">critère</span>]
+[<span class="kw">HAVING</span>  <span class="tb">condition</span>]
+[<span class="kw">ORDER BY</span> <span class="tb">expression</span> [<span class="kw">ASC</span>/<span class="kw">DESC</span>]]</pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les opérateurs de la clause WHERE</div>
+  <div class="two-col">
+    <div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Opérateur</th><th>Signification</th></tr></thead>
+          <tbody>
+            <tr><td>=</td><td>Égale à</td></tr>
+            <tr><td>&lt;&gt;</td><td>Différent de</td></tr>
+            <tr><td>&gt;</td><td>Supérieur à</td></tr>
+            <tr><td>&gt;=</td><td>Supérieur ou égal à</td></tr>
+            <tr><td>&lt;</td><td>Inférieur à</td></tr>
+            <tr><td>&lt;=</td><td>Inférieur ou égal à</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Opérateur</th><th>Signification</th></tr></thead>
+          <tbody>
+            <tr><td>IN</td><td>Valeur dans une liste : <code>IN (1, 2, 3)</code></td></tr>
+            <tr><td>BETWEEN</td><td>Entre deux valeurs : <code>BETWEEN 10 AND 20</code></td></tr>
+            <tr><td>LIKE</td><td>Recherche de motif : <code>LIKE 'A%'</code></td></tr>
+            <tr><td>IS NULL</td><td>Valeur nulle</td></tr>
+            <tr><td>AND</td><td>ET logique</td></tr>
+            <tr><td>OR</td><td>OU logique</td></tr>
+            <tr><td>NOT</td><td>NON logique</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Exemples SELECT progressifs</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">SELECT_exemples.sql</div></div>
+    <pre><span class="cm">-- Toutes les colonnes de tous les élèves</span>
+<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="tb">eleve</span>;
+
+<span class="cm">-- Seulement le nom et la note</span>
+<span class="kw">SELECT</span> <span class="tb">nom</span>, <span class="tb">note</span> <span class="kw">FROM</span> <span class="tb">eleve</span>;
+
+<span class="cm">-- Élèves avec note >= 12, triés par note décroissante</span>
+<span class="kw">SELECT</span> <span class="tb">nom</span>, <span class="tb">prenom</span>, <span class="tb">note</span>
+<span class="kw">FROM</span>   <span class="tb">eleve</span>
+<span class="kw">WHERE</span>  <span class="tb">note</span> <span class="op">&gt;=</span> <span class="num">12</span>
+<span class="kw">ORDER BY</span> <span class="tb">note</span> <span class="kw">DESC</span>;
+
+<span class="cm">-- Élèves dont le nom commence par 'A'</span>
+<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="tb">eleve</span>
+<span class="kw">WHERE</span>  <span class="tb">nom</span> <span class="kw">LIKE</span> <span class="str">'A%'</span>;
+
+<span class="cm">-- Élèves de la classe 1 OU 2</span>
+<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="tb">eleve</span>
+<span class="kw">WHERE</span>  <span class="tb">id_classe</span> <span class="kw">IN</span> (<span class="num">1</span>, <span class="num">2</span>);
+
+<span class="cm">-- Sans doublons (DISTINCT)</span>
+<span class="kw">SELECT DISTINCT</span> <span class="tb">id_classe</span> <span class="kw">FROM</span> <span class="tb">eleve</span>;
+
+<span class="cm">-- Alias de colonne</span>
+<span class="kw">SELECT</span> <span class="tb">nom</span> <span class="kw">AS</span> <span class="str">"Nom de l'élève"</span>, <span class="tb">note</span> <span class="kw">AS</span> <span class="str">"Note /20"</span>
+<span class="kw">FROM</span> <span class="tb">eleve</span>;</pre>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Simulateur SELECT — visualise le résultat</div><div class="lab-badge">Interactif</div></div>
+    <div class="sql-sim">
+      <div class="sql-editor-label">Choisis une requête à visualiser</div>
+      <div style="padding:14px;background:#f4fbf6;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="run-btn" onclick="showSQLResult(0)">SELECT *</button>
+        <button class="run-btn" onclick="showSQLResult(1)">WHERE note &gt;= 12</button>
+        <button class="run-btn" onclick="showSQLResult(2)">ORDER BY note DESC</button>
+        <button class="run-btn" onclick="showSQLResult(3)">LIKE 'A%'</button>
+      </div>
+      <div class="sql-result-label">Résultat de la requête</div>
+      <div class="sql-result-table" id="sql-select-result">
+        <table><thead><tr><th>id_eleve</th><th>nom</th><th>prenom</th><th>note</th><th>id_classe</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Ben Ali</td><td>Youssef</td><td>15.50</td><td>1</td></tr>
+          <tr><td>2</td><td>Amri</td><td>Sara</td><td>18.00</td><td>1</td></tr>
+          <tr><td>3</td><td>Cherif</td><td>Mohamed</td><td>10.00</td><td>2</td></tr>
+          <tr><td>4</td><td>Dali</td><td>Amina</td><td>12.50</td><td>2</td></tr>
+          <tr><td>5</td><td>Amari</td><td>Khaled</td><td>9.00</td><td>1</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(2)">← Définir les données</button>
+    <button class="btn-next" onclick="goTo(4)">INSERT / UPDATE / DELETE <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 5 — INSERT / UPDATE / DELETE ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-4">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 5 · Modifier les données</div>
+    <h1 class="chapter-title">INSERT · UPDATE · DELETE</h1>
+    <p class="chapter-desc">Ces trois commandes DML permettent d'<strong>ajouter</strong>, <strong>modifier</strong> et <strong>supprimer</strong> des données dans les tables.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>INSERT — Insérer des données</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">INSERT.sql</div></div>
+    <pre><span class="cm">-- Syntaxe : INSERT INTO table [(colonnes)] VALUES (valeurs)</span>
+
+<span class="cm">-- Insertion avec toutes les colonnes</span>
+<span class="kw">INSERT INTO</span> <span class="tb">eleve</span> (<span class="tb">nom</span>, <span class="tb">prenom</span>, <span class="tb">note</span>, <span class="tb">id_classe</span>)
+<span class="kw">VALUES</span> (<span class="str">'Ben Salah'</span>, <span class="str">'Rim'</span>, <span class="num">16.5</span>, <span class="num">1</span>);
+
+<span class="cm">-- Insertion de plusieurs lignes en une seule requête</span>
+<span class="kw">INSERT INTO</span> <span class="tb">eleve</span> (<span class="tb">nom</span>, <span class="tb">prenom</span>, <span class="tb">note</span>, <span class="tb">id_classe</span>)
+<span class="kw">VALUES</span>
+  (<span class="str">'Hamdi'</span>,   <span class="str">'Ali'</span>,   <span class="num">14.0</span>, <span class="num">2</span>),
+  (<span class="str">'Mansour'</span>, <span class="str">'Nour'</span>,  <span class="num">17.5</span>, <span class="num">1</span>),
+  (<span class="str">'Zaied'</span>,   <span class="str">'Taha'</span>,  <span class="num">11.0</span>, <span class="num">2</span>);</pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>UPDATE — Modifier des données</div>
+  <div class="info-card">
+    ⚠️ <strong>Attention :</strong> Sans clause <code>WHERE</code>, UPDATE modifie <strong>toutes les lignes</strong> de la table. Toujours préciser la condition !
+  </div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">UPDATE.sql</div></div>
+    <pre><span class="cm">-- Syntaxe : UPDATE table SET colonne = valeur [WHERE condition]</span>
+
+<span class="cm">-- Modifier la note de l'élève avec id_eleve = 3</span>
+<span class="kw">UPDATE</span> <span class="tb">eleve</span>
+<span class="kw">SET</span>    <span class="tb">note</span> <span class="op">=</span> <span class="num">13.5</span>
+<span class="kw">WHERE</span>  <span class="tb">id_eleve</span> <span class="op">=</span> <span class="num">3</span>;
+
+<span class="cm">-- Augmenter de 1 point toutes les notes < 10</span>
+<span class="kw">UPDATE</span> <span class="tb">eleve</span>
+<span class="kw">SET</span>    <span class="tb">note</span> <span class="op">=</span> <span class="tb">note</span> <span class="op">+</span> <span class="num">1</span>
+<span class="kw">WHERE</span>  <span class="tb">note</span> <span class="op">&lt;</span> <span class="num">10</span>;
+
+<span class="cm">-- Modifier plusieurs colonnes en même temps</span>
+<span class="kw">UPDATE</span> <span class="tb">eleve</span>
+<span class="kw">SET</span>    <span class="tb">nom</span> <span class="op">=</span> <span class="str">'Trabelsi'</span>, <span class="tb">id_classe</span> <span class="op">=</span> <span class="num">2</span>
+<span class="kw">WHERE</span>  <span class="tb">id_eleve</span> <span class="op">=</span> <span class="num">5</span>;</pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>DELETE — Supprimer des données</div>
+  <div class="info-card">
+    ⚠️ <strong>Attention :</strong> Sans <code>WHERE</code>, DELETE supprime <strong>tous les enregistrements</strong> de la table (la structure reste). Utilise toujours une condition précise !
+  </div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">DELETE.sql</div></div>
+    <pre><span class="cm">-- Syntaxe : DELETE FROM table [WHERE condition]</span>
+
+<span class="cm">-- Supprimer l'élève avec id_eleve = 5</span>
+<span class="kw">DELETE FROM</span> <span class="tb">eleve</span>
+<span class="kw">WHERE</span>  <span class="tb">id_eleve</span> <span class="op">=</span> <span class="num">5</span>;
+
+<span class="cm">-- Supprimer tous les élèves avec note < 5</span>
+<span class="kw">DELETE FROM</span> <span class="tb">eleve</span>
+<span class="kw">WHERE</span>  <span class="tb">note</span> <span class="op">&lt;</span> <span class="num">5</span>;</pre>
+  </div>
+
+  <div class="quiz-box" id="quiz3">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Question rapide</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-q">Que se passe-t-il si on exécute <code>DELETE FROM eleve;</code> sans clause WHERE ?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">A</span>Rien — SQL demande une confirmation avant</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">B</span>Seul le premier enregistrement est supprimé</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,true)"><span class="quiz-opt-letter">C</span>Tous les enregistrements de la table sont supprimés</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">D</span>La table elle-même est supprimée</button>
+      </div>
+      <div class="quiz-feedback" id="quiz3-fb"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(3)">← SELECT</button>
+    <button class="btn-next" onclick="goTo(5)">Fonctions &amp; Groupes <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 6 — FONCTIONS & GROUP BY     ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-5">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 6 · Agrégation</div>
+    <h1 class="chapter-title">Fonctions d'agrégation &amp; GROUP BY</h1>
+    <p class="chapter-desc">Les fonctions d'agrégation effectuent des <strong>calculs sur des groupes de lignes</strong> et retournent une valeur résumée.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les fonctions d'agrégation</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>COUNT(*)</code></div>
+      <div class="prop-card-desc">Retourne le <strong>nombre total</strong> d'enregistrements (lignes).</div>
+      <div class="prop-card-example">SELECT COUNT(*) FROM eleve;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>AVG(col)</code></div>
+      <div class="prop-card-desc">Retourne la <strong>moyenne</strong> des valeurs de la colonne.</div>
+      <div class="prop-card-example">SELECT AVG(note) FROM eleve;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>MAX(col)</code></div>
+      <div class="prop-card-desc">Retourne la valeur <strong>maximale</strong> de la colonne.</div>
+      <div class="prop-card-example">SELECT MAX(note) FROM eleve;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>MIN(col)</code></div>
+      <div class="prop-card-desc">Retourne la valeur <strong>minimale</strong> de la colonne.</div>
+      <div class="prop-card-example">SELECT MIN(note) FROM eleve;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>SUM(col)</code></div>
+      <div class="prop-card-desc">Retourne la <strong>somme</strong> de toutes les valeurs de la colonne.</div>
+      <div class="prop-card-example">SELECT SUM(note) FROM eleve;</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>GROUP BY et HAVING</div>
+  <div class="info-card">
+    <strong>GROUP BY</strong> regroupe les lignes ayant la même valeur dans une colonne. <strong>HAVING</strong> filtre les groupes (comme WHERE, mais pour les groupes).
+  </div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">GROUP_BY.sql</div></div>
+    <pre><span class="cm">-- Nombre d'élèves par classe</span>
+<span class="kw">SELECT</span>   <span class="tb">id_classe</span>, <span class="fn">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="str">"Nb élèves"</span>
+<span class="kw">FROM</span>     <span class="tb">eleve</span>
+<span class="kw">GROUP BY</span> <span class="tb">id_classe</span>;
+
+<span class="cm">-- Moyenne des notes par classe</span>
+<span class="kw">SELECT</span>   <span class="tb">id_classe</span>, <span class="fn">AVG</span>(<span class="tb">note</span>) <span class="kw">AS</span> <span class="str">"Moyenne"</span>
+<span class="kw">FROM</span>     <span class="tb">eleve</span>
+<span class="kw">GROUP BY</span> <span class="tb">id_classe</span>;
+
+<span class="cm">-- Classes dont la moyenne >= 12 (HAVING filtre les groupes)</span>
+<span class="kw">SELECT</span>   <span class="tb">id_classe</span>, <span class="fn">AVG</span>(<span class="tb">note</span>) <span class="kw">AS</span> <span class="str">"Moyenne"</span>
+<span class="kw">FROM</span>     <span class="tb">eleve</span>
+<span class="kw">GROUP BY</span> <span class="tb">id_classe</span>
+<span class="kw">HAVING</span>   <span class="fn">AVG</span>(<span class="tb">note</span>) <span class="op">&gt;=</span> <span class="num">12</span>;</pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Fonctions sur les dates</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fonction</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>NOW()</td><td>Retourne la date et l'heure courantes</td><td><code>SELECT NOW();</code></td></tr>
+        <tr><td>DATE(expr)</td><td>Extrait la date d'un DATETIME</td><td><code>DATE(date_inscription)</code></td></tr>
+        <tr><td>DAY(date)</td><td>Retourne le jour (1-31)</td><td><code>DAY('2025-06-15') → 15</code></td></tr>
+        <tr><td>MONTH(date)</td><td>Retourne le mois (1-12)</td><td><code>MONTH('2025-06-15') → 6</code></td></tr>
+        <tr><td>YEAR(date)</td><td>Retourne l'année</td><td><code>YEAR('2025-06-15') → 2025</code></td></tr>
+        <tr><td>ADDDATE(date, n)</td><td>Ajoute n jours à une date</td><td><code>ADDDATE('2025-06-01', 14)</code></td></tr>
+        <tr><td>DATEDIFF(d1, d2)</td><td>Différence en jours entre deux dates</td><td><code>DATEDIFF('2025-06-15', '2025-01-01')</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(4)">← INSERT / UPDATE / DELETE</button>
+    <button class="btn-next" onclick="goTo(6)">Jointures &amp; Relations <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 7 — JOINTURES                ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-6">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 7 · Relations entre tables</div>
+    <h1 class="chapter-title">Jointures &amp; Relations</h1>
+    <p class="chapter-desc">Les jointures permettent de <strong>combiner des données de plusieurs tables</strong> en une seule requête, grâce aux clés primaires et étrangères.</p>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-label">// Pourquoi des jointures ?</div>
+    <p>Dans une base relationnelle, les données sont réparties dans plusieurs tables pour éviter la redondance. Les jointures permettent de les <strong>relier</strong> au moment de la requête. On joint deux tables sur la colonne commune (souvent PK = FK).</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>La jointure (requête multi-tables)</div>
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">jointures.sql</div></div>
+    <pre><span class="cm">-- Jointure simple : afficher nom de l'élève ET libellé de sa classe</span>
+<span class="kw">SELECT</span>   <span class="tb">e</span>.<span class="tb">nom</span>, <span class="tb">e</span>.<span class="tb">prenom</span>, <span class="tb">e</span>.<span class="tb">note</span>, <span class="tb">c</span>.<span class="tb">libelle</span>
+<span class="kw">FROM</span>     <span class="tb">eleve</span> <span class="kw">AS</span> <span class="tb">e</span>, <span class="tb">classe</span> <span class="kw">AS</span> <span class="tb">c</span>
+<span class="kw">WHERE</span>    <span class="tb">e</span>.<span class="tb">id_classe</span> <span class="op">=</span> <span class="tb">c</span>.<span class="tb">id_classe</span>;
+
+<span class="cm">-- Avec filtre : élèves de la classe "Bac STI" avec note >= 12</span>
+<span class="kw">SELECT</span>   <span class="tb">e</span>.<span class="tb">nom</span>, <span class="tb">e</span>.<span class="tb">prenom</span>, <span class="tb">e</span>.<span class="tb">note</span>
+<span class="kw">FROM</span>     <span class="tb">eleve</span> <span class="kw">AS</span> <span class="tb">e</span>, <span class="tb">classe</span> <span class="kw">AS</span> <span class="tb">c</span>
+<span class="kw">WHERE</span>    <span class="tb">e</span>.<span class="tb">id_classe</span> <span class="op">=</span> <span class="tb">c</span>.<span class="tb">id_classe</span>
+<span class="kw">AND</span>      <span class="tb">c</span>.<span class="tb">libelle</span> <span class="op">=</span> <span class="str">'Bac STI'</span>
+<span class="kw">AND</span>      <span class="tb">e</span>.<span class="tb">note</span> <span class="op">&gt;=</span> <span class="num">12</span>
+<span class="kw">ORDER BY</span> <span class="tb">e</span>.<span class="tb">note</span> <span class="kw">DESC</span>;
+
+<span class="cm">-- Nombre d'élèves par classe (jointure + agrégation)</span>
+<span class="kw">SELECT</span>   <span class="tb">c</span>.<span class="tb">libelle</span>, <span class="fn">COUNT</span>(<span class="tb">e</span>.<span class="tb">id_eleve</span>) <span class="kw">AS</span> <span class="str">"Effectif"</span>
+<span class="kw">FROM</span>     <span class="tb">eleve</span> <span class="kw">AS</span> <span class="tb">e</span>, <span class="tb">classe</span> <span class="kw">AS</span> <span class="tb">c</span>
+<span class="kw">WHERE</span>    <span class="tb">e</span>.<span class="tb">id_classe</span> <span class="op">=</span> <span class="tb">c</span>.<span class="tb">id_classe</span>
+<span class="kw">GROUP BY</span> <span class="tb">c</span>.<span class="tb">libelle</span>;</pre>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Résumé visuel — Schéma de jointure</div>
+  <div class="db-diagram">
+    <div class="db-diagram-label">Jointure eleve ↔ classe sur id_classe</div>
+    <div class="db-tables">
+      <div class="db-table">
+        <div class="db-table-name">📋 eleve</div>
+        <div class="db-col"><span class="db-pk">PK</span><span class="db-col-name">id_eleve</span><span class="db-col-type">INT</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">nom</span><span class="db-col-type">VARCHAR</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">note</span><span class="db-col-type">DECIMAL</span></div>
+        <div class="db-col" style="background:var(--sql-light);border-left:3px solid var(--sql)"><span class="db-fk">FK</span><span class="db-col-name" style="color:var(--sql)">id_classe</span><span class="db-col-type">INT</span></div>
+      </div>
+      <div class="db-arrow" style="font-size:1.8rem;color:var(--sql);font-weight:800">⇆</div>
+      <div class="db-table">
+        <div class="db-table-name">📋 classe</div>
+        <div class="db-col" style="background:var(--sql-light);border-left:3px solid var(--sql)"><span class="db-pk">PK</span><span class="db-col-name" style="color:var(--sql)">id_classe</span><span class="db-col-type">INT</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">libelle</span><span class="db-col-type">VARCHAR</span></div>
+        <div class="db-col"><span style="width:28px"></span><span class="db-col-name">niveau</span><span class="db-col-type">VARCHAR</span></div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--muted)">
+      Condition de jointure : <code>e.id_classe = c.id_classe</code>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(5)">← Fonctions &amp; Groupes</button>
+    <button class="btn-next" onclick="goTo(7)">Pratique &amp; Exercices <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════╗
+     ║  PANEL 8 — PRATIQUE & EXERCICES       ║
+     ╚════════════════════════════════════════╝ -->
+<div class="panel" id="panel-7">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 8 · Mise en pratique</div>
+    <h1 class="chapter-title">Pratique &amp; Exercices</h1>
+    <p class="chapter-desc">Consolide tout ce que tu as appris avec ces exercices interactifs.</p>
+  </div>
+
+  <!-- Ex 1 — fill in -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice 1 — Complète la requête</div>
+  <div class="fill-ex" id="ex1">
+    <div class="fill-ex-title">Complète la requête SELECT <span class="fe-badge">Exercice</span></div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.83rem;line-height:2.4;background:var(--code-bg);padding:18px;border-radius:10px;border:1px solid var(--border);">
+      <span style="color:#79c0ff">SELECT</span> <span style="color:#d2a8ff">nom</span>, <span style="color:#d2a8ff">prenom</span>, <span style="color:#d2a8ff">note</span><br>
+      <span style="color:#79c0ff">FROM</span> <span style="color:#d2a8ff">eleve</span><br>
+      <span style="color:#79c0ff"><input class="fill-blank" id="ex1-1" style="width:80px" placeholder="???"></span> note <span style="color:#ffb3de"><input class="fill-blank" id="ex1-2" style="width:40px" placeholder="?"></span> <span style="color:#ffd580">12</span><br>
+      <span style="color:#79c0ff"><input class="fill-blank" id="ex1-3" style="width:100px" placeholder="???"></span> note <span style="color:#79c0ff">DESC</span>;
+    </div>
+    <button class="fill-check" onclick="checkEx1()">Vérifier</button>
+    <div class="fill-result" id="ex1-result"></div>
+  </div>
+
+  <!-- Quizzes -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice 2 — Questions de compréhension</div>
+
+  <div class="quiz-box" id="quiz4">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quelle commande permet d'ajouter une nouvelle ligne dans une table ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">A</span>ADD INTO</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,true)"><span class="quiz-opt-letter">B</span>INSERT INTO ... VALUES ...</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">C</span>UPDATE ... SET ...</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">D</span>CREATE ROW ...</button>
+      </div>
+      <div class="quiz-feedback" id="quiz4-fb"></div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz5">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quelle fonction SQL retourne le nombre d'enregistrements ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">A</span>SUM(*)</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">B</span>AVG(*)</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,true)"><span class="quiz-opt-letter">C</span>COUNT(*)</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">D</span>MAX(*)</button>
+      </div>
+      <div class="quiz-feedback" id="quiz5-fb"></div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz6">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quelle clause filtre les résultats APRÈS un GROUP BY ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz6',this,false)"><span class="quiz-opt-letter">A</span>WHERE</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz6',this,false)"><span class="quiz-opt-letter">B</span>ORDER BY</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz6',this,true)"><span class="quiz-opt-letter">C</span>HAVING</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz6',this,false)"><span class="quiz-opt-letter">D</span>FILTER</button>
+      </div>
+      <div class="quiz-feedback" id="quiz6-fb"></div>
+    </div>
+  </div>
+
+  <!-- Exercice final -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice final — Construis une base complète</div>
+  <div class="info-card">
+    Écris les requêtes SQL pour créer une table <code>produit</code>, insérer des données, puis les lire avec un filtre. Clique <strong>Vérifier</strong> pour voir la correction.
+  </div>
+
+  <div class="fill-ex" id="ex2">
+    <div class="fill-ex-title">Requêtes à compléter <span class="fe-badge">Exercice final</span></div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.81rem;line-height:2.2;background:var(--code-bg);padding:18px;border-radius:10px;border:1px solid var(--border);">
+      <span style="color:#5a5020;font-style:italic">-- 1. Créer la table produit</span><br>
+      <span style="color:#79c0ff"><input class="fill-blank" id="ex2-1" style="width:130px" placeholder="???"> TABLE</span> <span style="color:#d2a8ff">produit</span> (<br>
+      &nbsp;&nbsp;<span style="color:#d2a8ff">id_produit</span> <span style="color:#79c0ff">INT PRIMARY KEY AUTO_INCREMENT</span>,<br>
+      &nbsp;&nbsp;<span style="color:#d2a8ff">designation</span> <span style="color:#79c0ff">VARCHAR</span>(<span style="color:#ffd580">100</span>) <span style="color:#79c0ff">NOT NULL</span>,<br>
+      &nbsp;&nbsp;<span style="color:#d2a8ff">prix</span> <span style="color:#79c0ff">DECIMAL</span>(<span style="color:#ffd580">8,2</span>)<br>
+      );<br><br>
+      <span style="color:#5a5020;font-style:italic">-- 2. Insérer un produit</span><br>
+      <span style="color:#79c0ff"><input class="fill-blank" id="ex2-2" style="width:110px" placeholder="???"> INTO</span> <span style="color:#d2a8ff">produit</span> (<span style="color:#d2a8ff">designation</span>, <span style="color:#d2a8ff">prix</span>)<br>
+      <span style="color:#79c0ff">VALUES</span> (<span style="color:#a8ff78">'Ordinateur'</span>, <span style="color:#ffd580">1200.00</span>);<br><br>
+      <span style="color:#5a5020;font-style:italic">-- 3. Lire les produits dont le prix > 500</span><br>
+      <span style="color:#79c0ff"><input class="fill-blank" id="ex2-3" style="width:80px" placeholder="???"></span> * <span style="color:#79c0ff">FROM</span> <span style="color:#d2a8ff">produit</span><br>
+      <span style="color:#79c0ff">WHERE</span> <span style="color:#d2a8ff">prix</span> <span style="color:#ffb3de">&gt;</span> <span style="color:#ffd580">500</span>;
+    </div>
+    <button class="fill-check" onclick="checkEx2()">Vérifier</button>
+    <div class="fill-result" id="ex2-result"></div>
+  </div>
+
+  <!-- Bilan -->
+  <div class="sub-heading"><span class="sh-bar"></span>Récapitulatif — Ce que tu as appris</div>
+  <div class="concept-box">
+    <div class="cb-label">✅ Bilan SQL</div>
+    <p>
+      Tu maîtrises maintenant les bases de SQL : les <strong>types de données</strong> (INT, VARCHAR, DATE…), les <strong>contraintes</strong> (NOT NULL, PRIMARY KEY, FOREIGN KEY…), les commandes <strong>DDL</strong> (CREATE TABLE, ALTER, DROP), les requêtes <strong>SELECT</strong> avec WHERE, ORDER BY et DISTINCT, les commandes <strong>DML</strong> (INSERT, UPDATE, DELETE), les <strong>fonctions d'agrégation</strong> (COUNT, AVG, MAX…) avec GROUP BY et HAVING, les <strong>fonctions de date</strong> et les <strong>jointures</strong> entre tables. Tu es prêt pour découvrir <strong>PHP</strong> et la connexion à MySQL.
+    </p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(6)">← Jointures &amp; Relations</button>
+    <a href="PHP_Rappel.html" class="btn-next" style="opacity:0.5;">Next - PHP<span class="arrow">→</span></a>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<footer>
+  SQL — Apprendre · Annexe 2024-2025 &nbsp;·&nbsp; Bac Sciences de l'informatique &nbsp;·&nbsp; Yousri Ben Hariz
+</footer>
+
+<script>
+  const PANELS = 8;
+  const DATA = [
+    [{id:1,nom:'Ben Ali',prenom:'Youssef',note:15.5,id_classe:1},{id:2,nom:'Amri',prenom:'Sara',note:18,id_classe:1},{id:3,nom:'Cherif',prenom:'Mohamed',note:10,id_classe:2},{id:4,nom:'Dali',prenom:'Amina',note:12.5,id_classe:2},{id:5,nom:'Amari',prenom:'Khaled',note:9,id_classe:1}],
+    [{id:1,nom:'Ben Ali',prenom:'Youssef',note:15.5,id_classe:1},{id:2,nom:'Amri',prenom:'Sara',note:18,id_classe:1},{id:4,nom:'Dali',prenom:'Amina',note:12.5,id_classe:2}],
+    [{id:2,nom:'Amri',prenom:'Sara',note:18,id_classe:1},{id:1,nom:'Ben Ali',prenom:'Youssef',note:15.5,id_classe:1},{id:4,nom:'Dali',prenom:'Amina',note:12.5,id_classe:2},{id:3,nom:'Cherif',prenom:'Mohamed',note:10,id_classe:2},{id:5,nom:'Amari',prenom:'Khaled',note:9,id_classe:1}],
+    [{id:2,nom:'Amri',prenom:'Sara',note:18,id_classe:1},{id:5,nom:'Amari',prenom:'Khaled',note:9,id_classe:1}]
+  ];
+  const QUERIES = [
+    'SELECT * FROM eleve;',
+    'SELECT nom, prenom, note FROM eleve WHERE note &gt;= 12;',
+    'SELECT * FROM eleve ORDER BY note DESC;',
+    "SELECT * FROM eleve WHERE nom LIKE 'A%';"
+  ];
+
+  function goTo(n) {
+    for (let i = 0; i < PANELS; i++) {
+      document.getElementById('panel-' + i).classList.remove('active');
+      document.querySelectorAll('.pnav-item')[i].classList.remove('active');
+    }
+    document.getElementById('panel-' + n).classList.add('active');
+    document.querySelectorAll('.pnav-item')[n].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showSQLResult(idx) {
+    const rows = DATA[idx];
+    let html = '<table><thead><tr><th>id_eleve</th><th>nom</th><th>prenom</th><th>note</th><th>id_classe</th></tr></thead><tbody>';
+    rows.forEach(r => {
+      html += `<tr><td>${r.id}</td><td>${r.nom}</td><td>${r.prenom}</td><td>${r.note.toFixed(2)}</td><td>${r.id_classe}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    const label = document.querySelector('.sql-result-label');
+    label.textContent = 'Requête : ' + QUERIES[idx].replace(/&gt;/g, '>');
+    document.getElementById('sql-select-result').innerHTML = html;
+  }
+
+  function checkQuiz(quizId, btn, correct) {
+    const box = document.getElementById(quizId);
+    if (box.dataset.answered) return;
+    box.dataset.answered = 'yes';
+    const opts = box.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const fb = document.getElementById(quizId + '-fb');
+    if (correct) {
+      btn.classList.add('correct');
+      fb.textContent = '✅ Correct ! Bonne réponse.';
+      fb.className = 'quiz-feedback show ok';
+    } else {
+      btn.classList.add('wrong');
+      opts.forEach(o => { if (o.getAttribute('onclick').includes('true')) o.classList.add('correct'); });
+      fb.textContent = '❌ Pas tout à fait. Regarde la bonne réponse en vert.';
+      fb.className = 'quiz-feedback show ko';
+    }
+  }
+
+  function checkEx1() {
+    const a1 = document.getElementById('ex1-1').value.trim().toUpperCase();
+    const a2 = document.getElementById('ex1-2').value.trim();
+    const a3 = document.getElementById('ex1-3').value.trim().toUpperCase();
+    const ok = a1 === 'WHERE' && a2 === '>=' && a3 === 'ORDER BY';
+    const result = document.getElementById('ex1-result');
+    if (ok) {
+      result.textContent = '✅ Parfait ! WHERE · >= · ORDER BY — tout est correct.';
+      result.className = 'fill-result show ok';
+    } else {
+      result.textContent = '❌ Rappel : WHERE note >= 12 … ORDER BY note DESC. Vérifie l\'orthographe.';
+      result.className = 'fill-result show ko';
+    }
+  }
+
+  function checkEx2() {
+    const a1 = document.getElementById('ex2-1').value.trim().toUpperCase();
+    const a2 = document.getElementById('ex2-2').value.trim().toUpperCase();
+    const a3 = document.getElementById('ex2-3').value.trim().toUpperCase();
+    const ok = a1 === 'CREATE' && a2 === 'INSERT' && a3 === 'SELECT';
+    const result = document.getElementById('ex2-result');
+    if (ok) {
+      result.textContent = '✅ Parfait ! CREATE TABLE · INSERT INTO · SELECT — tout est correct.';
+      result.className = 'fill-result show ok';
+    } else {
+      result.textContent = '❌ Rappel : CREATE TABLE … / INSERT INTO … / SELECT * FROM …';
+      result.className = 'fill-result show ko';
+    }
+  }
+</script>
+</body>
+</html>

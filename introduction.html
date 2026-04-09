@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Introduction — Architecture Web</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00c896;
+    --green-dark: #00a87e;
+    --green-light: #e0fff6;
+    --green-glow: rgba(0,200,150,0.12);
+    --bg: #f0faf7;
+    --card: #ffffff;
+    --text: #1a2e28;
+    --muted: #5a7a72;
+    --border: #c8efe3;
+    --code-bg: #e6faf3;
+    --shadow: 0 2px 16px rgba(0,200,150,0.10);
+    --radius: 14px;
+
+    --html-c: #c84000; --html-bg: #fff3e0; --html-bd: #ffb74d;
+    --css-c:  #1255a0; --css-bg:  #e3f2fd; --css-bd:  #64b5f6;
+    --js-c:   #a07000; --js-bg:   #fffde8; --js-bd:   #ffd54f;
+    --php-c:  #5b1080; --php-bg:  #f3e5f5; --php-bd:  #ba68c8;
+    --sql-c:  #1b6120; --sql-bg:  #e8f5e9; --sql-bd:  #81c784;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #00c896 0%, #00e5b0 60%, #00b8d9 100%);
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 24px);
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.22);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 99px;
+    padding: 5px 18px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-family: 'Fira Code', monospace;
+  }
+  .header h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    text-shadow: 0 3px 14px rgba(0,0,0,.12);
+    line-height: 1.1;
+  }
+  .header p {
+    margin-top: 10px;
+    color: rgba(255,255,255,0.88);
+    font-size: 1rem;
+  }
+
+  /* ─── NAV ─── */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 20px 24px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .toc a {
+    text-decoration: none;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    transition: all .18s;
+    font-family: 'Sora', sans-serif;
+  }
+  .toc a:hover {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  /* ─── PAGE ─── */
+  .page { max-width: 1060px; margin: 0 auto; padding: 40px 20px 72px; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin: 52px 0 16px;
+    letter-spacing: -.3px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--border), transparent);
+    border-radius: 2px;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    background: var(--green);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 800;
+    font-family: 'Fira Code', monospace;
+    flex-shrink: 0;
+  }
+
+  /* ─── INFO BOX ─── */
+  .info-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 0 0 18px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .info-box strong { color: var(--text); }
+
+  /* ─── QUESTION BLOCK ─── */
+  .question-block {
+    background: linear-gradient(135deg, #fff8e1, #fffde7);
+    border: 2px solid #ffd54f;
+    border-radius: var(--radius);
+    padding: 28px 28px 24px;
+    margin: 36px 0 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .question-block::before {
+    content: '?';
+    position: absolute;
+    right: 24px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    font-weight: 800;
+    color: rgba(255,213,79,0.25);
+    font-family: 'Sora', sans-serif;
+    line-height: 1;
+  }
+  .question-block .q-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #a07000;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+  .question-block h3 {
+    font-size: 1.28rem;
+    font-weight: 800;
+    color: #5a3600;
+    line-height: 1.35;
+    position: relative; z-index: 1;
+  }
+  .question-block p {
+    margin-top: 8px;
+    font-size: 0.86rem;
+    color: #7a5500;
+    position: relative; z-index: 1;
+  }
+
+  /* ─── ANSWER REVEAL ─── */
+  .answer-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+  }
+
+  /* ─── TECH GRID ─── */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .tech-card {
+    background: var(--card);
+    border: 2px solid;
+    border-radius: var(--radius);
+    padding: 18px 18px 16px;
+    box-shadow: var(--shadow);
+    transition: transform .18s, box-shadow .18s;
+  }
+  .tech-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,200,150,0.13); }
+  .tech-card.html { border-color: var(--html-bd); background: var(--html-bg); }
+  .tech-card.css  { border-color: var(--css-bd);  background: var(--css-bg); }
+  .tech-card.js   { border-color: var(--js-bd);   background: var(--js-bg); }
+  .tech-card.php  { border-color: var(--php-bd);  background: var(--php-bg); }
+  .tech-card.sql  { border-color: var(--sql-bd);  background: var(--sql-bg); }
+
+  .tech-name {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 7px;
+  }
+  .tech-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .tech-card.html .tech-name { color: var(--html-c); }
+  .tech-card.html .tech-dot  { background: var(--html-c); }
+  .tech-card.css  .tech-name { color: var(--css-c); }
+  .tech-card.css  .tech-dot  { background: var(--css-c); }
+  .tech-card.js   .tech-name { color: var(--js-c); }
+  .tech-card.js   .tech-dot  { background: var(--js-c); }
+  .tech-card.php  .tech-name { color: var(--php-c); }
+  .tech-card.php  .tech-dot  { background: var(--php-c); }
+  .tech-card.sql  .tech-name { color: var(--sql-c); }
+  .tech-card.sql  .tech-dot  { background: var(--sql-c); }
+
+  .tech-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .tech-where {
+    margin-top: 10px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+    display: inline-block;
+  }
+  .tech-card.html .tech-where { background: var(--html-bg); color: var(--html-c); border-color: var(--html-bd); }
+  .tech-card.css  .tech-where { background: var(--css-bg);  color: var(--css-c);  border-color: var(--css-bd); }
+  .tech-card.js   .tech-where { background: var(--js-bg);   color: var(--js-c);   border-color: var(--js-bd); }
+  .tech-card.php  .tech-where { background: var(--php-bg);  color: var(--php-c);  border-color: var(--php-bd); }
+  .tech-card.sql  .tech-where { background: var(--sql-bg);  color: var(--sql-c);  border-color: var(--sql-bd); }
+
+  /* ─── FLOW STEPS ─── */
+  .flow-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+    overflow-x: auto;
+  }
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .flow-step {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    min-width: 110px; padding: 0 8px;
+  }
+  .flow-num {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--green); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.82rem; font-weight: 800;
+    font-family: 'Fira Code', monospace;
+    box-shadow: 0 2px 8px rgba(0,200,150,0.35);
+    flex-shrink: 0;
+  }
+  .flow-label {
+    font-size: 0.78rem; font-weight: 700;
+    font-family: 'Fira Code', monospace; color: var(--text);
+    text-align: center;
+  }
+  .flow-desc {
+    font-size: 0.72rem; color: var(--muted); text-align: center;
+    max-width: 100px; line-height: 1.4;
+  }
+  .flow-arrow {
+    font-size: 1.4rem; color: var(--border); font-weight: 700;
+    padding: 0 4px; margin-bottom: 24px; flex-shrink: 0;
+  }
+  .flow-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.68rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 6px; border: 1px solid;
+  }
+  .tag-html { background: var(--html-bg); color: var(--html-c); border-color: var(--html-bd); }
+  .tag-css  { background: var(--css-bg);  color: var(--css-c);  border-color: var(--css-bd); }
+  .tag-js   { background: var(--js-bg);   color: var(--js-c);   border-color: var(--js-bd); }
+  .tag-php  { background: var(--php-bg);  color: var(--php-c);  border-color: var(--php-bd); }
+  .tag-sql  { background: var(--sql-bg);  color: var(--sql-c);  border-color: var(--sql-bd); }
+
+  /* ─── CODE ─── */
+  code {
+    font-family: 'Fira Code', monospace;
+    background: var(--code-bg);
+    color: #006b50;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    border: 1px solid #b8ead4;
+    white-space: nowrap;
+  }
+
+  /* ─── ARCH DIAGRAM ─── */
+  .arch-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    margin: 8px 0 28px;
+  }
+  .layer {
+    width: 100%; max-width: 860px;
+    display: flex; align-items: stretch;
+    position: relative;
+  }
+  .layer-label {
+    writing-mode: vertical-lr; transform: rotate(180deg);
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    padding: 10px 8px; display: flex; align-items: center; justify-content: center;
+    min-width: 36px; flex-shrink: 0;
+  }
+  .layer-body {
+    flex: 1; display: flex; gap: 12px; padding: 18px 16px;
+    border-radius: var(--radius); border: 2px solid;
+    background: var(--card); box-shadow: var(--shadow); flex-wrap: wrap;
+  }
+  .layer.front .layer-body { border-color: var(--css-bd); background: linear-gradient(135deg,#f0f7ff,#e8f4fe); }
+  .layer.back  .layer-body { border-color: var(--php-bd); background: linear-gradient(135deg,#fdf5ff,#f3e5f5); }
+  .layer.db    .layer-body { border-color: var(--sql-bd); background: linear-gradient(135deg,#f2faf3,#e8f5e9); }
+
+  .layer-heading {
+    width: 100%; font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    font-family: 'Fira Code', monospace; color: var(--muted);
+    padding-bottom: 10px; border-bottom: 1px dashed var(--border); margin-bottom: 4px;
+  }
+  .layer.front .layer-heading { color: var(--css-c); }
+  .layer.back  .layer-heading { color: var(--php-c); }
+  .layer.db    .layer-heading { color: var(--sql-c); }
+
+  .layer-tech {
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 12px 14px; border-radius: 10px; border: 2px solid;
+    min-width: 140px; flex: 1;
+    transition: transform .18s;
+  }
+  .layer-tech:hover { transform: translateY(-2px); }
+  .layer-tech.html { background: var(--html-bg); border-color: var(--html-bd); }
+  .layer-tech.css  { background: var(--css-bg);  border-color: var(--css-bd); }
+  .layer-tech.js   { background: var(--js-bg);   border-color: var(--js-bd); }
+  .layer-tech.php  { background: var(--php-bg);  border-color: var(--php-bd); }
+  .layer-tech.sql  { background: var(--sql-bg);  border-color: var(--sql-bd); }
+
+  .lt-name {
+    font-family: 'Fira Code', monospace; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .lt-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .layer-tech.html .lt-name { color: var(--html-c); }
+  .layer-tech.html .lt-dot  { background: var(--html-c); }
+  .layer-tech.css  .lt-name { color: var(--css-c); }
+  .layer-tech.css  .lt-dot  { background: var(--css-c); }
+  .layer-tech.js   .lt-name { color: var(--js-c); }
+  .layer-tech.js   .lt-dot  { background: var(--js-c); }
+  .layer-tech.php  .lt-name { color: var(--php-c); }
+  .layer-tech.php  .lt-dot  { background: var(--php-c); }
+  .layer-tech.sql  .lt-name { color: var(--sql-c); }
+  .layer-tech.sql  .lt-dot  { background: var(--sql-c); }
+  .lt-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.45; }
+
+  .conn-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    margin: 4px 0; width: 100%; max-width: 860px;
+  }
+  .connector {
+    width: 2px; height: 28px; background: var(--border); margin: 0 auto; position: relative;
+  }
+  .connector::after {
+    content: '';
+    position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+    border-left: 6px solid transparent; border-right: 6px solid transparent;
+    border-top: 8px solid var(--border);
+  }
+  .conn-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; color: var(--muted);
+    text-align: center;
+  }
+
+  /* ─── XAMPP BOX ─── */
+  .xampp-box {
+    background: var(--card);
+    border: 2px solid #ff6b35;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: 0 2px 16px rgba(255,107,53,0.10);
+    margin-bottom: 14px;
+  }
+  .xampp-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem; font-weight: 700; color: #c84000;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .xampp-title .x-badge {
+    background: #fff3e0; border: 1px solid #ffb74d;
+    color: #c84000; font-size: 0.72rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+    font-family: 'Fira Code', monospace;
+  }
+  .xampp-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+  .xampp-parts {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px;
+  }
+  .xampp-part {
+    display: flex; align-items: center; gap: 7px;
+    background: #fff8f5; border: 1px solid #ffccbc;
+    border-radius: 8px; padding: 8px 14px;
+    font-family: 'Fira Code', monospace; font-size: 0.78rem; font-weight: 700; color: #c84000;
+  }
+  .xampp-part span { font-family: 'Sora', sans-serif; font-weight: 400; font-size: 0.76rem; color: var(--muted); }
+
+  /* ─── CTA ─── */
+  .cta-wrap {
+    margin-top: 60px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .cta-hint {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem; color: var(--muted); letter-spacing: .5px;
+  }
+  .btn-start {
+    display: inline-flex; align-items: center; gap: 12px;
+    text-decoration: none;
+    padding: 20px 52px;
+    font-size: 1.05rem; font-weight: 800;
+    font-family: 'Sora', sans-serif;
+    background: linear-gradient(135deg, #00c896, #00a87e);
+    color: #fff;
+    border-radius: 99px;
+    box-shadow: 0 6px 26px rgba(0,200,150,0.38);
+    transition: all 0.22s;
+    letter-spacing: 0.3px;
+  }
+  .btn-start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(0,200,150,0.46);
+  }
+  .btn-start:active { transform: translateY(1px); }
+  .btn-start .arrow { font-style: normal; font-size: 1.1rem; transition: transform .2s; }
+  .btn-start:hover .arrow { transform: translateX(5px); }
+
+  /* ─── TABLE ─── */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  thead tr { background: var(--green); }
+  thead th {
+    color: #fff; font-weight: 700; font-size: 0.82rem;
+    letter-spacing: .5px; text-transform: uppercase;
+    padding: 12px 16px; text-align: left;
+  }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: var(--green-glow); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+  td { padding: 11px 16px; font-size: 0.88rem; vertical-align: top; line-height: 1.5; }
+  td:first-child { font-weight: 600; color: var(--green-dark); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center; padding: 28px;
+    font-size: 0.78rem; color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    .layer-label { display: none; }
+    .flow-arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="badge">Introduction · Architecture Web · STI 2024-2025</div>
+    <h1>Comment fonctionne un site web ?</h1>
+    <p>Du navigateur au serveur — comprendre les technologies du web</p>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="toc">
+  <a href="#c-est-quoi">C'est quoi un site ?</a>
+  <a href="#frontend">Le Front-end</a>
+  <a href="#donnees">Les données</a>
+  <a href="#backend">Le Back-end</a>
+  <a href="#architecture">Architecture complète</a>
+  <a href="#cycle">Cycle d'une requête</a>
+</nav>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════
+       1 — C'EST QUOI UN SITE WEB ?
+  ══════════════════════════════════ -->
+  <h2 class="section-title" id="c-est-quoi">
+    <span class="section-icon">①</span>C'est quoi un site web ?
+  </h2>
+
+  <div class="info-box">
+    Un site web est un <strong>ensemble de pages</strong> accessibles via un navigateur (Chrome, Firefox…) grâce à une adresse URL. Ces pages sont construites avec des <strong>langages spécialisés</strong> qui ont chacun un rôle précis.
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Type de site</th><th>Description</th><th>Technologies</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Site statique</td>
+          <td>Le contenu est fixe — tous les visiteurs voient la même page. Aucun traitement serveur, aucune base de données.</td>
+          <td>HTML5 · CSS3 · JS (optionnel)</td>
+        </tr>
+        <tr>
+          <td>Site dynamique</td>
+          <td>Le contenu est généré à la volée selon l'utilisateur, ses actions, ou les données stockées. Chaque visiteur peut voir un contenu différent.</td>
+          <td>HTML5 · CSS3 · JS · PHP · SQL</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════
+       2 — LE FRONT-END
+  ══════════════════════════════════ -->
+  <h2 class="section-title" id="frontend">
+    <span class="section-icon">②</span>Le Front-end — ce que voit l'utilisateur
+  </h2>
+
+  <div class="info-box">
+    Le <strong>front-end</strong> est la partie visible du site : tout ce qui s'affiche dans le navigateur de l'utilisateur. Il est construit avec trois technologies complémentaires qui travaillent ensemble.
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-card html">
+      <div class="tech-name"><span class="tech-dot"></span>HTML5</div>
+      <div class="tech-desc">Définit la <strong>structure</strong> et le contenu de la page : titres, paragraphes, images, formulaires, liens, tableaux.</div>
+      <div class="tech-where">Navigateur · Front-end</div>
+    </div>
+    <div class="tech-card css">
+      <div class="tech-name"><span class="tech-dot"></span>CSS3</div>
+      <div class="tech-desc">Gère l'<strong>apparence visuelle</strong> : couleurs, polices, marges, animations, mise en page responsive.</div>
+      <div class="tech-where">Navigateur · Front-end</div>
+    </div>
+    <div class="tech-card js">
+      <div class="tech-name"><span class="tech-dot"></span>JavaScript</div>
+      <div class="tech-desc">Ajoute l'<strong>interactivité</strong> : validation de formulaires, modification du DOM, réactions aux événements utilisateur.</div>
+      <div class="tech-where">Navigateur · Front-end</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>Comment ça fonctionne ?</strong> Le navigateur envoie une requête HTTP au serveur, qui répond avec des fichiers HTML/CSS/JS. Le navigateur les interprète et affiche la page. Pour un site <strong>statique</strong>, c'est tout — le serveur envoie simplement les fichiers tels quels.
+  </div>
+
+  <!-- ══════════════════════════════════
+       QUESTION 1 : LES DONNÉES
+  ══════════════════════════════════ -->
+  <div class="question-block">
+    <div class="q-label">// Question</div>
+    <h3>Mais comment on sauvegarde les données ?</h3>
+    <p>Un formulaire d'inscription, des produits, des messages… où vont ces informations ?</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       3 — LES DONNÉES
+  ══════════════════════════════════ -->
+  <h2 class="section-title" id="donnees">
+    <span class="section-icon">③</span>Les données — Base de données &amp; SQL
+  </h2>
+
+  <div class="info-box">
+    Pour stocker des données de manière <strong>persistante</strong> (utilisateurs, produits, commandes…), on utilise une <strong>base de données</strong>. Le langage utilisé pour la manipuler s'appelle <strong>SQL</strong>.
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-card sql">
+      <div class="tech-name"><span class="tech-dot"></span>SQL — Structured Query Language</div>
+      <div class="tech-desc">Langage pour créer des <strong>tables</strong>, insérer, modifier, supprimer et interroger des données. Les commandes clés : <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>.</div>
+      <div class="tech-where">Serveur · Base de données MySQL</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Commande SQL</th><th>Rôle</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td><code>SELECT</code></td><td>Lire / récupérer des données</td><td><code>SELECT * FROM users</code></td></tr>
+        <tr><td><code>INSERT INTO</code></td><td>Ajouter un nouvel enregistrement</td><td><code>INSERT INTO users VALUES (...)</code></td></tr>
+        <tr><td><code>UPDATE</code></td><td>Modifier des données existantes</td><td><code>UPDATE users SET nom='Ali'</code></td></tr>
+        <tr><td><code>DELETE</code></td><td>Supprimer des enregistrements</td><td><code>DELETE FROM users WHERE id=1</code></td></tr>
+        <tr><td><code>CREATE TABLE</code></td><td>Créer une nouvelle table</td><td><code>CREATE TABLE users (id INT, nom VARCHAR(50))</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- XAMPP -->
+  <div class="xampp-box">
+    <div class="xampp-title">
+      XAMPP
+      <span class="x-badge">Environnement de développement local</span>
+    </div>
+    <div class="xampp-desc">
+      Pour développer en local (sur ton ordinateur), on utilise <strong>XAMPP</strong> — un package qui installe en une seule fois tout ce dont on a besoin : un serveur web, PHP et MySQL.
+    </div>
+    <div class="xampp-parts">
+      <div class="xampp-part">X <span>Cross-platform (Windows, Mac, Linux)</span></div>
+      <div class="xampp-part">A <span>Apache — le serveur web</span></div>
+      <div class="xampp-part">M <span>MySQL / MariaDB — la base de données</span></div>
+      <div class="xampp-part">P <span>PHP — langage serveur</span></div>
+      <div class="xampp-part">P <span>Perl — autre langage (optionnel)</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       QUESTION 2 : LIEN FRONT/BACK
+  ══════════════════════════════════ -->
+  <div class="question-block">
+    <div class="q-label">// Question</div>
+    <h3>Comment relier le front-end à la base de données ?</h3>
+    <p>HTML/CSS/JS s'exécutent dans le navigateur. MySQL s'exécute sur le serveur. Comment les faire communiquer ?</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       4 — LE BACK-END / PHP
+  ══════════════════════════════════ -->
+  <h2 class="section-title" id="backend">
+    <span class="section-icon">④</span>Le Back-end — PHP comme pont
+  </h2>
+
+  <div class="info-box">
+    C'est le rôle de <strong>PHP</strong>. PHP est un langage exécuté côté <strong>serveur</strong> (pas dans le navigateur). Il reçoit les données envoyées par le formulaire HTML, les traite, interroge la base de données MySQL, et génère dynamiquement la page HTML à renvoyer.
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-card php">
+      <div class="tech-name"><span class="tech-dot"></span>PHP — Hypertext Preprocessor</div>
+      <div class="tech-desc">
+        Reçoit les données via <code>$_POST</code> / <code>$_GET</code>. Applique la logique métier. Interroge MySQL via <strong>MySQLi</strong>. Génère le HTML dynamique retourné au navigateur.
+      </div>
+      <div class="tech-where">Serveur Apache · Back-end</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>PHP fait quoi ?</th><th>Explication</th></tr></thead>
+      <tbody>
+        <tr><td>Reçoit les données</td><td>Via <code>$_POST['nom']</code> ou <code>$_GET['id']</code> après soumission d'un formulaire HTML.</td></tr>
+        <tr><td>Traite la logique</td><td>Vérifie les données, applique les règles métier (conditions, boucles, calculs).</td></tr>
+        <tr><td>Parle à MySQL</td><td>Utilise <code>mysqli_connect()</code>, <code>mysqli_query()</code> pour lire/écrire dans la base de données.</td></tr>
+        <tr><td>Génère le HTML</td><td>Produit une page HTML complète avec les données récupérées, envoyée au navigateur.</td></tr>
+        <tr><td>Gère les sessions</td><td>Maintient l'état de connexion d'un utilisateur entre les pages via <code>$_SESSION</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════
+       5 — ARCHITECTURE COMPLÈTE
+  ══════════════════════════════════ -->
+  <h2 class="section-title" id="architecture">
+    <span class="section-icon">⑤</span>Architecture complète d'un site dynamique
+  </h2>
+
+  <div class="info-box">
+    Un site dynamique repose sur <strong>3 couches</strong> qui communiquent : le <strong>Front-end</strong> (navigateur), le <strong>Back-end</strong> (serveur PHP), et la <strong>Base de données</strong> (MySQL).
+  </div>
+
+  <div class="arch-wrap">
+    <!-- FRONT-END -->
+    <div class="layer front">
+      <div class="layer-label">Client</div>
+      <div class="layer-body">
+        <div class="layer-heading">Couche Front-end — Navigateur de l'utilisateur</div>
+        <div class="layer-tech html">
+          <div class="lt-name"><span class="lt-dot"></span>HTML5</div>
+          <div class="lt-desc">Structure et contenu : titres, paragraphes, formulaires, images.</div>
+        </div>
+        <div class="layer-tech css">
+          <div class="lt-name"><span class="lt-dot"></span>CSS3</div>
+          <div class="lt-desc">Mise en forme visuelle : couleurs, polices, layout, animations.</div>
+        </div>
+        <div class="layer-tech js">
+          <div class="lt-name"><span class="lt-dot"></span>JavaScript</div>
+          <div class="lt-desc">Interactivité : validation formulaires, manipulation DOM, événements.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="conn-wrap">
+      <div class="connector"></div>
+      <div class="conn-label">Requête HTTP (GET / POST)</div>
+      <div class="connector"></div>
+    </div>
+
+    <!-- BACK-END -->
+    <div class="layer back">
+      <div class="layer-label">Serveur</div>
+      <div class="layer-body">
+        <div class="layer-heading">Couche Back-end — Serveur Apache (via XAMPP)</div>
+        <div class="layer-tech php" style="flex:1;">
+          <div class="lt-name"><span class="lt-dot"></span>PHP</div>
+          <div class="lt-desc">Reçoit <code>$_POST</code>/<code>$_GET</code> · traite la logique · interroge MySQL via MySQLi · génère le HTML dynamique.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="conn-wrap">
+      <div class="connector"></div>
+      <div class="conn-label">Requête SQL (SELECT / INSERT / UPDATE / DELETE)</div>
+      <div class="connector"></div>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="layer db">
+      <div class="layer-label">Données</div>
+      <div class="layer-body">
+        <div class="layer-heading">Couche Base de données — MySQL / MariaDB (via XAMPP)</div>
+        <div class="layer-tech sql" style="flex:1;">
+          <div class="lt-name"><span class="lt-dot"></span>SQL / MySQL</div>
+          <div class="lt-desc">Stockage dans des tables · clés primaires / étrangères · requêtes SELECT, INSERT, UPDATE, DELETE.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       6 — CYCLE D'UNE REQUÊTE
+  ══════════════════════════════════ -->
+  <h2 class="section-title" id="cycle">
+    <span class="section-icon">⑥</span>Cycle complet d'une requête web
+  </h2>
+
+  <div class="info-box">Ce qui se passe étape par étape quand un utilisateur remplit et soumet un formulaire sur un site dynamique.</div>
+
+  <div class="flow-wrap">
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-label">Page HTML</div>
+        <span class="flow-tag tag-html">HTML5</span>
+        <div class="flow-desc">L'utilisateur voit et remplit le formulaire.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-label">Style + JS</div>
+        <div style="display:flex;gap:4px;">
+          <span class="flow-tag tag-css">CSS3</span>
+          <span class="flow-tag tag-js">JS</span>
+        </div>
+        <div class="flow-desc">CSS affiche. JS valide les champs avant envoi.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-label">Envoi HTTP</div>
+        <span class="flow-tag tag-html">POST / GET</span>
+        <div class="flow-desc">Le navigateur envoie les données au serveur.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-label">PHP traite</div>
+        <span class="flow-tag tag-php">PHP</span>
+        <div class="flow-desc">PHP reçoit $_POST et traite les données.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div class="flow-label">Requête SQL</div>
+        <span class="flow-tag tag-sql">SQL</span>
+        <div class="flow-desc">PHP envoie INSERT / SELECT à MySQL.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-num">6</div>
+        <div class="flow-label">Réponse HTML</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="flow-tag tag-php">PHP</span>
+          <span class="flow-tag tag-html">HTML</span>
+        </div>
+        <div class="flow-desc">PHP génère et renvoie la page HTML au navigateur.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── CTA ─── -->
+  <div class="cta-wrap">
+    <p class="cta-hint">// On commence par la base — le langage de toute page web</p>
+    <a href="HTML_Rappel.html" class="btn-start">
+      Commencer avec HTML5 <i class="arrow">→</i>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  Learn STI &nbsp;·&nbsp; Introduction &nbsp;·&nbsp; Annexe 2024-2025 &nbsp;·&nbsp; Bac Sciences de l'informatique &nbsp;·&nbsp; Yousri Ben Hariz
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>CSS3 — Tutoriel Complet</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1255a0;
+    --blue-dark: #0d3f7a;
+    --blue-mid:  #1668c7;
+    --blue-light: #e3f0ff;
+    --blue-glow: rgba(18,85,160,0.09);
+    --bg: #f4f8fd;
+    --card: #ffffff;
+    --text: #1a2535;
+    --muted: #5a6e8a;
+    --border: #ccddef;
+    --code-bg: #e8f2fc;
+    --shadow: 0 2px 20px rgba(18,85,160,0.09);
+    --shadow-lg: 0 6px 32px rgba(18,85,160,0.13);
+    --radius: 16px;
+    --radius-sm: 10px;
+
+    --html-c: #c84000; --html-bg: #fff3e0; --html-bd: #ffb74d;
+    --css-c:  #1255a0; --css-bg:  #e3f2fd; --css-bd:  #64b5f6;
+    --js-c:   #a07000; --js-bg:   #fffde8; --js-bd:   #ffd54f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─────────────────────────────────────
+     HEADER
+  ───────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1255a0 0%, #1e7fd4 55%, #00b8d9 100%);
+    padding: 52px 24px 48px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 24px);
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 99px; padding: 4px 18px;
+    font-size: 0.75rem; font-weight: 700; color: #fff;
+    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px;
+    font-family: 'Fira Code', monospace;
+  }
+  .header h1 {
+    font-size: 2.8rem; font-weight: 800; color: #fff;
+    letter-spacing: -1px; text-shadow: 0 3px 14px rgba(0,0,0,.15);
+    margin-bottom: 10px; line-height: 1.1;
+  }
+  .header p { color: rgba(255,255,255,0.88); font-size: 1rem; }
+  .back-link {
+    position: absolute; top: 18px; left: 24px; z-index: 2;
+    text-decoration: none;
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+    color: #fff; padding: 6px 14px; border-radius: 99px;
+    font-size: 0.78rem; font-weight: 600;
+    font-family: 'Fira Code', monospace; transition: background .18s;
+  }
+  .back-link:hover { background: rgba(255,255,255,0.3); }
+
+  /* ─────────────────────────────────────
+     PROGRESS NAV
+  ───────────────────────────────────── */
+  .progress-nav {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 0 24px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); overflow-x: auto;
+  }
+  .progress-nav-inner {
+    display: flex; align-items: stretch;
+    max-width: 1100px; margin: 0 auto; gap: 0;
+  }
+  .pnav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 14px 18px; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--muted); font-size: 0.8rem; font-weight: 600;
+    white-space: nowrap; transition: all .18s; flex-shrink: 0;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: 'Sora', sans-serif;
+  }
+  .pnav-item:hover { color: var(--text); background: var(--blue-glow); }
+  .pnav-item.active { color: var(--blue-dark); border-bottom-color: var(--blue); }
+  .pnav-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    background: var(--blue-light); color: var(--blue-dark); border: 1px solid var(--border);
+  }
+  .pnav-item.active .pnav-num { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  /* ─────────────────────────────────────
+     PAGE & PANELS
+  ───────────────────────────────────── */
+  .page { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ─────────────────────────────────────
+     CHAPTER HEADER
+  ───────────────────────────────────── */
+  .chapter-header {
+    margin-bottom: 36px; padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem; font-weight: 700; color: var(--blue-dark);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
+  }
+  .chapter-title {
+    font-size: 2rem; font-weight: 800; color: var(--text);
+    letter-spacing: -.5px; line-height: 1.15; margin-bottom: 10px;
+  }
+  .chapter-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.7; max-width: 640px; }
+
+  /* ─────────────────────────────────────
+     CONTENT BLOCKS
+  ───────────────────────────────────── */
+
+  /* info card */
+  .info-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 4px solid var(--blue); border-radius: var(--radius-sm);
+    padding: 16px 20px; margin-bottom: 24px;
+    font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+    box-shadow: var(--shadow);
+  }
+  .info-card strong { color: var(--text); }
+
+  /* concept box */
+  .concept-box {
+    background: var(--blue-light); border: 1.5px solid var(--blue);
+    border-radius: var(--radius); padding: 22px 24px; margin-bottom: 28px;
+  }
+  .concept-box .cb-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--blue-dark); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px;
+  }
+  .concept-box p { font-size: 0.9rem; color: var(--text); line-height: 1.7; }
+  .concept-box p strong { color: var(--blue-dark); }
+
+  /* sub-heading */
+  .sub-heading {
+    font-size: 1.05rem; font-weight: 800; color: var(--text);
+    margin: 36px 0 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .sub-heading .sh-bar {
+    width: 4px; height: 20px; border-radius: 2px;
+    background: var(--blue); flex-shrink: 0;
+  }
+
+  /* analogy */
+  .analogy {
+    background: #fffde8; border: 1.5px solid #ffd54f;
+    border-radius: var(--radius); padding: 20px 22px; margin-bottom: 24px;
+    font-size: 0.88rem; line-height: 1.65;
+  }
+  .analogy .a-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: #a07000; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 7px;
+  }
+  .analogy p { color: #5a4200; }
+  .analogy strong { color: #3a2800; }
+
+  /* code block */
+  .code-block {
+    background: #111d2e; border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-lg);
+  }
+  .code-block-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; background: #0c1520;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .code-block-dots { display: flex; gap: 6px; }
+  .code-block-dots span { width: 11px; height: 11px; border-radius: 50%; }
+  .code-block-dots span:nth-child(1) { background: #ff5f56; }
+  .code-block-dots span:nth-child(2) { background: #ffbd2e; }
+  .code-block-dots span:nth-child(3) { background: #27c93f; }
+  .code-block-filename {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem; color: rgba(255,255,255,0.35);
+  }
+  .code-block pre {
+    padding: 20px 22px; font-family: 'Fira Code', monospace;
+    font-size: 0.83rem; line-height: 1.8;
+    color: #b0cfe8; overflow-x: auto; white-space: pre;
+  }
+  /* syntax */
+  .sel  { color: #79c0ff; }  /* selector */
+  .prop { color: #ffa657; }  /* property */
+  .val  { color: #a8ff78; }  /* value */
+  .cm   { color: #4a6a85; font-style: italic; } /* comment */
+  .punc { color: #e0f0ea; }  /* braces / colon */
+  .unit { color: #d2a8ff; }  /* px, %, rem */
+  .col  { color: #ff9e6d; }  /* color values */
+
+  /* tag / property explanation cards */
+  .prop-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px; margin-bottom: 28px;
+  }
+  .prop-card {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 18px 18px 16px;
+    box-shadow: var(--shadow); transition: transform .18s, border-color .18s, box-shadow .18s;
+  }
+  .prop-card:hover { transform: translateY(-3px); border-color: var(--blue); box-shadow: var(--shadow-lg); }
+  .prop-card-name {
+    font-family: 'Fira Code', monospace; font-size: 0.9rem; font-weight: 700;
+    color: var(--blue-dark); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .prop-card-name .pc-type {
+    font-size: 0.63rem; font-weight: 700;
+    background: var(--blue-light); border: 1px solid var(--border);
+    color: var(--blue-dark); padding: 2px 7px; border-radius: 99px;
+  }
+  .prop-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+  .prop-card-example {
+    margin-top: 10px; background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 7px; padding: 8px 11px;
+    font-family: 'Fira Code', monospace; font-size: 0.76rem; color: #0d3f7a; line-height: 1.5;
+  }
+  .prop-card-values {
+    margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .val-chip {
+    background: var(--blue-light); border: 1px solid var(--border);
+    color: var(--blue-dark); font-size: 0.72rem; font-weight: 600;
+    padding: 2px 9px; border-radius: 99px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* inline code */
+  code {
+    font-family: 'Fira Code', monospace; background: var(--code-bg);
+    color: #0d3f7a; padding: 3px 8px; border-radius: 6px;
+    font-size: 0.82rem; border: 1px solid #b8d4ef; white-space: nowrap;
+  }
+
+  /* visual demo box */
+  .demo-box {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    margin-bottom: 24px; box-shadow: var(--shadow-lg);
+  }
+  .demo-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; background: var(--blue);
+  }
+  .demo-bar-title {
+    font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 700; color: #fff;
+  }
+  .demo-bar-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    background: rgba(255,255,255,0.22); color: #fff; padding: 3px 10px; border-radius: 99px;
+  }
+  .demo-split { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 600px) { .demo-split { grid-template-columns: 1fr; } }
+  .demo-code-side {
+    border-right: 1px solid var(--border);
+    background: #111d2e;
+  }
+  .demo-code-label, .demo-result-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 14px; border-bottom: 1px solid var(--border); background: #f8fbff;
+  }
+  .demo-code-label { background: #0c1520; color: rgba(255,255,255,0.4); }
+  .demo-code-pre {
+    padding: 16px 18px; font-family: 'Fira Code', monospace;
+    font-size: 0.78rem; line-height: 1.75; color: #b0cfe8;
+    overflow-x: auto; white-space: pre;
+  }
+  .demo-result-side { background: #fff; }
+  .demo-result-area { padding: 18px; min-height: 80px; font-size: 0.88rem; }
+
+  /* selector table */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  thead tr { background: var(--blue); }
+  thead th {
+    color: #fff; font-weight: 700; font-size: 0.82rem;
+    letter-spacing: .5px; text-transform: uppercase;
+    padding: 12px 16px; text-align: left;
+  }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: var(--blue-glow); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+  td { padding: 11px 16px; font-size: 0.88rem; vertical-align: top; line-height: 1.5; }
+  td:first-child { font-family: 'Fira Code', monospace; font-size: 0.82rem; font-weight: 700; color: var(--blue-dark); white-space: nowrap; }
+
+  /* interactive lab */
+  .lab-wrap {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow-lg); margin-bottom: 28px;
+  }
+  .lab-header {
+    background: var(--blue); padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lab-title { font-family: 'Fira Code', monospace; font-size: 0.78rem; font-weight: 700; color: #fff; }
+  .lab-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    background: rgba(255,255,255,0.22); color: #fff; padding: 3px 10px; border-radius: 99px;
+  }
+  .lab-body { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 620px) { .lab-body { grid-template-columns: 1fr; } }
+  .lab-editor { border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+  .lab-editor-label, .lab-preview-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 14px; background: #f8fbff; border-bottom: 1px solid var(--border);
+  }
+  .lab-editor textarea {
+    flex: 1; width: 100%; min-height: 150px;
+    border: none; resize: none; outline: none; padding: 14px;
+    font-family: 'Fira Code', monospace; font-size: 0.8rem;
+    color: var(--text); background: #fafcff; line-height: 1.6;
+  }
+  .lab-editor textarea:focus { background: #fff; }
+  .lab-run {
+    padding: 8px 14px; background: #f8fbff;
+    border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+  }
+  .run-btn {
+    padding: 6px 16px; background: var(--blue); color: #fff; border: none;
+    border-radius: 7px; cursor: pointer; font-size: 0.78rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; transition: background .15s, transform .1s;
+  }
+  .run-btn:hover { background: var(--blue-dark); transform: translateY(-1px); }
+  .run-hint { font-size: 0.73rem; color: var(--muted); }
+  .lab-preview { display: flex; flex-direction: column; }
+  .lab-result { flex: 1; padding: 14px; min-height: 150px; font-size: 0.88rem; background: #fff; }
+
+  /* box model visual */
+  .box-model-visual {
+    display: flex; align-items: center; justify-content: center;
+    padding: 28px; background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 24px; box-shadow: var(--shadow);
+  }
+  .bm-margin {
+    background: #fff3e0; border: 2px dashed #ffb74d;
+    padding: 16px; border-radius: 8px; text-align: center;
+    position: relative;
+  }
+  .bm-margin-label {
+    position: absolute; top: 4px; left: 8px;
+    font-family: 'Fira Code', monospace; font-size: 0.62rem;
+    font-weight: 700; color: #c84000;
+  }
+  .bm-border {
+    background: #fff8e1; border: 3px solid #ffd54f;
+    padding: 14px; border-radius: 6px; position: relative;
+  }
+  .bm-border-label {
+    position: absolute; top: 3px; left: 8px;
+    font-family: 'Fira Code', monospace; font-size: 0.62rem;
+    font-weight: 700; color: #a07000;
+  }
+  .bm-padding {
+    background: #e8f5e9; border: 2px dashed #81c784;
+    padding: 12px; border-radius: 4px; position: relative;
+  }
+  .bm-padding-label {
+    position: absolute; top: 3px; left: 8px;
+    font-family: 'Fira Code', monospace; font-size: 0.62rem;
+    font-weight: 700; color: #1b6120;
+  }
+  .bm-content {
+    background: var(--blue-light); border: 2px solid var(--blue);
+    padding: 14px 22px; border-radius: 4px;
+    font-family: 'Fira Code', monospace; font-size: 0.78rem;
+    font-weight: 700; color: var(--blue-dark); white-space: nowrap;
+  }
+
+  /* quiz */
+  .quiz-box {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    margin-bottom: 28px; box-shadow: var(--shadow);
+  }
+  .quiz-head {
+    background: linear-gradient(135deg, #1255a0, #1e7fd4);
+    padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .quiz-head-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .quiz-head-title { font-weight: 800; font-size: 0.92rem; color: #fff; }
+  .quiz-head-sub { font-size: 0.75rem; color: rgba(255,255,255,0.8); margin-top: 1px; }
+  .quiz-body { padding: 20px; }
+  .quiz-q { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 9px; }
+  .quiz-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 15px; background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 9px; cursor: pointer; font-size: 0.84rem; color: var(--text);
+    transition: all .15s; font-family: 'Sora', sans-serif; text-align: left; width: 100%;
+  }
+  .quiz-opt:hover { border-color: var(--blue); background: var(--blue-light); }
+  .quiz-opt.correct { border-color: #00a87e; background: #e0fff6; color: #00614a; }
+  .quiz-opt.wrong   { border-color: #ff5252; background: #ffebee; color: #b71c1c; }
+  .quiz-opt-letter {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--border); color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+  }
+  .quiz-opt.correct .quiz-opt-letter { background: #00c896; color: #fff; }
+  .quiz-opt.wrong   .quiz-opt-letter { background: #ff5252; color: #fff; }
+  .quiz-feedback {
+    margin-top: 14px; padding: 12px 15px; border-radius: 9px;
+    font-size: 0.83rem; display: none; line-height: 1.55;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: #e0fff6; color: #00614a; border: 1px solid #00c896; }
+  .quiz-feedback.ko { background: #ffebee; color: #b71c1c; border: 1px solid #ff5252; }
+
+  /* fill exercise */
+  .fill-ex {
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 20px 22px;
+    margin-bottom: 24px; box-shadow: var(--shadow);
+  }
+  .fill-ex-title {
+    font-weight: 800; font-size: 0.92rem; color: var(--text);
+    margin-bottom: 14px; display: flex; align-items: center; gap: 9px;
+  }
+  .fe-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    background: #fff7e0; border: 1px solid #f0d980;
+    color: #a07000; padding: 3px 9px; border-radius: 99px;
+  }
+  .fill-blank {
+    display: inline-block; border-bottom: 2px solid var(--blue);
+    min-width: 90px; padding: 2px 6px;
+    font-family: 'Fira Code', monospace; font-size: 0.82rem;
+    color: var(--blue-dark); background: var(--blue-light);
+    border-radius: 4px 4px 0 0; outline: none; transition: background .15s;
+  }
+  .fill-blank:focus { background: #c5daf7; }
+  .fill-check {
+    margin-top: 14px; padding: 7px 18px;
+    background: var(--blue); color: #fff; border: none;
+    border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; transition: background .15s;
+  }
+  .fill-check:hover { background: var(--blue-dark); }
+  .fill-result {
+    margin-top: 10px; font-size: 0.83rem;
+    padding: 9px 13px; border-radius: 8px; display: none;
+  }
+  .fill-result.show { display: block; }
+  .fill-result.ok { background: #e0fff6; color: #00614a; border: 1px solid #00c896; }
+  .fill-result.ko { background: #ffebee; color: #b71c1c; border: 1px solid #ff5252; }
+
+  /* nav buttons */
+  .nav-buttons {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid var(--border); gap: 12px; flex-wrap: wrap;
+  }
+  .btn-prev, .btn-next {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 28px; font-size: 0.88rem; font-weight: 700;
+    font-family: 'Sora', sans-serif; border-radius: 99px; cursor: pointer; border: none;
+    transition: all .2s; text-decoration: none;
+  }
+  .btn-prev {
+    background: var(--bg); color: var(--muted); border: 1.5px solid var(--border);
+  }
+  .btn-prev:hover { color: var(--text); border-color: var(--blue); background: var(--blue-light); }
+  .btn-next {
+    background: linear-gradient(135deg, #1255a0, #0d3f7a); color: #fff;
+    box-shadow: 0 4px 18px rgba(18,85,160,0.3); margin-left: auto;
+  }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(18,85,160,0.4); }
+  .btn-next .arrow { transition: transform .2s; }
+  .btn-next:hover .arrow { transform: translateX(4px); }
+
+  /* sep */
+  .sep { height: 1px; background: var(--border); margin: 36px 0; }
+
+  /* color swatch grid */
+  .swatch-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px; margin-bottom: 24px;
+  }
+  .swatch {
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .swatch-color { height: 52px; }
+  .swatch-info { background: #fff; padding: 7px 9px; }
+  .swatch-name { font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 700; color: var(--text); }
+  .swatch-val  { font-family: 'Fira Code', monospace; font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+
+  /* flex/grid visual */
+  .layout-demo {
+    background: var(--code-bg); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px; margin-bottom: 20px;
+  }
+  .layout-demo-label {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 700;
+    color: var(--blue-dark); text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .flex-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .flex-item {
+    background: var(--blue); color: #fff; padding: 10px 16px;
+    border-radius: 7px; font-family: 'Fira Code', monospace;
+    font-size: 0.75rem; font-weight: 700; flex: 1; text-align: center;
+    min-width: 60px;
+  }
+  .grid-demo { display: grid; gap: 8px; }
+  .grid-item {
+    background: var(--blue-light); border: 1.5px solid var(--css-bd);
+    color: var(--blue-dark); padding: 10px; border-radius: 7px;
+    font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 700;
+    text-align: center;
+  }
+
+  footer {
+    text-align: center; padding: 28px;
+    font-size: 0.78rem; color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    .chapter-title { font-size: 1.6rem; }
+    .prop-grid { grid-template-columns: 1fr; }
+    .lab-body { grid-template-columns: 1fr; }
+    .lab-editor { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <a href="HTML_Rappel.html" class="back-link">← HTML5</a>
+  <div class="header-inner">
+    <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+    <h1>Apprendre CSS3</h1>
+    <p>Un guide pas à pas pour styliser et mettre en forme tes pages web</p>
+  </div>
+</div>
+
+<!-- PROGRESS NAV -->
+<nav class="progress-nav">
+  <div class="progress-nav-inner">
+    <button class="pnav-item active" onclick="goTo(0)"><span class="pnav-num">1</span>C'est quoi CSS ?</button>
+    <button class="pnav-item" onclick="goTo(1)"><span class="pnav-num">2</span>Les sélecteurs</button>
+    <button class="pnav-item" onclick="goTo(2)"><span class="pnav-num">3</span>Texte &amp; Couleurs</button>
+    <button class="pnav-item" onclick="goTo(3)"><span class="pnav-num">4</span>Le modèle de boîte</button>
+    <button class="pnav-item" onclick="goTo(4)"><span class="pnav-num">5</span>Mise en page</button>
+    <button class="pnav-item" onclick="goTo(5)"><span class="pnav-num">6</span>Transitions &amp; Animations</button>
+    <button class="pnav-item" onclick="goTo(6)"><span class="pnav-num">7</span>Pratique &amp; Exercices</button>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ╔═══════════════════════════════════╗
+     ║  PANEL 1 — C'EST QUOI CSS ?      ║
+     ╚═══════════════════════════════════╝ -->
+<div class="panel active" id="panel-0">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 1 · Introduction</div>
+    <h1 class="chapter-title">C'est quoi CSS ?</h1>
+    <p class="chapter-desc">HTML crée la structure, mais la page est encore sans couleur ni style. CSS est là pour lui donner vie.</p>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-label">// Définition</div>
+    <p><strong>CSS</strong> signifie <strong>Cascading Style Sheets</strong> (feuilles de style en cascade). C'est le langage qui contrôle l'<strong>apparence visuelle</strong> de tous les éléments HTML : couleurs, polices, tailles, espacements, disposition…</p>
+  </div>
+
+  <div class="analogy">
+    <div class="a-label">💡 Analogie</div>
+    <p>Si HTML est le <strong>squelette</strong> d'une maison (murs, portes, fenêtres), CSS est la <strong>décoration intérieure</strong> : la peinture, les meubles, les couleurs, les rideaux. La structure reste la même, mais l'apparence change complètement.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les 3 façons d'appliquer du CSS</div>
+
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name">CSS Inline <span class="pc-type">dans la balise</span></div>
+      <div class="prop-card-desc">Directement dans l'attribut <code>style</code> d'un élément HTML. À éviter — mélange structure et style.</div>
+      <div class="prop-card-example">&lt;p style="color: red;"&gt;Texte&lt;/p&gt;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name">CSS Interne <span class="pc-type">dans le &lt;head&gt;</span></div>
+      <div class="prop-card-desc">Dans une balise <code>&lt;style&gt;</code> dans le <code>&lt;head&gt;</code>. Pratique pour une seule page.</div>
+      <div class="prop-card-example">&lt;style&gt;<br>&nbsp;&nbsp;p { color: red; }<br>&lt;/style&gt;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name">CSS Externe <span class="pc-type">fichier séparé ✅</span></div>
+      <div class="prop-card-desc">Dans un fichier <code>style.css</code> lié avec <code>&lt;link&gt;</code>. Méthode <strong>recommandée</strong> — réutilisable sur toutes les pages.</div>
+      <div class="prop-card-example">&lt;link rel="stylesheet" href="style.css"&gt;</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>La syntaxe CSS</div>
+  <div class="info-card">
+    Une règle CSS se compose d'un <strong>sélecteur</strong> (qui cibler) et d'un <strong>bloc de déclarations</strong> entre accolades. Chaque déclaration est une paire <strong>propriété : valeur ;</strong>
+  </div>
+
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">style.css</div></div>
+    <pre><span class="cm">/* Sélecteur  { propriété: valeur; } */</span>
+
+<span class="sel">h1</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="col">#1255a0</span><span class="punc">;</span>        <span class="cm">/* couleur du texte */</span>
+  <span class="prop">font-size</span><span class="punc">:</span> <span class="val">2rem</span><span class="punc">;</span>       <span class="cm">/* taille de police */</span>
+  <span class="prop">text-align</span><span class="punc">:</span> <span class="val">center</span><span class="punc">;</span>   <span class="cm">/* alignement */</span>
+<span class="punc">}</span>
+
+<span class="sel">p</span> <span class="punc">{</span>
+  <span class="prop">color</span><span class="punc">:</span> <span class="col">#555555</span><span class="punc">;</span>
+  <span class="prop">line-height</span><span class="punc">:</span> <span class="val">1.6</span><span class="punc">;</span>
+  <span class="prop">font-family</span><span class="punc">:</span> <span class="val">Arial, sans-serif</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+  </div>
+
+  <!-- Lab -->
+  <div class="sub-heading"><span class="sh-bar"></span>Essaie par toi-même</div>
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Éditeur live — modifie le CSS et clique Run</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">HTML + CSS</div>
+        <textarea id="lab-intro">&lt;style&gt;
+  h2 { color: #1255a0; font-size: 1.5rem; }
+  p  { color: #555; font-family: Arial; }
+  .rouge { color: red; font-weight: bold; }
+&lt;/style&gt;
+
+&lt;h2&gt;Mon titre CSS&lt;/h2&gt;
+&lt;p&gt;Ce texte est stylisé par CSS.&lt;/p&gt;
+&lt;p class="rouge"&gt;Ce texte est rouge et gras.&lt;/p&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-intro','result-intro')">▶ Run</button><span class="run-hint">Modifie les couleurs et clique Run !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-intro">
+          <style>.ex-h2{color:#1255a0;font-size:1.5rem}.ex-p{color:#555;font-family:Arial}.ex-r{color:red;font-weight:bold}</style>
+          <h2 class="ex-h2">Mon titre CSS</h2>
+          <p class="ex-p">Ce texte est stylisé par CSS.</p>
+          <p class="ex-r">Ce texte est rouge et gras.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-box" id="quiz1">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Question rapide</div><div class="quiz-head-sub">Vérifie ta compréhension</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-q">Quelle est la méthode recommandée pour appliquer du CSS ?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">A</span>CSS inline dans l'attribut <code>style</code> de chaque balise</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">B</span>CSS interne dans une balise <code>&lt;style&gt;</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,true)"><span class="quiz-opt-letter">C</span>CSS externe dans un fichier <code>.css</code> séparé</button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz1',this,false)"><span class="quiz-opt-letter">D</span>Directement dans l'attribut <code>class</code></button>
+      </div>
+      <div class="quiz-feedback" id="quiz1-fb"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons"><span></span><button class="btn-next" onclick="goTo(1)">Les sélecteurs <span class="arrow">→</span></button></div>
+</div>
+
+
+<!-- ╔═══════════════════════════════════╗
+     ║  PANEL 2 — LES SÉLECTEURS        ║
+     ╚═══════════════════════════════════╝ -->
+<div class="panel" id="panel-1">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 2 · Cibler les éléments</div>
+    <h1 class="chapter-title">Les sélecteurs CSS</h1>
+    <p class="chapter-desc">Un sélecteur CSS dit <em>à quels éléments HTML s'applique la règle</em>. C'est la partie la plus importante à maîtriser.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les sélecteurs de base</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Sélecteur</th><th>Ce qu'il cible</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr><td>*</td><td>Tous les éléments de la page</td><td><code>* { margin: 0; }</code></td></tr>
+        <tr><td>element</td><td>Tous les éléments du type donné</td><td><code>p { color: gray; }</code></td></tr>
+        <tr><td>#id</td><td>L'élément avec cet <code>id</code> unique</td><td><code>#titre { font-size: 2rem; }</code></td></tr>
+        <tr><td>.class</td><td>Tous les éléments avec cette <code>class</code></td><td><code>.rouge { color: red; }</code></td></tr>
+        <tr><td>element.class</td><td>Éléments d'un type avec une classe précise</td><td><code>p.intro { font-size: 1.1rem; }</code></td></tr>
+        <tr><td>element[attr]</td><td>Éléments qui possèdent cet attribut</td><td><code>input[required] { border: red; }</code></td></tr>
+        <tr><td>element[attr=val]</td><td>Éléments dont l'attribut a une valeur précise</td><td><code>input[type="email"] { ... }</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les pseudo-classes (liens)</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pseudo-classe</th><th>Ce qu'elle cible</th></tr></thead>
+      <tbody>
+        <tr><td>a:link</td><td>Liens non encore visités</td></tr>
+        <tr><td>a:visited</td><td>Liens déjà visités</td></tr>
+        <tr><td>a:hover</td><td>Élément au survol de la souris (pas seulement les liens)</td></tr>
+        <tr><td>a:active</td><td>Lien au moment du clic</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-card">
+    <strong>Grouper des sélecteurs :</strong> Pour appliquer la même règle à plusieurs éléments, sépare-les par des virgules.<br>
+    Exemple : <code>h1, h2, h3 { color: #1255a0; }</code> — applique la couleur aux trois niveaux de titres.
+  </div>
+
+  <!-- Lab -->
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Sélecteurs — teste tous les types</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">CSS + HTML</div>
+        <textarea id="lab-sel">&lt;style&gt;
+  /* Sélecteur de type */
+  p { color: #444; }
+
+  /* Sélecteur d'id */
+  #special { color: #1255a0; font-weight: bold; }
+
+  /* Sélecteur de classe */
+  .vert { color: green; }
+
+  /* Pseudo-classe */
+  a:hover { color: red; text-decoration: none; }
+&lt;/style&gt;
+
+&lt;p&gt;Paragraphe normal&lt;/p&gt;
+&lt;p id="special"&gt;Paragraphe avec id="special"&lt;/p&gt;
+&lt;p class="vert"&gt;Paragraphe avec class="vert"&lt;/p&gt;
+&lt;a href="#"&gt;Survole ce lien&lt;/a&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-sel','result-sel')">▶ Run</button><span class="run-hint">Ajoute ta propre classe !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-sel">
+          <style>.rp{color:#444} #rspecial{color:#1255a0;font-weight:bold} .rvert{color:green}</style>
+          <p class="rp">Paragraphe normal</p>
+          <p id="rspecial">Paragraphe avec id="special"</p>
+          <p class="rvert">Paragraphe avec class="vert"</p>
+          <a href="#">Survole ce lien</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz2">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Question rapide</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-q">Pour cibler un élément ayant <code>id="menu"</code>, on utilise :</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">A</span><code>.menu { ... }</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,true)"><span class="quiz-opt-letter">B</span><code>#menu { ... }</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">C</span><code>menu { ... }</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz2',this,false)"><span class="quiz-opt-letter">D</span><code>*menu { ... }</code></button>
+      </div>
+      <div class="quiz-feedback" id="quiz2-fb"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(0)">← C'est quoi CSS ?</button>
+    <button class="btn-next" onclick="goTo(2)">Texte &amp; Couleurs <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════╗
+     ║  PANEL 3 — TEXTE & COULEURS       ║
+     ╚════════════════════════════════════╝ -->
+<div class="panel" id="panel-2">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 3 · Style visuel</div>
+    <h1 class="chapter-title">Texte &amp; Couleurs</h1>
+    <p class="chapter-desc">Les propriétés de texte et de couleur sont les plus utilisées. Elles définissent l'identité visuelle d'un site.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Propriétés de mise en forme du texte</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>font-family</code></div>
+      <div class="prop-card-desc">Spécifie la police par ordre de préférence. Toujours terminer par une famille générique.</div>
+      <div class="prop-card-example">font-family: 'Arial', sans-serif;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>font-size</code></div>
+      <div class="prop-card-desc">Taille de la police. Utilise <code>px</code> pour les tailles fixes ou <code>rem</code> pour des tailles relatives.</div>
+      <div class="prop-card-example">font-size: 16px; &nbsp;/* ou 1rem */</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>font-weight</code></div>
+      <div class="prop-card-desc">Épaisseur du texte.</div>
+      <div class="prop-card-values"><span class="val-chip">normal</span><span class="val-chip">bold</span><span class="val-chip">bolder</span><span class="val-chip">lighter</span><span class="val-chip">100–900</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>font-style</code></div>
+      <div class="prop-card-desc">Style du texte.</div>
+      <div class="prop-card-values"><span class="val-chip">normal</span><span class="val-chip">italic</span><span class="val-chip">oblique</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>text-align</code></div>
+      <div class="prop-card-desc">Alignement horizontal du texte.</div>
+      <div class="prop-card-values"><span class="val-chip">left</span><span class="val-chip">center</span><span class="val-chip">right</span><span class="val-chip">justify</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>text-decoration</code></div>
+      <div class="prop-card-desc">Décoration du texte (soulignement, barré…)</div>
+      <div class="prop-card-values"><span class="val-chip">none</span><span class="val-chip">underline</span><span class="val-chip">overline</span><span class="val-chip">line-through</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>text-transform</code></div>
+      <div class="prop-card-desc">Transformer la casse du texte.</div>
+      <div class="prop-card-values"><span class="val-chip">uppercase</span><span class="val-chip">lowercase</span><span class="val-chip">capitalize</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>text-shadow</code></div>
+      <div class="prop-card-desc">Ombre portée sur le texte. Syntaxe : <code>x y blur couleur</code></div>
+      <div class="prop-card-example">text-shadow: 2px 2px 4px gray;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>line-height</code></div>
+      <div class="prop-card-desc">Hauteur de ligne — espacement vertical entre les lignes de texte.</div>
+      <div class="prop-card-example">line-height: 1.6;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>color</code></div>
+      <div class="prop-card-desc">Couleur du texte. Accepte un nom, HEX, RGB ou HSL.</div>
+      <div class="prop-card-example">color: #1255a0; &nbsp;/* HEX */<br>color: rgb(18,85,160);</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>font</code> <span class="pc-type">super-propriété</span></div>
+      <div class="prop-card-desc">Combine <code>font-style</code>, <code>font-weight</code>, <code>font-size</code>, <code>font-family</code> en une seule ligne.</div>
+      <div class="prop-card-example">font: bold 16px Arial, sans-serif;</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les couleurs en CSS</div>
+  <div class="info-card">CSS accepte plusieurs formats pour définir une couleur. Le plus courant est le <strong>code hexadécimal</strong>.</div>
+
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#ff5252"></div><div class="swatch-info"><div class="swatch-name">Rouge</div><div class="swatch-val">#ff5252</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1255a0"></div><div class="swatch-info"><div class="swatch-name">Bleu</div><div class="swatch-val">#1255a0</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#00c896"></div><div class="swatch-info"><div class="swatch-name">Vert</div><div class="swatch-val">#00c896</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#ffd54f"></div><div class="swatch-info"><div class="swatch-name">Jaune</div><div class="swatch-val">#ffd54f</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#7c6af7"></div><div class="swatch-info"><div class="swatch-name">Violet</div><div class="swatch-val">#7c6af7</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#333333"></div><div class="swatch-info"><div class="swatch-name">Noir</div><div class="swatch-val">#333333</div></div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Format</th><th>Exemple</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Nom</td><td><code>color: red;</code></td><td>147 noms de couleurs prédéfinis (red, blue, green…)</td></tr>
+        <tr><td>HEX</td><td><code>color: #ff5252;</code></td><td>Code hexadécimal #RRGGBB — le plus courant</td></tr>
+        <tr><td>RGB</td><td><code>color: rgb(255,82,82);</code></td><td>Rouge, Vert, Bleu de 0 à 255</td></tr>
+        <tr><td>RGBA</td><td><code>color: rgba(255,82,82,0.5);</code></td><td>Comme RGB + transparence (0 = invisible, 1 = opaque)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Lab -->
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Texte &amp; couleurs — modifie et teste</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">CSS + HTML</div>
+        <textarea id="lab-text">&lt;style&gt;
+  .titre {
+    font-family: Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1255a0;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  }
+  .intro {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.8;
+    text-align: justify;
+  }
+  .important {
+    color: #c84000;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+&lt;/style&gt;
+
+&lt;h2 class="titre"&gt;Mon super titre&lt;/h2&gt;
+&lt;p class="intro"&gt;Voici un paragraphe avec une belle mise en forme CSS. Le texte est justifié et bien espacé.&lt;/p&gt;
+&lt;p class="important"&gt;Message important&lt;/p&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-text','result-text')">▶ Run</button><span class="run-hint">Change les couleurs et polices !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-text"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(1)">← Les sélecteurs</button>
+    <button class="btn-next" onclick="goTo(3)">Le modèle de boîte <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 4 — LE MODÈLE DE BOÎTE       ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-3">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 4 · Espacement &amp; Taille</div>
+    <h1 class="chapter-title">Le modèle de boîte</h1>
+    <p class="chapter-desc">Chaque élément HTML est une boîte rectangulaire. Comprendre le modèle de boîte est essentiel pour maîtriser l'espacement et la taille.</p>
+  </div>
+
+  <div class="concept-box">
+    <div class="cb-label">// Le Box Model</div>
+    <p>En CSS, chaque élément est entouré de <strong>4 couches</strong> imbriquées : le <strong>contenu</strong> (content), le <strong>rembourrage intérieur</strong> (padding), la <strong>bordure</strong> (border), et la <strong>marge extérieure</strong> (margin).</p>
+  </div>
+
+  <!-- Visual box model -->
+  <div class="box-model-visual">
+    <div class="bm-margin">
+      <span class="bm-margin-label">margin</span>
+      <div class="bm-border">
+        <span class="bm-border-label">border</span>
+        <div class="bm-padding">
+          <span class="bm-padding-label">padding</span>
+          <div class="bm-content">contenu (content)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les propriétés des boîtes</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>width</code> / <code>height</code></div>
+      <div class="prop-card-desc">Définit la largeur et la hauteur de la zone de contenu.</div>
+      <div class="prop-card-example">width: 300px;<br>height: 150px;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>padding</code></div>
+      <div class="prop-card-desc">Marge <strong>intérieure</strong> — espace entre le contenu et la bordure. Peut se définir côté par côté.</div>
+      <div class="prop-card-example">padding: 16px; &nbsp;&nbsp;&nbsp;/* tous */<br>padding: 10px 20px; /* V H */</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>margin</code></div>
+      <div class="prop-card-desc">Marge <strong>extérieure</strong> — espace entre la bordure et les éléments voisins. <code>auto</code> centre l'élément.</div>
+      <div class="prop-card-example">margin: 0 auto; /* centrer */</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>border</code> <span class="pc-type">super-propriété</span></div>
+      <div class="prop-card-desc">Définit la bordure : épaisseur, style et couleur en une ligne.</div>
+      <div class="prop-card-example">border: 2px solid #1255a0;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>border-radius</code></div>
+      <div class="prop-card-desc">Arrondit les coins de l'élément. <code>50%</code> crée un cercle.</div>
+      <div class="prop-card-example">border-radius: 8px;<br>border-radius: 50%; /* cercle */</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>box-shadow</code></div>
+      <div class="prop-card-desc">Ajoute une ombre portée à la boîte. Syntaxe : <code>x y blur spread couleur</code></div>
+      <div class="prop-card-example">box-shadow: 0 4px 12px rgba(0,0,0,0.15);</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>display</code></div>
+      <div class="prop-card-desc">Contrôle comment l'élément s'affiche dans le flux.</div>
+      <div class="prop-card-values"><span class="val-chip">block</span><span class="val-chip">inline</span><span class="val-chip">inline-block</span><span class="val-chip">flex</span><span class="val-chip">grid</span><span class="val-chip">none</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>overflow</code></div>
+      <div class="prop-card-desc">Comportement quand le contenu dépasse la boîte.</div>
+      <div class="prop-card-values"><span class="val-chip">visible</span><span class="val-chip">hidden</span><span class="val-chip">scroll</span><span class="val-chip">auto</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>opacity</code></div>
+      <div class="prop-card-desc">Niveau de transparence de l'élément (0 = invisible, 1 = opaque).</div>
+      <div class="prop-card-example">opacity: 0.8;</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Propriétés de position</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété / Valeur</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>position: static</td><td>Valeur par défaut — suit le flux normal du document.</td></tr>
+        <tr><td>position: relative</td><td>Décalé par rapport à sa position normale, sans quitter le flux.</td></tr>
+        <tr><td>position: absolute</td><td>Positionné par rapport à son ancêtre positionné le plus proche.</td></tr>
+        <tr><td>position: fixed</td><td>Positionné par rapport à la fenêtre du navigateur — reste visible au scroll.</td></tr>
+        <tr><td>position: sticky</td><td>Suit le scroll jusqu'à un point, puis se fixe.</td></tr>
+        <tr><td>top / bottom / left / right</td><td>Décalage depuis le bord correspondant (avec position non-static).</td></tr>
+        <tr><td>float: left / right / none</td><td>Fait flotter l'élément à gauche ou à droite — le contenu l'entoure.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Boîte — modifie les espacements</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">CSS + HTML</div>
+        <textarea id="lab-box">&lt;style&gt;
+  .carte {
+    width: 220px;
+    background: #e3f2fd;
+    border: 2px solid #1255a0;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px auto;
+    box-shadow: 0 4px 12px rgba(18,85,160,0.2);
+    text-align: center;
+  }
+  .carte h3 { color: #1255a0; margin-bottom: 8px; }
+  .carte p  { color: #555; font-size: 0.85rem; }
+&lt;/style&gt;
+
+&lt;div class="carte"&gt;
+  &lt;h3&gt;Ma Carte&lt;/h3&gt;
+  &lt;p&gt;Modifie le padding, le border-radius et la couleur !&lt;/p&gt;
+&lt;/div&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-box','result-box')">▶ Run</button><span class="run-hint">Change le padding et le border-radius !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-box"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(2)">← Texte &amp; Couleurs</button>
+    <button class="btn-next" onclick="goTo(4)">Mise en page <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════╗
+     ║  PANEL 5 — MISE EN PAGE             ║
+     ╚══════════════════════════════════════╝ -->
+<div class="panel" id="panel-4">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 5 · Flexbox &amp; Grid</div>
+    <h1 class="chapter-title">Mise en page</h1>
+    <p class="chapter-desc">Flexbox et Grid sont les deux outils modernes de CSS pour créer des mises en page complexes et responsives facilement.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Flexbox — disposition en ligne ou en colonne</div>
+  <div class="info-card">
+    <strong>Flexbox</strong> permet d'aligner et de distribuer des éléments dans un conteneur — horizontalement ou verticalement. Il suffit d'appliquer <code>display: flex;</code> sur le conteneur parent.
+  </div>
+
+  <div class="layout-demo">
+    <div class="layout-demo-label">display: flex → les items s'alignent en ligne</div>
+    <div class="flex-row">
+      <div class="flex-item">Item 1</div>
+      <div class="flex-item">Item 2</div>
+      <div class="flex-item">Item 3</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété Flex (conteneur)</th><th>Description</th><th>Valeurs principales</th></tr></thead>
+      <tbody>
+        <tr><td>display: flex</td><td>Active Flexbox sur le conteneur</td><td>—</td></tr>
+        <tr><td>flex-direction</td><td>Direction du flux</td><td><code>row</code> · <code>column</code> · <code>row-reverse</code></td></tr>
+        <tr><td>justify-content</td><td>Alignement sur l'axe principal</td><td><code>flex-start</code> · <code>center</code> · <code>space-between</code> · <code>space-around</code></td></tr>
+        <tr><td>align-items</td><td>Alignement sur l'axe secondaire</td><td><code>flex-start</code> · <code>center</code> · <code>flex-end</code> · <code>stretch</code></td></tr>
+        <tr><td>flex-wrap</td><td>Retour à la ligne si débordement</td><td><code>nowrap</code> · <code>wrap</code></td></tr>
+        <tr><td>gap</td><td>Espacement entre les items</td><td><code>gap: 16px;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Grid — disposition en grille</div>
+  <div class="info-card">
+    <strong>CSS Grid</strong> divise le conteneur en lignes et colonnes. Idéal pour les mises en page à deux dimensions. <code>grid-template-columns</code> définit le nombre et la taille des colonnes.
+  </div>
+
+  <div class="layout-demo">
+    <div class="layout-demo-label">grid-template-columns: repeat(3, 1fr) → 3 colonnes égales</div>
+    <div class="grid-demo" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="grid-item">Colonne 1</div>
+      <div class="grid-item">Colonne 2</div>
+      <div class="grid-item">Colonne 3</div>
+      <div class="grid-item" style="grid-column: span 2;">Cellule sur 2 colonnes</div>
+      <div class="grid-item">Cellule</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété Grid (conteneur)</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>display: grid</td><td>Active Grid sur le conteneur</td></tr>
+        <tr><td>grid-template-columns</td><td>Définit les colonnes : <code>repeat(3, 1fr)</code> crée 3 colonnes égales</td></tr>
+        <tr><td>grid-template-rows</td><td>Définit les lignes</td></tr>
+        <tr><td>gap</td><td>Espacement entre les cellules : <code>gap: 16px;</code></td></tr>
+        <tr><td>grid-column: span N</td><td>(sur un item) Étend l'item sur N colonnes</td></tr>
+        <tr><td>grid-row: span N</td><td>(sur un item) Étend l'item sur N lignes</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Listes CSS -->
+  <div class="sub-heading"><span class="sh-bar"></span>Propriétés des listes</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>list-style-type</code></div>
+      <div class="prop-card-desc">Type de marqueur pour les listes.</div>
+      <div class="prop-card-values"><span class="val-chip">disc</span><span class="val-chip">circle</span><span class="val-chip">square</span><span class="val-chip">decimal</span><span class="val-chip">none</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>list-style-position</code></div>
+      <div class="prop-card-desc">Position du marqueur.</div>
+      <div class="prop-card-values"><span class="val-chip">outside</span><span class="val-chip">inside</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>list-style-image</code></div>
+      <div class="prop-card-desc">Utilise une image comme marqueur de liste.</div>
+      <div class="prop-card-example">list-style-image: url('puce.png');</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>list-style</code> <span class="pc-type">super-propriété</span></div>
+      <div class="prop-card-desc">Combine type, position et image en une déclaration.</div>
+      <div class="prop-card-example">list-style: square inside;</div>
+    </div>
+  </div>
+
+  <!-- Tableaux CSS -->
+  <div class="sub-heading"><span class="sh-bar"></span>Propriétés des tableaux</div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>border-collapse</code></div>
+      <div class="prop-card-desc">Fusionne ou sépare les bordures des cellules.</div>
+      <div class="prop-card-values"><span class="val-chip">separate</span><span class="val-chip">collapse</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>table-layout</code></div>
+      <div class="prop-card-desc">Façon dont le navigateur calcule la taille des colonnes.</div>
+      <div class="prop-card-values"><span class="val-chip">auto</span><span class="val-chip">fixed</span></div>
+    </div>
+  </div>
+
+  <!-- Lab -->
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Flexbox — teste la mise en page</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">CSS + HTML</div>
+        <textarea id="lab-flex">&lt;style&gt;
+  .conteneur {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: #f0f4ff;
+    padding: 16px;
+    border-radius: 10px;
+  }
+  .item {
+    background: #1255a0;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    flex: 1;
+    text-align: center;
+  }
+&lt;/style&gt;
+
+&lt;div class="conteneur"&gt;
+  &lt;div class="item"&gt;Item 1&lt;/div&gt;
+  &lt;div class="item"&gt;Item 2&lt;/div&gt;
+  &lt;div class="item"&gt;Item 3&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p style="margin-top:10px;font-size:0.8rem;color:#888"&gt;
+  Essaie : change justify-content en "center" ou "flex-start"
+&lt;/p&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-flex','result-flex')">▶ Run</button><span class="run-hint">Change justify-content !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-flex"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(3)">← Le modèle de boîte</button>
+    <button class="btn-next" onclick="goTo(5)">Transitions &amp; Animations <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════╗
+     ║  PANEL 6 — TRANSITIONS & ANIMATIONS   ║
+     ╚════════════════════════════════════════╝ -->
+<div class="panel" id="panel-5">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 6 · Mouvement</div>
+    <h1 class="chapter-title">Transitions &amp; Animations</h1>
+    <p class="chapter-desc">CSS peut animer des propriétés visuelles pour rendre les interfaces plus vivantes et agréables, sans JavaScript.</p>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les transitions</div>
+  <div class="info-card">
+    Une <strong>transition</strong> anime le changement d'une propriété CSS d'une valeur à une autre — par exemple, quand on survole un bouton. Elle s'active sur un déclencheur comme <code>:hover</code>.
+  </div>
+
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>transition-property</code></div>
+      <div class="prop-card-desc">Propriété(s) à animer.</div>
+      <div class="prop-card-example">transition-property: background-color;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>transition-duration</code></div>
+      <div class="prop-card-desc">Durée de la transition.</div>
+      <div class="prop-card-example">transition-duration: 0.3s;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>transition-delay</code></div>
+      <div class="prop-card-desc">Délai avant le démarrage de la transition.</div>
+      <div class="prop-card-example">transition-delay: 0.1s;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>transition</code> <span class="pc-type">super-propriété</span></div>
+      <div class="prop-card-desc">Combine property, duration et delay.</div>
+      <div class="prop-card-example">transition: all 0.3s ease;</div>
+    </div>
+  </div>
+
+  <div class="sub-heading"><span class="sh-bar"></span>Les animations (@keyframes)</div>
+  <div class="info-card">
+    Les <strong>animations</strong> sont plus puissantes que les transitions : elles définissent plusieurs états intermédiaires avec <code>@keyframes</code>, et se déclenchent automatiquement.
+  </div>
+
+  <div class="code-block">
+    <div class="code-block-bar"><div class="code-block-dots"><span></span><span></span><span></span></div><div class="code-block-filename">animation.css</div></div>
+    <pre><span class="cm">/* 1. Définir l'animation */</span>
+<span class="sel">@keyframes</span> <span class="val">pulsation</span> <span class="punc">{</span>
+  <span class="sel">0%</span>   <span class="punc">{</span> <span class="prop">transform</span><span class="punc">:</span> <span class="val">scale(1)</span><span class="punc">;</span>   <span class="prop">opacity</span><span class="punc">:</span> <span class="val">1</span><span class="punc">; }</span>
+  <span class="sel">50%</span>  <span class="punc">{</span> <span class="prop">transform</span><span class="punc">:</span> <span class="val">scale(1.1)</span><span class="punc">;</span> <span class="prop">opacity</span><span class="punc">:</span> <span class="val">0.8</span><span class="punc">; }</span>
+  <span class="sel">100%</span> <span class="punc">{</span> <span class="prop">transform</span><span class="punc">:</span> <span class="val">scale(1)</span><span class="punc">;</span>   <span class="prop">opacity</span><span class="punc">:</span> <span class="val">1</span><span class="punc">; }</span>
+<span class="punc">}</span>
+
+<span class="cm">/* 2. Appliquer l'animation */</span>
+<span class="sel">.bouton-anime</span> <span class="punc">{</span>
+  <span class="prop">animation-name</span><span class="punc">:</span>            <span class="val">pulsation</span><span class="punc">;</span>
+  <span class="prop">animation-duration</span><span class="punc">:</span>        <span class="val">1.2s</span><span class="punc">;</span>
+  <span class="prop">animation-iteration-count</span><span class="punc">:</span> <span class="val">infinite</span><span class="punc">;</span>
+  <span class="prop">animation-direction</span><span class="punc">:</span>       <span class="val">alternate</span><span class="punc">;</span>
+<span class="punc">}</span>
+
+<span class="cm">/* Ou en version courte (super-propriété) : */</span>
+<span class="sel">.bouton-anime</span> <span class="punc">{</span>
+  <span class="prop">animation</span><span class="punc">:</span> <span class="val">pulsation 1.2s infinite alternate</span><span class="punc">;</span>
+<span class="punc">}</span></pre>
+  </div>
+
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-card-name"><code>animation-name</code></div>
+      <div class="prop-card-desc">Nom du <code>@keyframes</code> à utiliser.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>animation-duration</code></div>
+      <div class="prop-card-desc">Durée d'un cycle de l'animation.</div>
+      <div class="prop-card-example">animation-duration: 2s;</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>animation-delay</code></div>
+      <div class="prop-card-desc">Délai avant le démarrage.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>animation-iteration-count</code></div>
+      <div class="prop-card-desc">Nombre de répétitions.</div>
+      <div class="prop-card-values"><span class="val-chip">1</span><span class="val-chip">3</span><span class="val-chip">infinite</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>animation-direction</code></div>
+      <div class="prop-card-desc">Direction du cycle d'animation.</div>
+      <div class="prop-card-values"><span class="val-chip">normal</span><span class="val-chip">reverse</span><span class="val-chip">alternate</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>transform</code></div>
+      <div class="prop-card-desc">Transformations 2D/3D appliquées à l'élément.</div>
+      <div class="prop-card-values"><span class="val-chip">rotate()</span><span class="val-chip">scale()</span><span class="val-chip">translate()</span><span class="val-chip">skew()</span></div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-card-name"><code>filter</code></div>
+      <div class="prop-card-desc">Effets visuels sur un élément.</div>
+      <div class="prop-card-values"><span class="val-chip">blur()</span><span class="val-chip">grayscale()</span><span class="val-chip">invert()</span><span class="val-chip">brightness()</span></div>
+    </div>
+  </div>
+
+  <!-- Lab animations -->
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🧪 Transitions &amp; Animations — teste en direct</div><div class="lab-badge">Live Preview</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">CSS + HTML</div>
+        <textarea id="lab-anim">&lt;style&gt;
+  @keyframes glisser {
+    from { transform: translateX(0);   opacity: 0.3; }
+    to   { transform: translateX(60px); opacity: 1; }
+  }
+  .boite {
+    width: 80px; height: 80px;
+    background: #1255a0;
+    border-radius: 12px;
+    animation: glisser 1.5s ease-in-out infinite alternate;
+    margin: 16px;
+  }
+  .btn-hover {
+    padding: 10px 24px;
+    background: #1255a0;
+    color: white; border: none;
+    border-radius: 8px; cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin: 10px;
+  }
+  .btn-hover:hover {
+    background: #00c896;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,200,150,0.4);
+  }
+&lt;/style&gt;
+
+&lt;div class="boite"&gt;&lt;/div&gt;
+&lt;button class="btn-hover"&gt;Survole-moi&lt;/button&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-anim','result-anim')">▶ Run</button><span class="run-hint">Lance pour voir les animations !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Résultat</div>
+        <div class="lab-result" id="result-anim"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run pour voir les animations</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(4)">← Mise en page</button>
+    <button class="btn-next" onclick="goTo(6)">Pratique &amp; Exercices <span class="arrow">→</span></button>
+  </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════╗
+     ║  PANEL 7 — PRATIQUE & EXERCICES       ║
+     ╚════════════════════════════════════════╝ -->
+<div class="panel" id="panel-6">
+
+  <div class="chapter-header">
+    <div class="chapter-label">Chapitre 7 · Mise en pratique</div>
+    <h1 class="chapter-title">Pratique &amp; Exercices</h1>
+    <p class="chapter-desc">Consolide tout ce que tu as appris avec ces exercices interactifs. Lis chaque question attentivement avant de répondre.</p>
+  </div>
+
+  <!-- Ex 1 — fill in -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice 1 — Complète la règle CSS</div>
+  <div class="fill-ex" id="ex1">
+    <div class="fill-ex-title">Remplis les propriétés manquantes <span class="fe-badge">Exercice</span></div>
+    <div style="font-family:'Fira Code',monospace;font-size:0.83rem;line-height:2.4;background:var(--code-bg);padding:18px;border-radius:10px;border:1px solid var(--border);">
+      <span style="color:#79c0ff">h1</span> {<br>
+      &nbsp;&nbsp;<input class="fill-blank" id="ex1-1" style="width:110px" placeholder="???"> : <span style="color:#a8ff78">blue</span>; &nbsp;&nbsp;<span style="color:#4a6a85">/* couleur du texte */</span><br>
+      &nbsp;&nbsp;<input class="fill-blank" id="ex1-2" style="width:110px" placeholder="???"> : <span style="color:#a8ff78">center</span>; &nbsp;<span style="color:#4a6a85">/* alignement */</span><br>
+      &nbsp;&nbsp;<input class="fill-blank" id="ex1-3" style="width:110px" placeholder="???"> : <span style="color:#a8ff78">2rem</span>; &nbsp;&nbsp;&nbsp;<span style="color:#4a6a85">/* taille police */</span><br>
+      }
+    </div>
+    <button class="fill-check" onclick="checkEx1()">Vérifier</button>
+    <div class="fill-result" id="ex1-result"></div>
+  </div>
+
+  <!-- Quizzes -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice 2 — Questions de compréhension</div>
+
+  <div class="quiz-box" id="quiz3">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quelle propriété CSS crée un espace entre le contenu et la bordure ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">A</span><code>margin</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,true)"><span class="quiz-opt-letter">B</span><code>padding</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">C</span><code>border</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz3',this,false)"><span class="quiz-opt-letter">D</span><code>spacing</code></button>
+      </div>
+      <div class="quiz-feedback" id="quiz3-fb"></div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz4">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quelle déclaration active Flexbox sur un conteneur ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">A</span><code>flex: active;</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">B</span><code>display: block;</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,true)"><span class="quiz-opt-letter">C</span><code>display: flex;</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz4',this,false)"><span class="quiz-opt-letter">D</span><code>flex-direction: row;</code></button>
+      </div>
+      <div class="quiz-feedback" id="quiz4-fb"></div>
+    </div>
+  </div>
+
+  <div class="quiz-box" id="quiz5">
+    <div class="quiz-head"><div class="quiz-head-icon">❓</div><div><div class="quiz-head-title">Quelle propriété permet d'animer un changement au survol sans JavaScript ?</div></div></div>
+    <div class="quiz-body">
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">A</span><code>animation</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,true)"><span class="quiz-opt-letter">B</span><code>transition</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">C</span><code>transform</code></button>
+        <button class="quiz-opt" onclick="checkQuiz('quiz5',this,false)"><span class="quiz-opt-letter">D</span><code>hover</code></button>
+      </div>
+      <div class="quiz-feedback" id="quiz5-fb"></div>
+    </div>
+  </div>
+
+  <!-- Exercice final -->
+  <div class="sub-heading"><span class="sh-bar"></span>Exercice final — Stylise une carte complète</div>
+  <div class="info-card">
+    Crée une carte de profil complète en utilisant toutes les propriétés apprises : couleurs, typographie, box model, et une transition au survol.
+  </div>
+
+  <div class="lab-wrap">
+    <div class="lab-header"><div class="lab-title">🏆 Exercice final — Ma carte de profil</div><div class="lab-badge">Libre</div></div>
+    <div class="lab-body">
+      <div class="lab-editor">
+        <div class="lab-editor-label">Écris ton CSS ici</div>
+        <textarea id="lab-final" style="min-height:260px">&lt;style&gt;
+  body { font-family: Arial, sans-serif; background: #f0f4ff; }
+
+  .carte-profil {
+    width: 260px;
+    background: white;
+    border-radius: 16px;
+    padding: 28px 24px;
+    margin: 24px auto;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(18,85,160,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .carte-profil:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(18,85,160,0.22);
+  }
+  .avatar {
+    width: 72px; height: 72px;
+    background: #1255a0;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.8rem; font-weight: bold;
+  }
+  .nom { font-size: 1.1rem; font-weight: 800; color: #1255a0; }
+  .role { font-size: 0.82rem; color: #888; margin-top: 4px; }
+  .badge-css {
+    display: inline-block; margin-top: 14px;
+    background: #e3f2fd; color: #1255a0;
+    border: 1px solid #64b5f6;
+    padding: 4px 14px; border-radius: 99px;
+    font-size: 0.78rem; font-weight: 700;
+  }
+&lt;/style&gt;
+
+&lt;div class="carte-profil"&gt;
+  &lt;div class="avatar"&gt;A&lt;/div&gt;
+  &lt;div class="nom"&gt;Ali Ben Salem&lt;/div&gt;
+  &lt;div class="role"&gt;Élève Bac STI&lt;/div&gt;
+  &lt;span class="badge-css"&gt;CSS3 ✓&lt;/span&gt;
+&lt;/div&gt;</textarea>
+        <div class="lab-run"><button class="run-btn" onclick="runLab('lab-final','result-final')">▶ Run</button><span class="run-hint">Personnalise et survole la carte !</span></div>
+      </div>
+      <div class="lab-preview">
+        <div class="lab-preview-label">Ta carte</div>
+        <div class="lab-result" id="result-final"><em style="color:#aaa;font-size:0.82rem">Clique ▶ Run pour voir ta carte</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bilan -->
+  <div class="sub-heading"><span class="sh-bar"></span>Récapitulatif — Ce que tu as appris</div>
+  <div class="concept-box">
+    <div class="cb-label">✅ Bilan CSS3</div>
+    <p>
+      Tu maîtrises maintenant les bases de CSS3 : la <strong>syntaxe</strong> et les 3 façons d'intégrer du CSS, les <strong>sélecteurs</strong> (type, id, class, pseudo-classes), les propriétés de <strong>texte et couleur</strong>, le <strong>modèle de boîte</strong> (padding, margin, border), la <strong>mise en page</strong> avec Flexbox et Grid, et les <strong>transitions &amp; animations</strong>. Tu es prêt pour découvrir <strong>JavaScript</strong>.
+    </p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-prev" onclick="goTo(5)">← Transitions &amp; Animations</button>
+    <a href="JS_Rappel.html" class="btn-next" style="opacity:0.5;">Next - JavaScript<span class="arrow">→</span></a>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<footer>
+  CSS3 — Apprendre · Annexe 2024-2025 &nbsp;·&nbsp; Bac Sciences de l'informatique &nbsp;·&nbsp; Yousri Ben Hariz
+</footer>
+
+<script>
+  const PANELS = 7;
+
+  function goTo(n) {
+    for (let i = 0; i < PANELS; i++) {
+      document.getElementById('panel-' + i).classList.remove('active');
+      document.querySelectorAll('.pnav-item')[i].classList.remove('active');
+    }
+    document.getElementById('panel-' + n).classList.add('active');
+    document.querySelectorAll('.pnav-item')[n].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function runLab(textareaId, resultId) {
+    document.getElementById(resultId).innerHTML = document.getElementById(textareaId).value;
+  }
+
+  function checkQuiz(quizId, btn, correct) {
+    const box = document.getElementById(quizId);
+    if (box.dataset.answered) return;
+    box.dataset.answered = 'yes';
+    const opts = box.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const fb = document.getElementById(quizId + '-fb');
+    if (correct) {
+      btn.classList.add('correct');
+      fb.textContent = '✅ Correct ! Bonne réponse.';
+      fb.className = 'quiz-feedback show ok';
+    } else {
+      btn.classList.add('wrong');
+      opts.forEach(o => { if (o.getAttribute('onclick').includes('true')) o.classList.add('correct'); });
+      fb.textContent = '❌ Pas tout à fait. Regarde la bonne réponse en vert.';
+      fb.className = 'quiz-feedback show ko';
+    }
+  }
+
+  function checkEx1() {
+    const answers = [
+      { id: 'ex1-1', expected: 'color' },
+      { id: 'ex1-2', expected: 'text-align' },
+      { id: 'ex1-3', expected: 'font-size' },
+    ];
+    const allOk = answers.every(a => document.getElementById(a.id).value.trim().toLowerCase() === a.expected);
+    const result = document.getElementById('ex1-result');
+    if (allOk) {
+      result.textContent = '✅ Parfait ! Les trois propriétés sont correctes.';
+      result.className = 'fill-result show ok';
+    } else {
+      result.textContent = '❌ Pas tout à fait. Rappel : color → text-align → font-size. Vérifie l\'orthographe.';
+      result.className = 'fill-result show ko';
+    }
+  }
+</script>
+</body>
+</html>

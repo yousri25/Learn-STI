@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Projets — Bac STI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00c896;
+    --green-dark: #00a87e;
+    --green-light: #e0fff6;
+    --green-glow: rgba(0,200,150,0.10);
+    --bg: #f4fbf8;
+    --card: #ffffff;
+    --text: #1a2e28;
+    --muted: #5a7a72;
+    --border: #cceee4;
+    --code-bg: #e8faf4;
+    --shadow: 0 2px 20px rgba(0,200,150,0.09);
+    --shadow-lg: 0 6px 32px rgba(0,200,150,0.14);
+    --radius: 16px;
+    --radius-sm: 10px;
+
+    /* level colors */
+    --l1: #c84000; --l1-bg: #fff3e0; --l1-bd: #ffb74d;  /* HTML+CSS */
+    --l2: #a07000; --l2-bg: #fffde8; --l2-bd: #ffd54f;  /* +JS */
+    --l3: #1b6120; --l3-bg: #e8f5e9; --l3-bd: #81c784;  /* +SQL */
+    --l4: #5b1080; --l4-bg: #f3e5f5; --l4-bd: #ba68c8;  /* +PHP */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #00c896 0%, #00e5b0 60%, #00b8d9 100%);
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 24px);
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 99px; padding: 4px 18px;
+    font-size: 0.75rem; font-weight: 700; color: #fff;
+    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px;
+    font-family: 'Fira Code', monospace;
+  }
+  .header h1 {
+    font-size: 2.8rem; font-weight: 800; color: #fff;
+    letter-spacing: -1px; text-shadow: 0 3px 14px rgba(0,0,0,.12);
+    margin-bottom: 10px; line-height: 1.1;
+  }
+  .header p { color: rgba(255,255,255,0.88); font-size: 1rem; max-width: 560px; margin: 0 auto; }
+  .back-link {
+    position: absolute; top: 18px; left: 24px; z-index: 2;
+    text-decoration: none;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+    color: #fff; padding: 6px 14px; border-radius: 99px;
+    font-size: 0.78rem; font-weight: 600;
+    font-family: 'Fira Code', monospace; transition: background .18s;
+  }
+  .back-link:hover { background: rgba(255,255,255,0.32); }
+
+  /* ─── LEVEL TABS NAV ─── */
+  .level-nav {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 0 24px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); overflow-x: auto;
+  }
+  .level-nav-inner {
+    display: flex; align-items: stretch;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .lnav-btn {
+    display: flex; align-items: center; gap: 9px;
+    padding: 14px 20px; cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--muted); font-size: 0.8rem; font-weight: 600;
+    white-space: nowrap; transition: all .18s; flex-shrink: 0;
+    background: none; border-top: none; border-left: none; border-right: none;
+    font-family: 'Sora', sans-serif;
+  }
+  .lnav-btn:hover { color: var(--text); background: var(--green-glow); }
+  .lnav-btn.active { color: var(--green-dark); border-bottom-color: var(--green); }
+  .lnav-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .lnav-btn[data-level="1"] .lnav-dot { background: var(--l1); }
+  .lnav-btn[data-level="2"] .lnav-dot { background: var(--l2); }
+  .lnav-btn[data-level="3"] .lnav-dot { background: var(--l3); }
+  .lnav-btn[data-level="4"] .lnav-dot { background: var(--l4); }
+  .lnav-btn[data-level="5"] .lnav-dot { background: var(--green); }
+
+  /* ─── PAGE ─── */
+  .page { max-width: 1000px; margin: 0 auto; padding: 48px 24px 80px; }
+  .level-panel { display: none; }
+  .level-panel.active { display: block; }
+
+  /* ─── LEVEL HEADER ─── */
+  .level-header {
+    display: flex; align-items: flex-start; gap: 18px;
+    padding: 26px 28px;
+    border-radius: var(--radius);
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+  }
+  .level-header.l1 { background: var(--l1-bg); border: 2px solid var(--l1-bd); }
+  .level-header.l2 { background: var(--l2-bg); border: 2px solid var(--l2-bd); }
+  .level-header.l3 { background: var(--l3-bg); border: 2px solid var(--l3-bd); }
+  .level-header.l4 { background: var(--l4-bg); border: 2px solid var(--l4-bd); }
+
+  .level-num {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+    border: 2px solid;
+  }
+  .level-header.l1 .level-num { background: #fff; border-color: var(--l1-bd); }
+  .level-header.l2 .level-num { background: #fff; border-color: var(--l2-bd); }
+  .level-header.l3 .level-num { background: #fff; border-color: var(--l3-bd); }
+  .level-header.l4 .level-num { background: #fff; border-color: var(--l4-bd); }
+
+  .level-info h2 { font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .level-info p { font-size: 0.86rem; color: var(--muted); line-height: 1.6; }
+  .level-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .stack-chip {
+    font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 99px; border: 1px solid;
+  }
+  .chip-html { background: var(--l1-bg); color: var(--l1); border-color: var(--l1-bd); }
+  .chip-css  { background: #e3f2fd;      color: #1255a0; border-color: #64b5f6; }
+  .chip-js   { background: var(--l2-bg); color: var(--l2); border-color: var(--l2-bd); }
+  .chip-sql  { background: var(--l3-bg); color: var(--l3); border-color: var(--l3-bd); }
+  .chip-php  { background: var(--l4-bg); color: var(--l4); border-color: var(--l4-bd); }
+  .chip-xampp{ background: #fff8f0;      color: #8b3a00; border-color: #f0a070; }
+
+  /* ─── PROJECT CARDS ─── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 22px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 520px) { .projects-grid { grid-template-columns: 1fr; } }
+
+  .project-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow .2s, transform .2s;
+  }
+  .project-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+
+  .project-head {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .project-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0; border: 1.5px solid;
+  }
+  .l1 .project-icon { background: var(--l1-bg); border-color: var(--l1-bd); }
+  .l2 .project-icon { background: var(--l2-bg); border-color: var(--l2-bd); }
+  .l3 .project-icon { background: var(--l3-bg); border-color: var(--l3-bd); }
+  .l4 .project-icon { background: var(--l4-bg); border-color: var(--l4-bd); }
+
+  .project-meta { flex: 1; }
+  .project-title { font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .project-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+  .project-diff {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    padding: 3px 9px; border-radius: 99px; border: 1px solid;
+    align-self: flex-start; white-space: nowrap;
+  }
+  .diff-easy   { background: #e8f5e9; color: #1b6120; border-color: #81c784; }
+  .diff-medium { background: #fffde8; color: #a07000; border-color: #ffd54f; }
+  .diff-hard   { background: #ffebee; color: #b71c1c; border-color: #ef9a9a; }
+
+  .project-skills {
+    padding: 10px 20px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+    border-bottom: 1px solid var(--border);
+    background: #fafefe;
+  }
+  .skill-tag {
+    font-family: 'Fira Code', monospace; font-size: 0.68rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 6px;
+    background: var(--green-light); color: var(--green-dark); border: 1px solid var(--border);
+  }
+
+  .project-objectives {
+    padding: 12px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .obj-label {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .obj-list li {
+    font-size: 0.8rem; color: var(--muted);
+    padding-left: 16px; position: relative; line-height: 1.4;
+  }
+  .obj-list li::before {
+    content: '→'; position: absolute; left: 0;
+    font-family: 'Fira Code', monospace; font-size: 0.72rem; color: var(--green);
+  }
+
+  /* ─── CODE REVEAL ─── */
+  
+  .show-code-btn {
+    width: 100%; padding: 12px 20px;
+    background: var(--bg); border: none;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; font-family: 'Sora', sans-serif;
+    font-size: 0.82rem; font-weight: 700; color: var(--green-dark);
+    transition: background .15s;
+    border-top: 1px solid var(--border);
+  }
+  .show-code-btn:hover { background: var(--green-light); }
+  .show-code-btn .btn-arrow { transition: transform .2s; font-size: 0.75rem; }
+  .show-code-btn.open .btn-arrow { transform: rotate(180deg); }
+
+  .code-reveal {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .code-reveal.open { display: block; }
+
+  .code-tabs {
+    display: flex; background: #0d1a14;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    overflow-x: auto;
+  }
+  .code-tab-btn {
+    padding: 8px 16px; background: none; border: none;
+    font-family: 'Fira Code', monospace; font-size: 0.72rem; font-weight: 600;
+    color: rgba(255,255,255,0.4); cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent; transition: all .15s;
+  }
+  .code-tab-btn:hover { color: rgba(255,255,255,0.7); }
+  .code-tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+
+  .code-pane { display: none; }
+  .code-pane.active { display: block; }
+
+  .code-block {
+    background: #0d1a14; margin: 0;
+    overflow: hidden;
+  }
+  .code-block pre {
+    padding: 18px 20px;
+    font-family: 'Fira Code', monospace; font-size: 0.78rem;
+    line-height: 1.75; color: #a8d8c0;
+    overflow-x: auto; white-space: pre;
+    max-height: 360px;
+  }
+  /* syntax */
+  .ht { color: #ff9e6d; }   /* html tag */
+  .ha { color: #ffd580; }   /* html attribute */
+  .hv { color: #a8ff78; }   /* html value */
+  .cs { color: #79c0ff; }   /* css selector */
+  .cp { color: #ffa657; }   /* css property */
+  .cv { color: #a8ff78; }   /* css value */
+  .jk { color: #ff9e6d; }   /* js keyword */
+  .jf { color: #79c0ff; }   /* js function */
+  .js { color: #a8ff78; }   /* js string */
+  .jn { color: #ffd580; }   /* js number */
+  .cm { color: #3a5a3a; font-style: italic; }  /* comment */
+  .sq { color: #79c0ff; font-weight: 600; }    /* sql keyword */
+  .st { color: #d2a8ff; }   /* sql table */
+  .sv { color: #a8ff78; }   /* sql string */
+  .sn { color: #ffd580; }   /* sql number */
+  .ph { color: #c084fc; font-weight: 600; }    /* php keyword */
+  .pv { color: #a8ff78; }   /* php string */
+  .pn { color: #79c0ff; }   /* php variable */
+
+  /* ─── FAREWELL SECTION ─── */
+  .farewell {
+    background: linear-gradient(135deg, #00c896 0%, #00e5b0 60%, #00b8d9 100%);
+    border-radius: var(--radius);
+    padding: 48px 36px;
+    text-align: center;
+    position: relative; overflow: hidden;
+    margin-top: 16px;
+    box-shadow: var(--shadow-lg);
+  }
+  .farewell::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 24px);
+  }
+  .farewell-inner { position: relative; z-index: 1; }
+  .farewell h2 {
+    font-size: 2.2rem; font-weight: 800; color: #fff;
+    letter-spacing: -1px; margin-bottom: 12px;
+    text-shadow: 0 2px 12px rgba(0,0,0,.12);
+  }
+  .farewell-sub {
+    font-size: 1rem; color: rgba(255,255,255,0.88);
+    max-width: 560px; margin: 0 auto 32px; line-height: 1.7;
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px; margin-bottom: 36px;
+    text-align: left;
+  }
+  .tip-card {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px; padding: 18px;
+    backdrop-filter: blur(4px);
+    transition: background .18s;
+  }
+  .tip-card:hover { background: rgba(255,255,255,0.26); }
+  .tip-icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .tip-title { font-size: 0.9rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+  .tip-text  { font-size: 0.78rem; color: rgba(255,255,255,0.82); line-height: 1.55; }
+
+  .quote-box {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px; padding: 22px 28px;
+    margin: 0 auto 28px; max-width: 600px;
+  }
+  .quote-text {
+    font-size: 1.05rem; color: #fff; font-style: italic;
+    line-height: 1.6; margin-bottom: 8px;
+  }
+  .quote-author {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem; color: rgba(255,255,255,0.65);
+  }
+
+  .farewell-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 40px; background: #fff; color: var(--green-dark);
+    border-radius: 99px; font-size: 0.95rem; font-weight: 800;
+    text-decoration: none; font-family: 'Sora', sans-serif;
+    box-shadow: 0 6px 24px rgba(0,0,0,.15);
+    transition: all .2s;
+  }
+  .farewell-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.2); }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 1.22rem; font-weight: 800; color: var(--green-dark);
+    margin: 0 0 22px; letter-spacing: -.3px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 2px;
+    background: linear-gradient(to right, var(--border), transparent);
+    border-radius: 2px;
+  }
+  .section-icon {
+    width: 32px; height: 32px; background: var(--green);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.85rem; font-weight: 800;
+    font-family: 'Fira Code', monospace; flex-shrink: 0;
+  }
+
+  /* ─── INFO BOX ─── */
+  .info-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 4px solid var(--green); border-radius: var(--radius-sm);
+    padding: 14px 18px; margin-bottom: 22px;
+    font-size: 0.87rem; color: var(--muted); line-height: 1.65;
+    box-shadow: var(--shadow);
+  }
+  .info-card strong { color: var(--text); }
+
+  footer {
+    text-align: center; padding: 28px;
+    font-size: 0.78rem; color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    .farewell h2 { font-size: 1.7rem; }
+    .farewell { padding: 36px 20px; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <a href="SQL_Rappel.html" class="back-link">← SQL</a>
+  <div class="header-inner">
+    <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+    <h1>Projets Pratiques</h1>
+    <p>Mets en pratique tout ce que tu as appris — du HTML pur jusqu'à l'application web complète avec base de données</p>
+  </div>
+</div>
+
+<!-- LEVEL NAV -->
+<nav class="level-nav">
+  <div class="level-nav-inner">
+    <button class="lnav-btn active" data-level="1" onclick="goToLevel(0)">
+      <span class="lnav-dot"></span>Niveau 1 — HTML + CSS
+    </button>
+    <button class="lnav-btn" data-level="2" onclick="goToLevel(1)">
+      <span class="lnav-dot"></span>Niveau 2 — + JavaScript
+    </button>
+    <button class="lnav-btn" data-level="3" onclick="goToLevel(2)">
+      <span class="lnav-dot"></span>Niveau 3 — + SQL &amp; XAMPP
+    </button>
+    <button class="lnav-btn" data-level="4" onclick="goToLevel(3)">
+      <span class="lnav-dot"></span>Niveau 4 — Application complète
+    </button>
+    <button class="lnav-btn" data-level="5" onclick="goToLevel(4)">
+      <span class="lnav-dot"></span>✦ Au revoir
+    </button>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════
+     LEVEL 1 — HTML + CSS
+══════════════════════════════════════ -->
+<div class="level-panel active" id="level-0">
+
+  <div class="level-header l1">
+    <div class="level-num">🎨</div>
+    <div class="level-info">
+      <h2>Niveau 1 — HTML5 + CSS3</h2>
+      <p>Ces projets utilisent uniquement HTML et CSS. Pas de JavaScript, pas de serveur. L'objectif est de maîtriser la structure et la mise en forme d'une page statique.</p>
+      <div class="level-stack">
+        <span class="stack-chip chip-html">HTML5</span>
+        <span class="stack-chip chip-css">CSS3</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="section-icon">①</span>Projets HTML + CSS</div>
+  <div class="info-card">Clique sur <strong>"▶ Voir le code"</strong> pour afficher la correction de chaque projet.</div>
+
+  <div class="projects-grid">
+
+    <!-- P1-1 : CV -->
+    <div class="project-card l1">
+      <div class="project-head">
+        <div class="project-icon">📄</div>
+        <div class="project-meta">
+          <div class="project-title">CV Personnel</div>
+          <div class="project-desc">Crée une page de curriculum vitae personnel avec photo, informations, compétences et expériences.</div>
+        </div>
+        <span class="project-diff diff-easy">Facile</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">Balises sémantiques</span>
+        <span class="skill-tag">Flexbox</span>
+        <span class="skill-tag">Couleurs</span>
+        <span class="skill-tag">Typographie</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Utiliser les balises sémantiques : header, main, section, aside, footer</li>
+          <li>Créer une mise en page à deux colonnes avec Flexbox</li>
+          <li>Styliser titres, listes et informations de contact</li>
+          <li>Ajouter une photo avec border-radius et box-shadow</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'cv-html')">index.html</button>
+            <button class="code-tab-btn" onclick="switchTab(this,'cv-css')">style.css</button>
+          </div>
+          <div id="cv-html" class="code-pane active">
+            <div class="code-block"><pre><span class="cm">&lt;!-- index.html --&gt;</span>
+<span class="ht">&lt;!DOCTYPE html&gt;</span>
+<span class="ht">&lt;html</span> <span class="ha">lang</span>=<span class="hv">"fr"</span><span class="ht">&gt;</span>
+<span class="ht">&lt;head&gt;</span>
+  <span class="ht">&lt;meta</span> <span class="ha">charset</span>=<span class="hv">"UTF-8"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;title&gt;</span>Mon CV<span class="ht">&lt;/title&gt;</span>
+  <span class="ht">&lt;link</span> <span class="ha">rel</span>=<span class="hv">"stylesheet"</span> <span class="ha">href</span>=<span class="hv">"style.css"</span><span class="ht">&gt;</span>
+<span class="ht">&lt;/head&gt;</span>
+<span class="ht">&lt;body&gt;</span>
+  <span class="ht">&lt;div</span> <span class="ha">class</span>=<span class="hv">"cv-wrapper"</span><span class="ht">&gt;</span>
+
+    <span class="cm">&lt;!-- Colonne gauche --&gt;</span>
+    <span class="ht">&lt;aside</span> <span class="ha">class</span>=<span class="hv">"col-gauche"</span><span class="ht">&gt;</span>
+      <span class="ht">&lt;img</span> <span class="ha">src</span>=<span class="hv">"photo.jpg"</span> <span class="ha">alt</span>=<span class="hv">"Photo"</span> <span class="ha">class</span>=<span class="hv">"photo"</span><span class="ht">&gt;</span>
+      <span class="ht">&lt;h2&gt;</span>Ali Ben Salem<span class="ht">&lt;/h2&gt;</span>
+      <span class="ht">&lt;p</span> <span class="ha">class</span>=<span class="hv">"titre-poste"</span><span class="ht">&gt;</span>Étudiant Bac STI<span class="ht">&lt;/p&gt;</span>
+      <span class="ht">&lt;section&gt;</span>
+        <span class="ht">&lt;h3&gt;</span>Contact<span class="ht">&lt;/h3&gt;</span>
+        <span class="ht">&lt;p&gt;</span>📧 ali@email.com<span class="ht">&lt;/p&gt;</span>
+        <span class="ht">&lt;p&gt;</span>📱 +216 XX XXX XXX<span class="ht">&lt;/p&gt;</span>
+        <span class="ht">&lt;p&gt;</span>📍 Tunis, Tunisie<span class="ht">&lt;/p&gt;</span>
+      <span class="ht">&lt;/section&gt;</span>
+      <span class="ht">&lt;section&gt;</span>
+        <span class="ht">&lt;h3&gt;</span>Compétences<span class="ht">&lt;/h3&gt;</span>
+        <span class="ht">&lt;ul&gt;</span>
+          <span class="ht">&lt;li&gt;</span>HTML5 / CSS3<span class="ht">&lt;/li&gt;</span>
+          <span class="ht">&lt;li&gt;</span>JavaScript<span class="ht">&lt;/li&gt;</span>
+          <span class="ht">&lt;li&gt;</span>PHP / MySQL<span class="ht">&lt;/li&gt;</span>
+        <span class="ht">&lt;/ul&gt;</span>
+      <span class="ht">&lt;/section&gt;</span>
+    <span class="ht">&lt;/aside&gt;</span>
+
+    <span class="cm">&lt;!-- Colonne droite --&gt;</span>
+    <span class="ht">&lt;main</span> <span class="ha">class</span>=<span class="hv">"col-droite"</span><span class="ht">&gt;</span>
+      <span class="ht">&lt;section&gt;</span>
+        <span class="ht">&lt;h3&gt;</span>À propos<span class="ht">&lt;/h3&gt;</span>
+        <span class="ht">&lt;p&gt;</span>Élève passionné par le développement web...<span class="ht">&lt;/p&gt;</span>
+      <span class="ht">&lt;/section&gt;</span>
+      <span class="ht">&lt;section&gt;</span>
+        <span class="ht">&lt;h3&gt;</span>Formation<span class="ht">&lt;/h3&gt;</span>
+        <span class="ht">&lt;p&gt;&lt;strong&gt;</span>Bac Sciences Informatique<span class="ht">&lt;/strong&gt;&lt;/p&gt;</span>
+        <span class="ht">&lt;p&gt;</span>Lycée — 2024-2025<span class="ht">&lt;/p&gt;</span>
+      <span class="ht">&lt;/section&gt;</span>
+    <span class="ht">&lt;/main&gt;</span>
+
+  <span class="ht">&lt;/div&gt;</span>
+<span class="ht">&lt;/body&gt;&lt;/html&gt;</span></pre></div>
+          </div>
+          <div id="cv-css" class="code-pane">
+            <div class="code-block"><pre><span class="cm">/* style.css */</span>
+<span class="cs">*</span> { <span class="cp">box-sizing</span>: <span class="cv">border-box</span>; <span class="cp">margin</span>: <span class="cv">0</span>; <span class="cp">padding</span>: <span class="cv">0</span>; }
+<span class="cs">body</span> { <span class="cp">font-family</span>: <span class="cv">Arial, sans-serif</span>; <span class="cp">background</span>: <span class="cv">#f0f0f0</span>; }
+
+<span class="cs">.cv-wrapper</span> {
+  <span class="cp">display</span>: <span class="cv">flex</span>;
+  <span class="cp">max-width</span>: <span class="cv">860px</span>;
+  <span class="cp">margin</span>: <span class="cv">30px auto</span>;
+  <span class="cp">background</span>: <span class="cv">#fff</span>;
+  <span class="cp">border-radius</span>: <span class="cv">12px</span>;
+  <span class="cp">box-shadow</span>: <span class="cv">0 4px 20px rgba(0,0,0,0.12)</span>;
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+}
+
+<span class="cs">.col-gauche</span> {
+  <span class="cp">width</span>: <span class="cv">260px</span>;
+  <span class="cp">background</span>: <span class="cv">#1b6120</span>;
+  <span class="cp">color</span>: <span class="cv">#fff</span>;
+  <span class="cp">padding</span>: <span class="cv">28px 20px</span>;
+  <span class="cp">flex-shrink</span>: <span class="cv">0</span>;
+}
+<span class="cs">.photo</span> {
+  <span class="cp">width</span>: <span class="cv">100px</span>; <span class="cp">height</span>: <span class="cv">100px</span>;
+  <span class="cp">border-radius</span>: <span class="cv">50%</span>;
+  <span class="cp">border</span>: <span class="cv">3px solid #fff</span>;
+  <span class="cp">display</span>: <span class="cv">block</span>;
+  <span class="cp">margin</span>: <span class="cv">0 auto 14px</span>;
+  <span class="cp">object-fit</span>: <span class="cv">cover</span>;
+}
+<span class="cs">.col-gauche h2</span> { <span class="cp">text-align</span>: <span class="cv">center</span>; <span class="cp">font-size</span>: <span class="cv">1.1rem</span>; }
+<span class="cs">.titre-poste</span> { <span class="cp">text-align</span>: <span class="cv">center</span>; <span class="cp">opacity</span>: <span class="cv">0.8</span>; <span class="cp">font-size</span>: <span class="cv">0.85rem</span>; <span class="cp">margin-bottom</span>: <span class="cv">20px</span>; }
+<span class="cs">.col-gauche h3</span> { <span class="cp">border-bottom</span>: <span class="cv">1px solid rgba(255,255,255,0.3)</span>; <span class="cp">padding-bottom</span>: <span class="cv">6px</span>; <span class="cp">margin</span>: <span class="cv">18px 0 10px</span>; }
+<span class="cs">.col-gauche p, .col-gauche li</span> { <span class="cp">font-size</span>: <span class="cv">0.84rem</span>; <span class="cp">margin-bottom</span>: <span class="cv">4px</span>; }
+
+<span class="cs">.col-droite</span> { <span class="cp">flex</span>: <span class="cv">1</span>; <span class="cp">padding</span>: <span class="cv">28px 24px</span>; }
+<span class="cs">.col-droite h3</span> {
+  <span class="cp">color</span>: <span class="cv">#1b6120</span>;
+  <span class="cp">border-left</span>: <span class="cv">4px solid #1b6120</span>;
+  <span class="cp">padding-left</span>: <span class="cv">10px</span>;
+  <span class="cp">margin</span>: <span class="cv">20px 0 10px</span>;
+}
+<span class="cs">.col-droite p</span> { <span class="cp">font-size</span>: <span class="cv">0.88rem</span>; <span class="cp">color</span>: <span class="cv">#555</span>; <span class="cp">line-height</span>: <span class="cv">1.6</span>; }</pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P1-2 : Page produit -->
+    <div class="project-card l1">
+      <div class="project-head">
+        <div class="project-icon">🛒</div>
+        <div class="project-meta">
+          <div class="project-title">Page Produit</div>
+          <div class="project-desc">Crée une page de présentation d'un produit (téléphone, livre, chaussure…) avec image, description, prix et un bouton stylisé.</div>
+        </div>
+        <span class="project-diff diff-easy">Facile</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">Box model</span>
+        <span class="skill-tag">Border-radius</span>
+        <span class="skill-tag">Hover</span>
+        <span class="skill-tag">Grid</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Créer une carte produit avec image, titre, prix et description</li>
+          <li>Utiliser CSS Grid pour aligner plusieurs cartes</li>
+          <li>Styliser un bouton avec :hover et transition</li>
+          <li>Gérer les espaces avec padding et margin</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'prod-html')">index.html</button>
+            <button class="code-tab-btn" onclick="switchTab(this,'prod-css')">style.css</button>
+          </div>
+          <div id="prod-html" class="code-pane active">
+            <div class="code-block"><pre><span class="ht">&lt;body&gt;</span>
+  <span class="ht">&lt;h1</span> <span class="ha">class</span>=<span class="hv">"titre-page"</span><span class="ht">&gt;</span>Notre Catalogue<span class="ht">&lt;/h1&gt;</span>
+  <span class="ht">&lt;div</span> <span class="ha">class</span>=<span class="hv">"catalogue"</span><span class="ht">&gt;</span>
+
+    <span class="ht">&lt;div</span> <span class="ha">class</span>=<span class="hv">"carte-produit"</span><span class="ht">&gt;</span>
+      <span class="ht">&lt;img</span> <span class="ha">src</span>=<span class="hv">"tel.jpg"</span> <span class="ha">alt</span>=<span class="hv">"Téléphone"</span><span class="ht">&gt;</span>
+      <span class="ht">&lt;div</span> <span class="ha">class</span>=<span class="hv">"infos"</span><span class="ht">&gt;</span>
+        <span class="ht">&lt;h2&gt;</span>Smartphone Pro<span class="ht">&lt;/h2&gt;</span>
+        <span class="ht">&lt;p&gt;</span>Écran 6.5", 128 Go, double caméra.<span class="ht">&lt;/p&gt;</span>
+        <span class="ht">&lt;p</span> <span class="ha">class</span>=<span class="hv">"prix"</span><span class="ht">&gt;</span>799 DT<span class="ht">&lt;/p&gt;</span>
+        <span class="ht">&lt;button</span> <span class="ha">class</span>=<span class="hv">"btn-acheter"</span><span class="ht">&gt;</span>Ajouter au panier<span class="ht">&lt;/button&gt;</span>
+      <span class="ht">&lt;/div&gt;</span>
+    <span class="ht">&lt;/div&gt;</span>
+
+    <span class="cm">&lt;!-- Répéter pour d'autres produits --&gt;</span>
+
+  <span class="ht">&lt;/div&gt;</span>
+<span class="ht">&lt;/body&gt;</span></pre></div>
+          </div>
+          <div id="prod-css" class="code-pane">
+            <div class="code-block"><pre><span class="cs">.titre-page</span> { <span class="cp">text-align</span>: <span class="cv">center</span>; <span class="cp">padding</span>: <span class="cv">24px</span>; <span class="cp">color</span>: <span class="cv">#333</span>; }
+
+<span class="cs">.catalogue</span> {
+  <span class="cp">display</span>: <span class="cv">grid</span>;
+  <span class="cp">grid-template-columns</span>: <span class="cv">repeat(auto-fill, minmax(240px, 1fr))</span>;
+  <span class="cp">gap</span>: <span class="cv">20px</span>;
+  <span class="cp">max-width</span>: <span class="cv">960px</span>;
+  <span class="cp">margin</span>: <span class="cv">0 auto</span>;
+  <span class="cp">padding</span>: <span class="cv">0 20px 40px</span>;
+}
+
+<span class="cs">.carte-produit</span> {
+  <span class="cp">background</span>: <span class="cv">#fff</span>;
+  <span class="cp">border-radius</span>: <span class="cv">12px</span>;
+  <span class="cp">box-shadow</span>: <span class="cv">0 2px 14px rgba(0,0,0,0.10)</span>;
+  <span class="cp">overflow</span>: <span class="cv">hidden</span>;
+  <span class="cp">transition</span>: <span class="cv">transform 0.2s, box-shadow 0.2s</span>;
+}
+<span class="cs">.carte-produit:hover</span> {
+  <span class="cp">transform</span>: <span class="cv">translateY(-4px)</span>;
+  <span class="cp">box-shadow</span>: <span class="cv">0 8px 28px rgba(0,0,0,0.16)</span>;
+}
+<span class="cs">.carte-produit img</span> { <span class="cp">width</span>: <span class="cv">100%</span>; <span class="cp">height</span>: <span class="cv">180px</span>; <span class="cp">object-fit</span>: <span class="cv">cover</span>; }
+<span class="cs">.infos</span> { <span class="cp">padding</span>: <span class="cv">16px</span>; }
+<span class="cs">.infos h2</span> { <span class="cp">font-size</span>: <span class="cv">1rem</span>; <span class="cp">margin-bottom</span>: <span class="cv">6px</span>; }
+<span class="cs">.infos p</span>  { <span class="cp">font-size</span>: <span class="cv">0.85rem</span>; <span class="cp">color</span>: <span class="cv">#666</span>; <span class="cp">margin-bottom</span>: <span class="cv">10px</span>; }
+<span class="cs">.prix</span>      { <span class="cp">font-size</span>: <span class="cv">1.1rem</span>; <span class="cp">font-weight</span>: <span class="cv">bold</span>; <span class="cp">color</span>: <span class="cv">#1b6120</span> !<span class="cv">important</span>; }
+
+<span class="cs">.btn-acheter</span> {
+  <span class="cp">width</span>: <span class="cv">100%</span>; <span class="cp">padding</span>: <span class="cv">10px</span>;
+  <span class="cp">background</span>: <span class="cv">#1b6120</span>; <span class="cp">color</span>: <span class="cv">#fff</span>;
+  <span class="cp">border</span>: <span class="cv">none</span>; <span class="cp">border-radius</span>: <span class="cv">8px</span>;
+  <span class="cp">cursor</span>: <span class="cv">pointer</span>; <span class="cp">font-size</span>: <span class="cv">0.9rem</span>;
+  <span class="cp">transition</span>: <span class="cv">background 0.2s</span>;
+}
+<span class="cs">.btn-acheter:hover</span> { <span class="cp">background</span>: <span class="cv">#145018</span>; }</pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /projects-grid -->
+</div>
+
+
+<!-- ══════════════════════════════════════
+     LEVEL 2 — HTML + CSS + JS
+══════════════════════════════════════ -->
+<div class="level-panel" id="level-1">
+
+  <div class="level-header l2">
+    <div class="level-num">⚡</div>
+    <div class="level-info">
+      <h2>Niveau 2 — HTML + CSS + JavaScript</h2>
+      <p>Ces projets ajoutent l'interactivité avec JavaScript : réaction aux clics, calculs en direct, validation de formulaires, manipulation du DOM.</p>
+      <div class="level-stack">
+        <span class="stack-chip chip-html">HTML5</span>
+        <span class="stack-chip chip-css">CSS3</span>
+        <span class="stack-chip chip-js">JavaScript</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="section-icon">②</span>Projets HTML + CSS + JavaScript</div>
+  <div class="info-card">Clique sur <strong>"▶ Voir le code"</strong> pour afficher la correction de chaque projet.</div>
+
+  <div class="projects-grid">
+
+    <!-- P2-1 : Calculatrice -->
+    <div class="project-card l2">
+      <div class="project-head">
+        <div class="project-icon">🧮</div>
+        <div class="project-meta">
+          <div class="project-title">Calculatrice de notes</div>
+          <div class="project-desc">L'élève saisit ses notes, le programme calcule automatiquement la moyenne et affiche la mention correspondante.</div>
+        </div>
+        <span class="project-diff diff-easy">Facile</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">getElementById</span>
+        <span class="skill-tag">innerHTML</span>
+        <span class="skill-tag">Calculs JS</span>
+        <span class="skill-tag">Conditions if/else</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Récupérer les valeurs de plusieurs champs input avec <code>value</code></li>
+          <li>Convertir en nombre avec <code>Number()</code> ou <code>parseFloat()</code></li>
+          <li>Calculer la moyenne et l'afficher avec <code>innerHTML</code></li>
+          <li>Afficher la mention selon la note avec if/else if</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'calc-html')">index.html</button>
+          </div>
+          <div id="calc-html" class="code-pane active">
+            <div class="code-block"><pre><span class="ht">&lt;!DOCTYPE html&gt;&lt;html</span> <span class="ha">lang</span>=<span class="hv">"fr"</span><span class="ht">&gt;</span>
+<span class="ht">&lt;head&gt;&lt;meta</span> <span class="ha">charset</span>=<span class="hv">"UTF-8"</span><span class="ht">&gt;&lt;title&gt;</span>Calculatrice<span class="ht">&lt;/title&gt;</span>
+<span class="ht">&lt;style&gt;</span>
+  <span class="cs">body</span>   { <span class="cp">font-family</span>: <span class="cv">Arial</span>; <span class="cp">background</span>: <span class="cv">#f5f5f5</span>; <span class="cp">display</span>: <span class="cv">flex</span>; <span class="cp">justify-content</span>: <span class="cv">center</span>; <span class="cp">padding</span>: <span class="cv">40px 20px</span>; }
+  <span class="cs">.calc</span>  { <span class="cp">background</span>: <span class="cv">#fff</span>; <span class="cp">padding</span>: <span class="cv">28px</span>; <span class="cp">border-radius</span>: <span class="cv">14px</span>; <span class="cp">box-shadow</span>: <span class="cv">0 4px 20px rgba(0,0,0,.1)</span>; <span class="cp">width</span>: <span class="cv">320px</span>; }
+  <span class="cs">h1</span>     { <span class="cp">color</span>: <span class="cv">#a07000</span>; <span class="cp">margin-bottom</span>: <span class="cv">20px</span>; }
+  <span class="cs">label</span>  { <span class="cp">display</span>: <span class="cv">block</span>; <span class="cp">margin</span>: <span class="cv">10px 0 4px</span>; <span class="cp">font-size</span>: <span class="cv">0.88rem</span>; }
+  <span class="cs">input</span>  { <span class="cp">width</span>: <span class="cv">100%</span>; <span class="cp">padding</span>: <span class="cv">8px</span>; <span class="cp">border</span>: <span class="cv">1px solid #ddd</span>; <span class="cp">border-radius</span>: <span class="cv">7px</span>; }
+  <span class="cs">button</span> { <span class="cp">width</span>: <span class="cv">100%</span>; <span class="cp">padding</span>: <span class="cv">11px</span>; <span class="cp">margin-top</span>: <span class="cv">18px</span>; <span class="cp">background</span>: <span class="cv">#d4a017</span>; <span class="cp">color</span>: <span class="cv">#fff</span>; <span class="cp">border</span>: <span class="cv">none</span>; <span class="cp">border-radius</span>: <span class="cv">8px</span>; <span class="cp">cursor</span>: <span class="cv">pointer</span>; <span class="cp">font-size</span>: <span class="cv">0.95rem</span>; <span class="cp">font-weight</span>: <span class="cv">bold</span>; }
+  <span class="cs">#resultat</span> { <span class="cp">margin-top</span>: <span class="cv">16px</span>; <span class="cp">padding</span>: <span class="cv">12px</span>; <span class="cp">background</span>: <span class="cv">#fffde8</span>; <span class="cp">border-radius</span>: <span class="cv">8px</span>; <span class="cp">font-weight</span>: <span class="cv">bold</span>; <span class="cp">display</span>: <span class="cv">none</span>; }
+<span class="ht">&lt;/style&gt;&lt;/head&gt;</span>
+<span class="ht">&lt;body&gt;</span>
+<span class="ht">&lt;div</span> <span class="ha">class</span>=<span class="hv">"calc"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;h1&gt;</span>🧮 Mes Notes<span class="ht">&lt;/h1&gt;</span>
+  <span class="ht">&lt;label&gt;</span>Maths : <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"number"</span> <span class="ha">id</span>=<span class="hv">"maths"</span> <span class="ha">placeholder</span>=<span class="hv">"/20"</span><span class="ht">&gt;&lt;/label&gt;</span>
+  <span class="ht">&lt;label&gt;</span>Français : <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"number"</span> <span class="ha">id</span>=<span class="hv">"fr"</span> <span class="ha">placeholder</span>=<span class="hv">"/20"</span><span class="ht">&gt;&lt;/label&gt;</span>
+  <span class="ht">&lt;label&gt;</span>Informatique : <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"number"</span> <span class="ha">id</span>=<span class="hv">"info"</span> <span class="ha">placeholder</span>=<span class="hv">"/20"</span><span class="ht">&gt;&lt;/label&gt;</span>
+  <span class="ht">&lt;button</span> <span class="ha">onclick</span>=<span class="hv">"calculer()"</span><span class="ht">&gt;</span>Calculer ma moyenne<span class="ht">&lt;/button&gt;</span>
+  <span class="ht">&lt;div</span> <span class="ha">id</span>=<span class="hv">"resultat"</span><span class="ht">&gt;&lt;/div&gt;</span>
+<span class="ht">&lt;/div&gt;</span>
+
+<span class="ht">&lt;script&gt;</span>
+<span class="jk">function</span> <span class="jf">calculer</span>() {
+  <span class="jk">let</span> n1 = <span class="jf">Number</span>(document.<span class="jf">getElementById</span>(<span class="js">"maths"</span>).value);
+  <span class="jk">let</span> n2 = <span class="jf">Number</span>(document.<span class="jf">getElementById</span>(<span class="js">"fr"</span>).value);
+  <span class="jk">let</span> n3 = <span class="jf">Number</span>(document.<span class="jf">getElementById</span>(<span class="js">"info"</span>).value);
+  <span class="jk">let</span> moy = (n1 + n2 + n3) / <span class="jn">3</span>;
+
+  <span class="jk">let</span> mention;
+  <span class="jk">if</span>      (moy &gt;= <span class="jn">16</span>) mention = <span class="js">"Très bien 🏆"</span>;
+  <span class="jk">else if</span> (moy &gt;= <span class="jn">14</span>) mention = <span class="js">"Bien ⭐"</span>;
+  <span class="jk">else if</span> (moy &gt;= <span class="jn">12</span>) mention = <span class="js">"Assez bien ✅"</span>;
+  <span class="jk">else if</span> (moy &gt;= <span class="jn">10</span>) mention = <span class="js">"Passable"</span>;
+  <span class="jk">else</span>                mention = <span class="js">"Insuffisant ❌"</span>;
+
+  <span class="jk">let</span> el = document.<span class="jf">getElementById</span>(<span class="js">"resultat"</span>);
+  el.style.display = <span class="js">"block"</span>;
+  el.innerHTML = <span class="js">"Moyenne : "</span> + moy.toFixed(<span class="jn">2</span>) + <span class="js">"/20 — "</span> + mention;
+}
+<span class="ht">&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</span></pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2-2 : Formulaire validé -->
+    <div class="project-card l2">
+      <div class="project-head">
+        <div class="project-icon">📝</div>
+        <div class="project-meta">
+          <div class="project-title">Formulaire d'inscription validé</div>
+          <div class="project-desc">Un formulaire d'inscription avec validation JavaScript côté client : champs obligatoires, email, mot de passe confirmé.</div>
+        </div>
+        <span class="project-diff diff-medium">Moyen</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">onsubmit</span>
+        <span class="skill-tag">Validation</span>
+        <span class="skill-tag">isNaN()</span>
+        <span class="skill-tag">Messages d'erreur</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Intercepter la soumission du formulaire avec <code>onsubmit="return valider()"</code></li>
+          <li>Vérifier que les champs ne sont pas vides</li>
+          <li>Vérifier que les deux mots de passe correspondent</li>
+          <li>Afficher les messages d'erreur en rouge ou un message de succès</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'form-html')">index.html</button>
+          </div>
+          <div id="form-html" class="code-pane active">
+            <div class="code-block"><pre><span class="ht">&lt;form</span> <span class="ha">onsubmit</span>=<span class="hv">"return valider()"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"text"</span>     <span class="ha">id</span>=<span class="hv">"nom"</span>   <span class="ha">placeholder</span>=<span class="hv">"Nom complet"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"email"</span>    <span class="ha">id</span>=<span class="hv">"email"</span> <span class="ha">placeholder</span>=<span class="hv">"Email"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"password"</span> <span class="ha">id</span>=<span class="hv">"pass1"</span> <span class="ha">placeholder</span>=<span class="hv">"Mot de passe"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"password"</span> <span class="ha">id</span>=<span class="hv">"pass2"</span> <span class="ha">placeholder</span>=<span class="hv">"Confirmer"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;div</span> <span class="ha">id</span>=<span class="hv">"msg"</span><span class="ht">&gt;&lt;/div&gt;</span>
+  <span class="ht">&lt;button</span> <span class="ha">type</span>=<span class="hv">"submit"</span><span class="ht">&gt;</span>S'inscrire<span class="ht">&lt;/button&gt;</span>
+<span class="ht">&lt;/form&gt;</span>
+
+<span class="ht">&lt;script&gt;</span>
+<span class="jk">function</span> <span class="jf">valider</span>() {
+  <span class="jk">let</span> nom   = document.<span class="jf">getElementById</span>(<span class="js">"nom"</span>).value.trim();
+  <span class="jk">let</span> email = document.<span class="jf">getElementById</span>(<span class="js">"email"</span>).value.trim();
+  <span class="jk">let</span> p1    = document.<span class="jf">getElementById</span>(<span class="js">"pass1"</span>).value;
+  <span class="jk">let</span> p2    = document.<span class="jf">getElementById</span>(<span class="js">"pass2"</span>).value;
+  <span class="jk">let</span> msg   = document.<span class="jf">getElementById</span>(<span class="js">"msg"</span>);
+
+  <span class="jk">if</span> (nom === <span class="js">""</span> || email === <span class="js">""</span> || p1 === <span class="js">""</span>) {
+    msg.innerHTML = <span class="js">"❌ Tous les champs sont obligatoires."</span>;
+    msg.style.color = <span class="js">"red"</span>;
+    <span class="jk">return false</span>;
+  }
+  <span class="jk">if</span> (p1 !== p2) {
+    msg.innerHTML = <span class="js">"❌ Les mots de passe ne correspondent pas."</span>;
+    msg.style.color = <span class="js">"red"</span>;
+    <span class="jk">return false</span>;
+  }
+  msg.innerHTML = <span class="js">"✅ Inscription réussie ! Bienvenue "</span> + nom;
+  msg.style.color = <span class="js">"green"</span>;
+  <span class="jk">return false</span>; <span class="cm">// empêche rechargement pour démo</span>
+}
+<span class="ht">&lt;/script&gt;</span></pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     LEVEL 3 — + SQL & XAMPP
+══════════════════════════════════════ -->
+<div class="level-panel" id="level-2">
+
+  <div class="level-header l3">
+    <div class="level-num">🗄️</div>
+    <div class="level-info">
+      <h2>Niveau 3 — SQL &amp; XAMPP (Base de données)</h2>
+      <p>Ces projets concernent la conception et la manipulation d'une base de données MySQL via phpMyAdmin. Pas encore de PHP — on travaille directement en SQL.</p>
+      <div class="level-stack">
+        <span class="stack-chip chip-xampp">XAMPP</span>
+        <span class="stack-chip chip-sql">SQL / MySQL</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="section-icon">③</span>Projets SQL &amp; Base de données</div>
+  <div class="info-card">Ces projets se réalisent dans <strong>phpMyAdmin</strong> (ou directement dans le terminal MySQL). Clique sur <strong>"▶ Voir le code"</strong> pour la correction.</div>
+
+  <div class="projects-grid">
+
+    <!-- P3-1 : Bibliothèque -->
+    <div class="project-card l3">
+      <div class="project-head">
+        <div class="project-icon">📚</div>
+        <div class="project-meta">
+          <div class="project-title">Base de données Bibliothèque</div>
+          <div class="project-desc">Conçois et crée une base de données pour gérer les livres et auteurs d'une bibliothèque.</div>
+        </div>
+        <span class="project-diff diff-medium">Moyen</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">CREATE TABLE</span>
+        <span class="skill-tag">FOREIGN KEY</span>
+        <span class="skill-tag">INSERT INTO</span>
+        <span class="skill-tag">SELECT + JOIN</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Créer deux tables liées : <code>auteur</code> et <code>livre</code></li>
+          <li>Définir les types, contraintes et clé étrangère</li>
+          <li>Insérer des enregistrements de test</li>
+          <li>Écrire des requêtes SELECT avec jointure, filtre et tri</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'bib-create')">CREATE</button>
+            <button class="code-tab-btn" onclick="switchTab(this,'bib-insert')">INSERT</button>
+            <button class="code-tab-btn" onclick="switchTab(this,'bib-select')">SELECT</button>
+          </div>
+          <div id="bib-create" class="code-pane active">
+            <div class="code-block"><pre><span class="cm">-- Créer la base</span>
+<span class="sq">CREATE DATABASE</span> <span class="st">bibliotheque</span>;
+
+<span class="cm">-- Table auteur</span>
+<span class="sq">CREATE TABLE</span> <span class="st">auteur</span> (
+  <span class="st">id_auteur</span>  <span class="sq">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="st">nom</span>        <span class="sq">VARCHAR</span>(<span class="sn">80</span>)  <span class="sq">NOT NULL</span>,
+  <span class="st">nationalite</span> <span class="sq">VARCHAR</span>(<span class="sn">50</span>)
+);
+
+<span class="cm">-- Table livre</span>
+<span class="sq">CREATE TABLE</span> <span class="st">livre</span> (
+  <span class="st">id_livre</span>   <span class="sq">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="st">titre</span>      <span class="sq">VARCHAR</span>(<span class="sn">150</span>) <span class="sq">NOT NULL</span>,
+  <span class="st">annee</span>      <span class="sq">INT</span>,
+  <span class="st">genre</span>      <span class="sq">VARCHAR</span>(<span class="sn">50</span>),
+  <span class="st">id_auteur</span>  <span class="sq">INT</span>,
+  <span class="sq">FOREIGN KEY</span> (<span class="st">id_auteur</span>)
+    <span class="sq">REFERENCES</span> <span class="st">auteur</span>(<span class="st">id_auteur</span>)
+    <span class="sq">ON DELETE CASCADE</span>
+);</pre></div>
+          </div>
+          <div id="bib-insert" class="code-pane">
+            <div class="code-block"><pre><span class="sq">INSERT INTO</span> <span class="st">auteur</span> (<span class="st">nom</span>, <span class="st">nationalite</span>) <span class="sq">VALUES</span>
+  (<span class="sv">'Tahar Ben Jelloun'</span>, <span class="sv">'Marocain'</span>),
+  (<span class="sv">'Albert Camus'</span>,      <span class="sv">'Français'</span>),
+  (<span class="sv">'Mahmoud Darwich'</span>,   <span class="sv">'Palestinien'</span>);
+
+<span class="sq">INSERT INTO</span> <span class="st">livre</span> (<span class="st">titre</span>, <span class="st">annee</span>, <span class="st">genre</span>, <span class="st">id_auteur</span>) <span class="sq">VALUES</span>
+  (<span class="sv">'La Nuit Sacrée'</span>,    <span class="sn">1987</span>, <span class="sv">'Roman'</span>,  <span class="sn">1</span>),
+  (<span class="sv">'L\'Étranger'</span>,        <span class="sn">1942</span>, <span class="sv">'Roman'</span>,  <span class="sn">2</span>),
+  (<span class="sv">'La Peste'</span>,          <span class="sn">1947</span>, <span class="sv">'Roman'</span>,  <span class="sn">2</span>),
+  (<span class="sv">'Journal d\'un arbre'</span>, <span class="sn">1973</span>, <span class="sv">'Poésie'</span>, <span class="sn">3</span>);</pre></div>
+          </div>
+          <div id="bib-select" class="code-pane">
+            <div class="code-block"><pre><span class="cm">-- Tous les livres avec le nom de l'auteur</span>
+<span class="sq">SELECT</span>   <span class="st">l</span>.<span class="st">titre</span>, <span class="st">l</span>.<span class="st">annee</span>, <span class="st">a</span>.<span class="st">nom</span>
+<span class="sq">FROM</span>     <span class="st">livre</span> <span class="sq">AS</span> <span class="st">l</span>, <span class="st">auteur</span> <span class="sq">AS</span> <span class="st">a</span>
+<span class="sq">WHERE</span>    <span class="st">l</span>.<span class="st">id_auteur</span> = <span class="st">a</span>.<span class="st">id_auteur</span>
+<span class="sq">ORDER BY</span> <span class="st">l</span>.<span class="st">annee</span> <span class="sq">ASC</span>;
+
+<span class="cm">-- Livres d'Albert Camus</span>
+<span class="sq">SELECT</span>   <span class="st">l</span>.<span class="st">titre</span>, <span class="st">l</span>.<span class="st">annee</span>
+<span class="sq">FROM</span>     <span class="st">livre</span> <span class="sq">AS</span> <span class="st">l</span>, <span class="st">auteur</span> <span class="sq">AS</span> <span class="st">a</span>
+<span class="sq">WHERE</span>    <span class="st">l</span>.<span class="st">id_auteur</span> = <span class="st">a</span>.<span class="st">id_auteur</span>
+<span class="sq">AND</span>      <span class="st">a</span>.<span class="st">nom</span> = <span class="sv">'Albert Camus'</span>;
+
+<span class="cm">-- Nombre de livres par auteur</span>
+<span class="sq">SELECT</span>   <span class="st">a</span>.<span class="st">nom</span>, <span class="sq">COUNT</span>(<span class="st">l</span>.<span class="st">id_livre</span>) <span class="sq">AS</span> <span class="sv">"Nb livres"</span>
+<span class="sq">FROM</span>     <span class="st">livre</span> <span class="sq">AS</span> <span class="st">l</span>, <span class="st">auteur</span> <span class="sq">AS</span> <span class="st">a</span>
+<span class="sq">WHERE</span>    <span class="st">l</span>.<span class="st">id_auteur</span> = <span class="st">a</span>.<span class="st">id_auteur</span>
+<span class="sq">GROUP BY</span> <span class="st">a</span>.<span class="st">nom</span>;</pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P3-2 : Gestion école -->
+    <div class="project-card l3">
+      <div class="project-head">
+        <div class="project-icon">🏫</div>
+        <div class="project-meta">
+          <div class="project-title">Gestion des élèves</div>
+          <div class="project-desc">Base de données scolaire : classes, élèves et notes avec requêtes de statistiques par classe.</div>
+        </div>
+        <span class="project-diff diff-hard">Difficile</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">Relations PK/FK</span>
+        <span class="skill-tag">AVG / MAX / MIN</span>
+        <span class="skill-tag">GROUP BY + HAVING</span>
+        <span class="skill-tag">ORDER BY</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Créer 3 tables liées : classe, eleve, note</li>
+          <li>Calculer la moyenne, le max et le min par classe</li>
+          <li>Lister les élèves admis (moyenne ≥ 10)</li>
+          <li>Trouver les classes avec une moyenne générale ≥ 12</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'ec-create')">CREATE</button>
+            <button class="code-tab-btn" onclick="switchTab(this,'ec-stats')">Statistiques</button>
+          </div>
+          <div id="ec-create" class="code-pane active">
+            <div class="code-block"><pre><span class="sq">CREATE TABLE</span> <span class="st">classe</span> (
+  <span class="st">id_classe</span> <span class="sq">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="st">libelle</span>   <span class="sq">VARCHAR</span>(<span class="sn">30</span>) <span class="sq">NOT NULL</span>
+);
+
+<span class="sq">CREATE TABLE</span> <span class="st">eleve</span> (
+  <span class="st">id_eleve</span>  <span class="sq">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="st">nom</span>       <span class="sq">VARCHAR</span>(<span class="sn">50</span>) <span class="sq">NOT NULL</span>,
+  <span class="st">prenom</span>    <span class="sq">VARCHAR</span>(<span class="sn">50</span>) <span class="sq">NOT NULL</span>,
+  <span class="st">id_classe</span> <span class="sq">INT</span>,
+  <span class="sq">FOREIGN KEY</span> (<span class="st">id_classe</span>) <span class="sq">REFERENCES</span> <span class="st">classe</span>(<span class="st">id_classe</span>)
+);
+
+<span class="sq">CREATE TABLE</span> <span class="st">note</span> (
+  <span class="st">id_note</span>   <span class="sq">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="st">matiere</span>   <span class="sq">VARCHAR</span>(<span class="sn">50</span>),
+  <span class="st">valeur</span>    <span class="sq">DECIMAL</span>(<span class="sn">4</span>,<span class="sn">2</span>) <span class="sq">CHECK</span> (<span class="st">valeur</span> <span class="sq">BETWEEN</span> <span class="sn">0</span> <span class="sq">AND</span> <span class="sn">20</span>),
+  <span class="st">id_eleve</span>  <span class="sq">INT</span>,
+  <span class="sq">FOREIGN KEY</span> (<span class="st">id_eleve</span>) <span class="sq">REFERENCES</span> <span class="st">eleve</span>(<span class="st">id_eleve</span>)
+);</pre></div>
+          </div>
+          <div id="ec-stats" class="code-pane">
+            <div class="code-block"><pre><span class="cm">-- Moyenne par élève</span>
+<span class="sq">SELECT</span>   <span class="st">e</span>.<span class="st">nom</span>, <span class="st">e</span>.<span class="st">prenom</span>, <span class="sq">AVG</span>(<span class="st">n</span>.<span class="st">valeur</span>) <span class="sq">AS</span> <span class="sv">"Moyenne"</span>
+<span class="sq">FROM</span>     <span class="st">eleve</span> <span class="st">e</span>, <span class="st">note</span> <span class="st">n</span>
+<span class="sq">WHERE</span>    <span class="st">e</span>.<span class="st">id_eleve</span> = <span class="st">n</span>.<span class="st">id_eleve</span>
+<span class="sq">GROUP BY</span> <span class="st">e</span>.<span class="st">id_eleve</span>
+<span class="sq">HAVING</span>   <span class="sq">AVG</span>(<span class="st">n</span>.<span class="st">valeur</span>) &gt;= <span class="sn">10</span>
+<span class="sq">ORDER BY</span> <span class="sq">AVG</span>(<span class="st">n</span>.<span class="st">valeur</span>) <span class="sq">DESC</span>;
+
+<span class="cm">-- Stats par classe</span>
+<span class="sq">SELECT</span>   <span class="st">c</span>.<span class="st">libelle</span>,
+         <span class="sq">AVG</span>(<span class="st">n</span>.<span class="st">valeur</span>) <span class="sq">AS</span> <span class="sv">"Moy"</span>,
+         <span class="sq">MAX</span>(<span class="st">n</span>.<span class="st">valeur</span>) <span class="sq">AS</span> <span class="sv">"Max"</span>,
+         <span class="sq">MIN</span>(<span class="st">n</span>.<span class="st">valeur</span>) <span class="sq">AS</span> <span class="sv">"Min"</span>
+<span class="sq">FROM</span>     <span class="st">classe</span> <span class="st">c</span>, <span class="st">eleve</span> <span class="st">e</span>, <span class="st">note</span> <span class="st">n</span>
+<span class="sq">WHERE</span>    <span class="st">c</span>.<span class="st">id_classe</span> = <span class="st">e</span>.<span class="st">id_classe</span>
+<span class="sq">AND</span>      <span class="st">e</span>.<span class="st">id_eleve</span>  = <span class="st">n</span>.<span class="st">id_eleve</span>
+<span class="sq">GROUP BY</span> <span class="st">c</span>.<span class="st">id_classe</span>
+<span class="sq">HAVING</span>   <span class="sq">AVG</span>(<span class="st">n</span>.<span class="st">valeur</span>) &gt;= <span class="sn">12</span>;</pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     LEVEL 4 — APPLICATION COMPLÈTE
+══════════════════════════════════════ -->
+<div class="level-panel" id="level-3">
+
+  <div class="level-header l4">
+    <div class="level-num">🚀</div>
+    <div class="level-info">
+      <h2>Niveau 4 — Application web complète</h2>
+      <p>Ces projets combinent toutes les technologies : HTML/CSS pour l'interface, JavaScript pour la validation côté client, PHP pour le traitement serveur, et MySQL pour le stockage des données.</p>
+      <div class="level-stack">
+        <span class="stack-chip chip-html">HTML5</span>
+        <span class="stack-chip chip-css">CSS3</span>
+        <span class="stack-chip chip-js">JavaScript</span>
+        <span class="stack-chip chip-php">PHP</span>
+        <span class="stack-chip chip-sql">MySQL</span>
+        <span class="stack-chip chip-xampp">XAMPP</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="section-icon">④</span>Projets Application Complète</div>
+  <div class="info-card">Ces projets nécessitent <strong>XAMPP démarré</strong> (Apache + MySQL). Les fichiers PHP se placent dans le dossier <code>htdocs/</code>. Accès via <code>http://localhost/monprojet/</code></div>
+
+  <div class="projects-grid">
+
+    <!-- P4-1 : Livre d'or -->
+    <div class="project-card l4">
+      <div class="project-head">
+        <div class="project-icon">📖</div>
+        <div class="project-meta">
+          <div class="project-title">Livre d'or (Guestbook)</div>
+          <div class="project-desc">Un formulaire HTML envoie un message en PHP qui l'enregistre en MySQL. La page affiche ensuite tous les messages.</div>
+        </div>
+        <span class="project-diff diff-medium">Moyen</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">$_POST</span>
+        <span class="skill-tag">mysqli_connect</span>
+        <span class="skill-tag">INSERT + SELECT</span>
+        <span class="skill-tag">mysqli_fetch_array</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Créer la table <code>message(id, nom, texte, date_envoi)</code></li>
+          <li>Créer un formulaire HTML avec méthode POST</li>
+          <li>PHP reçoit $_POST, insère en base avec mysqli</li>
+          <li>PHP lit tous les messages et les affiche dans la page</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'go-sql')">SQL</button>
+            <button class="code-tab-btn" onclick="switchTab(this,'go-php')">index.php</button>
+          </div>
+          <div id="go-sql" class="code-pane active">
+            <div class="code-block"><pre><span class="sq">CREATE DATABASE</span> <span class="st">guestbook</span>;
+
+<span class="sq">CREATE TABLE</span> <span class="st">message</span> (
+  <span class="st">id</span>         <span class="sq">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="st">nom</span>        <span class="sq">VARCHAR</span>(<span class="sn">80</span>)  <span class="sq">NOT NULL</span>,
+  <span class="st">texte</span>      <span class="sq">TEXT</span>         <span class="sq">NOT NULL</span>,
+  <span class="st">date_envoi</span> <span class="sq">DATETIME DEFAULT</span> <span class="sq">NOW</span>()
+);</pre></div>
+          </div>
+          <div id="go-php" class="code-pane">
+            <div class="code-block"><pre><span class="cm">&lt;?php</span>
+<span class="cm">// Connexion à la base de données</span>
+<span class="pn">$conn</span> = <span class="ph">mysqli_connect</span>(<span class="pv">"localhost"</span>, <span class="pv">"root"</span>, <span class="pv">""</span>, <span class="pv">"guestbook"</span>);
+
+<span class="cm">// Traitement du formulaire (POST)</span>
+<span class="ph">if</span> (<span class="ph">isset</span>(<span class="pn">$_POST</span>[<span class="pv">"nom"</span>])) {
+  <span class="pn">$nom</span>   = <span class="pn">$_POST</span>[<span class="pv">"nom"</span>];
+  <span class="pn">$texte</span> = <span class="pn">$_POST</span>[<span class="pv">"texte"</span>];
+  <span class="pn">$sql</span>   = <span class="pv">"INSERT INTO message (nom, texte) VALUES ('$nom', '$texte')"</span>;
+  <span class="ph">mysqli_query</span>(<span class="pn">$conn</span>, <span class="pn">$sql</span>);
+}
+<span class="cm">?&gt;</span>
+<span class="ht">&lt;!DOCTYPE html&gt;&lt;html</span> <span class="ha">lang</span>=<span class="hv">"fr"</span><span class="ht">&gt;</span>
+<span class="ht">&lt;head&gt;&lt;meta</span> <span class="ha">charset</span>=<span class="hv">"UTF-8"</span><span class="ht">&gt;&lt;title&gt;</span>Livre d'or<span class="ht">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="ht">&lt;body&gt;</span>
+  <span class="ht">&lt;h1&gt;</span>📖 Livre d'or<span class="ht">&lt;/h1&gt;</span>
+
+  <span class="cm">&lt;!-- Formulaire --&gt;</span>
+  <span class="ht">&lt;form</span> <span class="ha">method</span>=<span class="hv">"post"</span><span class="ht">&gt;</span>
+    <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"text"</span>     <span class="ha">name</span>=<span class="hv">"nom"</span>   <span class="ha">placeholder</span>=<span class="hv">"Votre nom"</span>     <span class="ha">required</span><span class="ht">&gt;</span>
+    <span class="ht">&lt;textarea</span>              <span class="ha">name</span>=<span class="hv">"texte"</span> <span class="ha">placeholder</span>=<span class="hv">"Votre message"</span> <span class="ha">required</span><span class="ht">&gt;&lt;/textarea&gt;</span>
+    <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"submit"</span> <span class="ha">value</span>=<span class="hv">"Envoyer"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;/form&gt;</span>
+
+  <span class="ht">&lt;h2&gt;</span>Messages<span class="ht">&lt;/h2&gt;</span>
+  <span class="cm">&lt;?php</span>
+  <span class="cm">// Lire et afficher les messages</span>
+  <span class="pn">$res</span> = <span class="ph">mysqli_query</span>(<span class="pn">$conn</span>, <span class="pv">"SELECT * FROM message ORDER BY date_envoi DESC"</span>);
+  <span class="ph">while</span> (<span class="pn">$row</span> = <span class="ph">mysqli_fetch_array</span>(<span class="pn">$res</span>)) {
+    <span class="ph">echo</span> <span class="pv">"&lt;div&gt;&lt;strong&gt;"</span> . <span class="pn">$row</span>[<span class="pv">"nom"</span>] . <span class="pv">"&lt;/strong&gt; — "</span>
+       . <span class="pn">$row</span>[<span class="pv">"texte"</span>]
+       . <span class="pv">" &lt;small&gt;("</span> . <span class="pn">$row</span>[<span class="pv">"date_envoi"</span>] . <span class="pv">"&lt;/small&gt;&lt;/div&gt;"</span>;
+  }
+  <span class="ph">mysqli_close</span>(<span class="pn">$conn</span>);
+  <span class="cm">?&gt;</span>
+<span class="ht">&lt;/body&gt;&lt;/html&gt;</span></pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P4-2 : Gestion étudiants -->
+    <div class="project-card l4">
+      <div class="project-head">
+        <div class="project-icon">🎓</div>
+        <div class="project-meta">
+          <div class="project-title">CRUD Étudiants</div>
+          <div class="project-desc">Application complète de gestion d'étudiants : ajouter, afficher dans un tableau, et supprimer des enregistrements via PHP et MySQL.</div>
+        </div>
+        <span class="project-diff diff-hard">Difficile</span>
+      </div>
+      <div class="project-skills">
+        <span class="skill-tag">CRUD complet</span>
+        <span class="skill-tag">$_GET / $_POST</span>
+        <span class="skill-tag">Tableau HTML dynamique</span>
+        <span class="skill-tag">DELETE avec id</span>
+      </div>
+      <div class="project-objectives">
+        <div class="obj-label">Objectifs</div>
+        <ul class="obj-list">
+          <li>Créer la table <code>etudiant(id, nom, prenom, note)</code></li>
+          <li>Formulaire HTML POST → PHP insère en base</li>
+          <li>PHP lit tous les étudiants et génère un tableau HTML</li>
+          <li>Lien "Supprimer" passe l'id en GET → PHP exécute DELETE</li>
+        </ul>
+      </div>
+      <div class="project-code-section">
+        <button class="show-code-btn" onclick="toggleCode(this)">
+          ▶ Voir le code — Correction
+          <span class="btn-arrow">▼</span>
+        </button>
+        <div class="code-reveal">
+          <div class="code-tabs">
+            <button class="code-tab-btn active" onclick="switchTab(this,'crud-sql')">SQL</button>
+            <button class="code-tab-btn" onclick="switchTab(this,'crud-php')">index.php</button>
+          </div>
+          <div id="crud-sql" class="code-pane active">
+            <div class="code-block"><pre><span class="sq">CREATE DATABASE</span> <span class="st">gestion_etudiants</span>;
+
+<span class="sq">CREATE TABLE</span> <span class="st">etudiant</span> (
+  <span class="st">id</span>     <span class="sq">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  <span class="st">nom</span>    <span class="sq">VARCHAR</span>(<span class="sn">60</span>)  <span class="sq">NOT NULL</span>,
+  <span class="st">prenom</span> <span class="sq">VARCHAR</span>(<span class="sn">60</span>)  <span class="sq">NOT NULL</span>,
+  <span class="st">note</span>   <span class="sq">DECIMAL</span>(<span class="sn">4</span>,<span class="sn">2</span>) <span class="sq">CHECK</span> (<span class="st">note</span> <span class="sq">BETWEEN</span> <span class="sn">0</span> <span class="sq">AND</span> <span class="sn">20</span>)
+);</pre></div>
+          </div>
+          <div id="crud-php" class="code-pane">
+            <div class="code-block"><pre><span class="cm">&lt;?php</span>
+<span class="pn">$conn</span> = <span class="ph">mysqli_connect</span>(<span class="pv">"localhost"</span>, <span class="pv">"root"</span>, <span class="pv">""</span>, <span class="pv">"gestion_etudiants"</span>);
+
+<span class="cm">// Ajout</span>
+<span class="ph">if</span> (<span class="ph">isset</span>(<span class="pn">$_POST</span>[<span class="pv">"nom"</span>])) {
+  <span class="pn">$n</span> = <span class="pn">$_POST</span>[<span class="pv">"nom"</span>]; <span class="pn">$p</span> = <span class="pn">$_POST</span>[<span class="pv">"prenom"</span>]; <span class="pn">$nt</span> = <span class="pn">$_POST</span>[<span class="pv">"note"</span>];
+  <span class="ph">mysqli_query</span>(<span class="pn">$conn</span>, <span class="pv">"INSERT INTO etudiant (nom,prenom,note) VALUES ('$n','$p','$nt')"</span>);
+}
+
+<span class="cm">// Suppression</span>
+<span class="ph">if</span> (<span class="ph">isset</span>(<span class="pn">$_GET</span>[<span class="pv">"suppr"</span>])) {
+  <span class="pn">$id</span> = <span class="pn">$_GET</span>[<span class="pv">"suppr"</span>];
+  <span class="ph">mysqli_query</span>(<span class="pn">$conn</span>, <span class="pv">"DELETE FROM etudiant WHERE id = $id"</span>);
+}
+<span class="cm">?&gt;</span>
+<span class="ht">&lt;!DOCTYPE html&gt;&lt;html</span> <span class="ha">lang</span>=<span class="hv">"fr"</span><span class="ht">&gt;</span>
+<span class="ht">&lt;head&gt;&lt;meta</span> <span class="ha">charset</span>=<span class="hv">"UTF-8"</span><span class="ht">&gt;&lt;title&gt;</span>Gestion Étudiants<span class="ht">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="ht">&lt;body&gt;</span>
+<span class="ht">&lt;h1&gt;</span>🎓 Gestion des Étudiants<span class="ht">&lt;/h1&gt;</span>
+
+<span class="cm">&lt;!-- Formulaire ajout --&gt;</span>
+<span class="ht">&lt;form</span> <span class="ha">method</span>=<span class="hv">"post"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"text"</span>   <span class="ha">name</span>=<span class="hv">"nom"</span>    <span class="ha">placeholder</span>=<span class="hv">"Nom"</span>    <span class="ha">required</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"text"</span>   <span class="ha">name</span>=<span class="hv">"prenom"</span> <span class="ha">placeholder</span>=<span class="hv">"Prénom"</span> <span class="ha">required</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"number"</span> <span class="ha">name</span>=<span class="hv">"note"</span>   <span class="ha">placeholder</span>=<span class="hv">"Note"</span> <span class="ha">min</span>=<span class="hv">"0"</span> <span class="ha">max</span>=<span class="hv">"20"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;input</span> <span class="ha">type</span>=<span class="hv">"submit"</span> <span class="ha">value</span>=<span class="hv">"Ajouter"</span><span class="ht">&gt;</span>
+<span class="ht">&lt;/form&gt;</span>
+
+<span class="cm">&lt;!-- Tableau des étudiants --&gt;</span>
+<span class="ht">&lt;table</span> <span class="ha">border</span>=<span class="hv">"1"</span><span class="ht">&gt;</span>
+  <span class="ht">&lt;thead&gt;&lt;tr&gt;</span>
+    <span class="ht">&lt;th&gt;</span>ID<span class="ht">&lt;/th&gt;&lt;th&gt;</span>Nom<span class="ht">&lt;/th&gt;&lt;th&gt;</span>Prénom<span class="ht">&lt;/th&gt;&lt;th&gt;</span>Note<span class="ht">&lt;/th&gt;&lt;th&gt;</span>Action<span class="ht">&lt;/th&gt;</span>
+  <span class="ht">&lt;/tr&gt;&lt;/thead&gt;</span>
+  <span class="ht">&lt;tbody&gt;</span>
+  <span class="cm">&lt;?php</span>
+    <span class="pn">$res</span> = <span class="ph">mysqli_query</span>(<span class="pn">$conn</span>, <span class="pv">"SELECT * FROM etudiant ORDER BY nom"</span>);
+    <span class="ph">while</span> (<span class="pn">$r</span> = <span class="ph">mysqli_fetch_array</span>(<span class="pn">$res</span>)) {
+      <span class="ph">echo</span> <span class="pv">"&lt;tr&gt;</span>
+        <span class="pv">&lt;td&gt;"</span>.<span class="pn">$r</span>[<span class="pv">"id"</span>].    <span class="pv">"&lt;/td&gt;
+        &lt;td&gt;"</span>.<span class="pn">$r</span>[<span class="pv">"nom"</span>].   <span class="pv">"&lt;/td&gt;
+        &lt;td&gt;"</span>.<span class="pn">$r</span>[<span class="pv">"prenom"</span>].<span class="pv">"&lt;/td&gt;
+        &lt;td&gt;"</span>.<span class="pn">$r</span>[<span class="pv">"note"</span>].  <span class="pv">"&lt;/td&gt;
+        &lt;td&gt;&lt;a href='?suppr="</span>.<span class="pn">$r</span>[<span class="pv">"id"</span>].<span class="pv">"'&gt;Supprimer&lt;/a&gt;&lt;/td&gt;
+        &lt;/tr&gt;"</span>;
+    }
+    <span class="ph">mysqli_close</span>(<span class="pn">$conn</span>);
+  <span class="cm">?&gt;</span>
+  <span class="ht">&lt;/tbody&gt;</span>
+<span class="ht">&lt;/table&gt;</span>
+<span class="ht">&lt;/body&gt;&lt;/html&gt;</span></pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     LEVEL 5 — AU REVOIR
+══════════════════════════════════════ -->
+<div class="level-panel" id="level-4">
+
+  <div class="farewell">
+    <div class="farewell-inner">
+
+      <div style="font-size:3.5rem;margin-bottom:16px;">🎓</div>
+      <h2>Félicitations — Tu as tout appris !</h2>
+      <p class="farewell-sub">
+        Tu as parcouru HTML5, CSS3, JavaScript, SQL et PHP. Tu sais maintenant construire des pages web, les styliser, les rendre interactives, les connecter à une base de données et les piloter avec PHP. C'est exactement ce qu'il faut pour réussir ton Bac STI.
+      </p>
+
+      <div class="quote-box">
+        <div class="quote-text">"La seule façon d'apprendre à programmer, c'est d'écrire des programmes."</div>
+        <div class="quote-author">— Dennis Ritchie, créateur du langage C</div>
+      </div>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">🔁</div>
+          <div class="tip-title">Pratique tous les jours</div>
+          <div class="tip-text">Même 20 minutes par jour suffisent. Recode les projets sans regarder la correction. C'est en faisant qu'on apprend.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🐛</div>
+          <div class="tip-title">Les erreurs sont normales</div>
+          <div class="tip-text">Chaque développeur professionnel fait des erreurs chaque jour. Lire le message d'erreur et comprendre pourquoi, c'est la vraie compétence.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📐</div>
+          <div class="tip-title">Comprends avant de copier</div>
+          <div class="tip-text">Avant de coller du code, lis-le ligne par ligne. Pose-toi la question : que fait cette ligne exactement ? Pourquoi ?</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🏗️</div>
+          <div class="tip-title">Construis tes propres projets</div>
+          <div class="tip-text">Les projets du cours sont des exercices. Invente tes propres idées : un site pour ta classe, un mini-jeu, une liste de courses — tout compte.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📝</div>
+          <div class="tip-title">Prépare le Bac avec méthode</div>
+          <div class="tip-text">Relis les annexes régulièrement. Entraîne-toi sur des sujets passés. Maîtrise bien les jointures SQL et les formulaires PHP, souvent demandés.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🌐</div>
+          <div class="tip-title">Le web évolue — reste curieux</div>
+          <div class="tip-text">HTML, CSS, JS, PHP et SQL sont des bases solides et stables. Avec ces fondations, tu pourras apprendre facilement n'importe quel framework plus tard.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🤝</div>
+          <div class="tip-title">Entraide et partage</div>
+          <div class="tip-text">Explique ce que tu as compris à tes camarades. Enseigner est la meilleure façon de consolider ses propres connaissances.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">💪</div>
+          <div class="tip-title">Tu peux le faire</div>
+          <div class="tip-text">Le développement web n'est pas réservé aux génies. C'est une compétence qui s'apprend avec de la patience et de la persévérance. Tu en es la preuve.</div>
+        </div>
+      </div>
+
+      <div class="quote-box" style="margin-bottom:32px;">
+        <div class="quote-text">"Le code est comme de l'humour. Quand vous devez l'expliquer, c'est mauvais signe."</div>
+        <div class="quote-author">— Cory House</div>
+      </div>
+
+      <div style="font-size:1rem;color:rgba(255,255,255,0.85);margin-bottom:28px;line-height:1.8">
+        Bonne chance pour ton Bac STI 2024-2025. 🍀<br>
+        <strong style="color:#fff;">Madame Houda est fier de toi !</strong>
+      </div>
+
+      <a href="introduction.html" class="farewell-cta">
+        ↩ Recommencer depuis le début
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /page -->
+
+<footer>
+  Projets Pratiques · Annexe 2024-2025 &nbsp;·&nbsp; Bac Sciences de l'informatique &nbsp;·&nbsp; Yousri Ben Hariz
+</footer>
+
+<script>
+  function goToLevel(n) {
+    document.querySelectorAll('.level-panel').forEach((p, i) => {
+      p.classList.toggle('active', i === n);
+    });
+    document.querySelectorAll('.lnav-btn').forEach((b, i) => {
+      b.classList.toggle('active', i === n);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCode(btn) {
+    const reveal = btn.nextElementSibling;
+    const isOpen = reveal.classList.contains('open');
+    reveal.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.innerHTML = isOpen
+      ? '▶ Voir le code — Correction <span class="btn-arrow">▼</span>'
+      : '▼ Masquer le code <span class="btn-arrow" style="transform:rotate(180deg)">▼</span>';
+  }
+
+  function switchTab(btn, paneId) {
+    // find parent code-reveal
+    const reveal = btn.closest('.code-reveal');
+    // deactivate all tabs and panes in this reveal
+    reveal.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+    reveal.querySelectorAll('.code-pane').forEach(p => p.classList.remove('active'));
+    // activate clicked
+    btn.classList.add('active');
+    document.getElementById(paneId).classList.add('active');
+  }
+</script>
+</body>
+</html>

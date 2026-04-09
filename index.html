@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Learn STI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f0f2ff;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #dde1f5;
+    --shadow: 0 4px 24px rgba(40,55,170,0.10);
+    --header-bg: linear-gradient(135deg, #1a237e 0%, #283593 45%, #3949ab 100%);
+    --radius: 14px;
+
+    --html-c: #c84000; --html-bg: #fff3e0; --html-bd: #ffb74d;
+    --css-c:  #1255a0; --css-bg:  #e3f2fd; --css-bd:  #64b5f6;
+    --js-c:   #a07000; --js-bg:   #fffbea; --js-bd:   #ffd54f;
+    --sql-c:  #1b6120; --sql-bg:  #e8f5e9; --sql-bd:  #81c784;
+    --php-c:  #5b1080; --php-bg:  #f3e5f5; --php-bd:  #ba68c8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--header-bg);
+    padding: 60px 24px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 28px);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(99,102,241,.14) 0%, transparent 70%);
+    top: -160px; right: -100px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .header-inner { position: relative; z-index: 1; }
+
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.13);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 99px;
+    padding: 5px 18px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.88);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  .header h1 {
+    font-size: 3.6rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -2px;
+    line-height: 1;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.22);
+  }
+  .header h1 .accent {
+    background: linear-gradient(90deg, #a5b4fc, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-subtitle {
+    margin-top: 14px;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.72);
+    letter-spacing: 0.2px;
+  }
+
+  /* subject nav pills */
+  .nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 34px;
+  }
+
+  .nav-pill {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: 99px;
+    font-size: 0.87rem;
+    font-weight: 700;
+    border: 2px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.10);
+    color: #fff;
+    transition: all 0.2s;
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 0.2px;
+  }
+  .nav-pill:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.45);
+    transform: translateY(-2px);
+  }
+  .pill-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .nav-pill.html .pill-dot { background: #ff8a65; }
+  .nav-pill.css  .pill-dot { background: #64b5f6; }
+  .nav-pill.js   .pill-dot { background: #ffd54f; }
+  .nav-pill.sql  .pill-dot { background: #81c784; }
+  .nav-pill.php  .pill-dot { background: #ce93d8; }
+
+  /* meta chips */
+  .header-meta {
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .meta-chip {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.82);
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+  }
+  .meta-sep { color: rgba(255,255,255,0.25); font-size: 1rem; }
+
+  /* ─── MAIN ─── */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 72px 24px 80px;
+    gap: 16px;
+  }
+
+  .cta-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    padding: 20px 56px;
+    font-size: 1.08rem;
+    font-weight: 800;
+    font-family: 'Sora', sans-serif;
+    background: linear-gradient(135deg, #1a237e, #3949ab);
+    color: #fff;
+    border-radius: 99px;
+    box-shadow: 0 6px 28px rgba(57,73,171,0.38);
+    transition: all 0.22s;
+    letter-spacing: 0.3px;
+    border: none;
+  }
+  .btn-start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px rgba(57,73,171,0.48);
+  }
+  .btn-start:active { transform: translateY(1px); }
+
+  .arrow {
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+    font-style: normal;
+  }
+  .btn-start:hover .arrow { transform: translateX(5px); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 22px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-family: 'Fira Code', monospace;
+  }
+
+  @media (max-width: 540px) {
+    .header h1 { font-size: 2.6rem; }
+    .btn-start  { padding: 17px 40px; font-size: 0.97rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+
+    <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+
+    <h1>Learn <span class="accent">STI</span></h1>
+    <p class="header-subtitle">Toutes les annexes du programme en un seul endroit</p>
+
+    <div class="nav-pills">
+      <a href="html-rappel.html" target="_blank" class="nav-pill html">
+        <span class="pill-dot"></span>HTML5
+      </a>
+      <a href="css-rappel.html" target="_blank" class="nav-pill css">
+        <span class="pill-dot"></span>CSS3
+      </a>
+      <a href="js-rappel.html" target="_blank" class="nav-pill js">
+        <span class="pill-dot"></span>JavaScript
+      </a>
+      <a href="sql-rappel.html" target="_blank" class="nav-pill sql">
+        <span class="pill-dot"></span>SQL
+      </a>
+      <a href="php-rappel.html" target="_blank" class="nav-pill php">
+        <span class="pill-dot"></span>PHP
+      </a>
+    </div>
+
+    <div class="header-meta">
+      <div class="meta-chip">Prof : Mme Houda Moslah</div>
+      <span class="meta-sep">|</span>
+      <div class="meta-chip">Dev : Yousri Ben Hariz</div>
+    </div>
+
+  </div>
+</div>
+
+<main>
+  <p class="cta-label">// Prêt à commencer ?</p>
+  <a href="introduction.html" class="btn-start">
+    Commencer <i class="arrow">&#8594;</i>
+  </a>
+</main>
+
+<footer>
+  Learn STI &nbsp;·&nbsp; Annexe 2024-2025 &nbsp;·&nbsp; Bac Sciences de l'informatique
+</footer>
+
+</body>
+</html>

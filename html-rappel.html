@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>HTML Rappel</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --green: #00c896;
+    --green-dark: #00a87e;
+    --green-light: #e0fff6;
+    --green-glow: rgba(0,200,150,0.15);
+    --bg: #f0faf7;
+    --card: #ffffff;
+    --text: #1a2e28;
+    --muted: #5a7a72;
+    --border: #c8efe3;
+    --code-bg: #e6faf3;
+    --header-bg: linear-gradient(135deg, #00c896 0%, #00e5b0 60%, #00b8d9 100%);
+    --shadow: 0 2px 16px rgba(0,200,150,0.10);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--header-bg);
+    padding: 52px 24px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 24px);
+  }
+  .header h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .header p {
+    margin-top: 10px;
+    color: rgba(255,255,255,0.88);
+    font-size: 1.05rem;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 99px;
+    padding: 4px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ─── NAV ─── */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 22px 24px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .toc a {
+    text-decoration: none;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    transition: all .18s;
+  }
+  .toc a:hover {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  /* ─── LAYOUT ─── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 36px 20px 60px; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin: 44px 0 14px;
+    letter-spacing: -.3px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--border), transparent);
+    border-radius: 2px;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    background: var(--green);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* ─── TABLE ─── */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 10px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+  }
+
+  thead tr { background: var(--green); }
+  thead th {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+  }
+
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background: var(--green-glow); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+
+  td {
+    padding: 11px 16px;
+    font-size: 0.9rem;
+    vertical-align: middle;
+    line-height: 1.5;
+  }
+  td:first-child { width: 220px; }
+
+  /* ─── CODE ─── */
+  code {
+    font-family: 'Fira Code', monospace;
+    background: var(--code-bg);
+    color: #006b50;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    border: 1px solid #b8ead4;
+    white-space: nowrap;
+  }
+
+  /* ─── ATTRS TAG ─── */
+  .attr-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-top: 4px;
+    display: block;
+  }
+  .attrs { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+  .attr {
+    background: #fff7e0;
+    border: 1px solid #f0d980;
+    color: #7a5f00;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* ─── INTERACTIVE ZONE ─── */
+  .lab { background: var(--code-bg); border-radius: 10px; padding: 10px; }
+  .lab textarea {
+    width: 100%;
+    height: 70px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    resize: vertical;
+    background: #fff;
+    color: var(--text);
+    transition: border .15s;
+  }
+  .lab textarea:focus { outline: none; border-color: var(--green); }
+  .run-btn {
+    margin-top: 6px;
+    padding: 5px 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    transition: background .15s, transform .1s;
+  }
+  .run-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+  .preview {
+    margin-top: 8px;
+    padding: 10px;
+    border: 1px dashed var(--green);
+    border-radius: 7px;
+    background: #fff;
+    min-height: 30px;
+    font-size: 0.9rem;
+  }
+
+  /* ─── INFO BOX ─── */
+  .info-box {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 6px 0 12px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 28px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    td:first-child { width: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+  <h1>HTML5 — Rappel</h1>
+  <p>Testez et modifiez chaque élément directement dans le navigateur</p>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="toc">
+  <a href="#niveau1">Niveau 1</a>
+  <a href="#entete">En-tête</a>
+  <a href="#structure">Structure</a>
+  <a href="#texte-media">Texte & Média</a>
+  <a href="#conteneurs">Conteneurs</a>
+  <a href="#attributs">Attributs globaux</a>
+  <a href="#listes">Listes</a>
+  <a href="#tableaux">Tableaux</a>
+  <a href="#formulaires">Formulaires</a>
+  <a href="#evenements">Événements</a>
+  <a href="#lab">Laboratoire</a>
+</nav>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — ÉLÉMENTS DE 1er NIVEAU
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="niveau1"><span class="section-icon">①</span>Éléments de 1er niveau</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;html&gt;</code></td><td>Représente la racine d'un document HTML.</td></tr>
+        <tr><td><code>&lt;head&gt;</code></td><td>Conteneur de métadonnées placé entre <code>&lt;html&gt;</code> et <code>&lt;body&gt;</code>.</td></tr>
+        <tr><td><code>&lt;body&gt;</code></td><td>Définit le corps du document.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — ÉLÉMENTS D'EN-TÊTE
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="entete"><span class="section-icon">②</span>Éléments d'en-tête</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th><th>Attributs</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>&lt;link&gt;</code></td>
+          <td>Définit la relation entre le document actuel et une ressource externe.</td>
+          <td><div class="attrs"><span class="attr">href</span><span class="attr">rel</span><span class="attr">type</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;meta&gt;</code></td>
+          <td>Définit les métadonnées du document.</td>
+          <td><div class="attrs"><span class="attr">charset</span><span class="attr">name</span><span class="attr">content</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;script&gt;</code></td>
+          <td>Intègre un script côté client (JavaScript).</td>
+          <td><div class="attrs"><span class="attr">src</span><span class="attr">type</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;style&gt;</code></td>
+          <td>Définit les informations de style (CSS) pour un document.</td>
+          <td><div class="attrs"><span class="attr">type</span><span class="attr">media</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;title&gt;</code></td>
+          <td>Définit le titre du document (affiché dans l'onglet du navigateur).</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — STRUCTURE DE PAGE
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="structure"><span class="section-icon">③</span>Éléments de structuration d'une page web</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;header&gt;</code></td><td>Conteneur pour le contenu d'introduction ou un ensemble de liens de navigation.</td></tr>
+        <tr><td><code>&lt;nav&gt;</code></td><td>Définit un ensemble de liens de navigation.</td></tr>
+        <tr><td><code>&lt;footer&gt;</code></td><td>Définit un pied de page pour un document ou une section.</td></tr>
+        <tr><td><code>&lt;section&gt;</code></td><td>Définit une section dans un document.</td></tr>
+        <tr><td><code>&lt;article&gt;</code></td><td>Spécifie un contenu indépendant et autonome.</td></tr>
+        <tr><td><code>&lt;aside&gt;</code></td><td>Définit un contenu en dehors du contenu principal. Souvent placé sous forme de barre latérale.</td></tr>
+        <tr><td><code>&lt;main&gt;</code></td><td>Définit le contenu principal d'un document.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — TEXTE & MÉDIA
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="texte-media"><span class="section-icon">④</span>Éléments de structuration de texte et média</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th><th>Attributs</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;h1&gt; … &lt;h6&gt;</code></td><td>Définit un titre de niveau n (de 1 à 6).</td><td>—</td></tr>
+        <tr><td><code>&lt;p&gt;</code></td><td>Définit un paragraphe.</td><td>—</td></tr>
+        <tr><td><code>&lt;br&gt;</code></td><td>Définit un retour à la ligne.</td><td>—</td></tr>
+        <tr><td><code>&lt;hr&gt;</code></td><td>Définit une rupture thématique sous forme de ligne horizontale.</td><td>—</td></tr>
+        <tr>
+          <td><code>&lt;a&gt;</code></td>
+          <td>Définit un lien hypertexte via l'attribut <code>href</code>.</td>
+          <td><div class="attrs"><span class="attr">href</span><span class="attr">target</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;img&gt;</code></td>
+          <td>Intègre une image.</td>
+          <td><div class="attrs"><span class="attr">src</span><span class="attr">alt</span><span class="attr">width</span><span class="attr">height</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;figure&gt;</code></td>
+          <td>Spécifie un conteneur autonome qui peut contenir divers éléments (image, code, etc.).</td>
+          <td>—</td>
+        </tr>
+        <tr><td><code>&lt;figcaption&gt;</code></td><td>Définit une légende pour un élément <code>&lt;figure&gt;</code>.</td><td>—</td></tr>
+        <tr>
+          <td><code>&lt;audio&gt;</code></td>
+          <td>Intégrer du contenu sonore dans un document.</td>
+          <td><div class="attrs"><span class="attr">controls</span><span class="attr">src</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;video&gt;</code></td>
+          <td>Intègre du contenu vidéo dans un document.</td>
+          <td><div class="attrs"><span class="attr">controls</span><span class="attr">src</span><span class="attr">width</span><span class="attr">height</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;source&gt;</code></td>
+          <td>Spécifie plusieurs ressources multimédias pour les éléments multimédias.</td>
+          <td><div class="attrs"><span class="attr">src</span><span class="attr">type</span><span class="attr">media</span></div></td>
+        </tr>
+        <tr><td><code>&lt;cite&gt;</code></td><td>Définit le titre d'une œuvre.</td><td>—</td></tr>
+        <tr><td><code>&lt;address&gt;</code></td><td>Définit les coordonnées de l'auteur/propriétaire d'un document ou d'un article.</td><td>—</td></tr>
+        <tr><td><code>&lt;mark&gt;</code></td><td>Définit le texte qui doit être marqué ou mis en surbrillance.</td><td>—</td></tr>
+        <tr><td><code>&lt;output&gt;</code></td><td>Représente le résultat d'un calcul ou d'une action de l'utilisateur.</td><td>—</td></tr>
+        <tr>
+          <td><code>&lt;details&gt;</code></td>
+          <td>Spécifie des détails supplémentaires que l'utilisateur peut ouvrir et fermer à la demande.</td>
+          <td><div class="attrs"><span class="attr">open</span></div></td>
+        </tr>
+        <tr><td><code>&lt;summary&gt;</code></td><td>Définit un en-tête visible pour l'élément <code>&lt;details&gt;</code>.</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 5 — CONTENEURS
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="conteneurs"><span class="section-icon">⑤</span>Conteneurs</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th><th>Attributs</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;span&gt;</code></td><td>Regroupe des éléments en ligne dans un bloc de contenu.</td><td>—</td></tr>
+        <tr><td><code>&lt;div&gt;</code></td><td>Grouper plusieurs éléments HTML de type block.</td><td>—</td></tr>
+        <tr>
+          <td><code>&lt;iframe&gt;</code></td>
+          <td>Définit un cadre en ligne permettant d'intégrer une page dans une autre.</td>
+          <td><div class="attrs"><span class="attr">src</span><span class="attr">name</span><span class="attr">width</span><span class="attr">height</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 6 — ATTRIBUTS GLOBAUX
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="attributs"><span class="section-icon">⑥</span>Attributs globaux</h2>
+  <div class="info-box">Ces attributs peuvent être utilisés sur <strong>n'importe quel élément HTML</strong>.</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Attribut</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>class</code></td><td>Spécifie un nom de classe pour un élément (utilisé en CSS et JS).</td></tr>
+        <tr><td><code>id</code></td><td>Spécifie un identifiant unique pour un élément HTML.</td></tr>
+        <tr><td><code>hidden</code></td><td>Renseigne la visibilité d'un élément (l'élément est masqué).</td></tr>
+        <tr><td><code>lang</code></td><td>Spécifie la langue du contenu de l'élément.</td></tr>
+        <tr><td><code>style</code></td><td>Spécifie un style en ligne (CSS inline).</td></tr>
+        <tr><td><code>title</code></td><td>Spécifie des informations supplémentaires sur un élément (affiché en tooltip).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 7 — LISTES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="listes"><span class="section-icon">⑦</span>Listes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th><th>Attributs</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;ul&gt;</code></td><td>Définit une liste à puces (non ordonnée).</td><td>—</td></tr>
+        <tr>
+          <td><code>&lt;ol&gt;</code></td>
+          <td>Définit une liste ordonnée (numérotée).</td>
+          <td><div class="attrs"><span class="attr">reversed</span><span class="attr">type</span><span class="attr">start</span></div></td>
+        </tr>
+        <tr><td><code>&lt;li&gt;</code></td><td>Définit un élément dans une liste (<code>&lt;ul&gt;</code> ou <code>&lt;ol&gt;</code>).</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 8 — TABLEAUX
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="tableaux"><span class="section-icon">⑧</span>Tableaux</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th><th>Attributs clés</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;table&gt;</code></td><td>Définit un tableau.</td><td>—</td></tr>
+        <tr><td><code>&lt;thead&gt;</code></td><td>Définit l'en-tête d'un tableau.</td><td>—</td></tr>
+        <tr><td><code>&lt;tbody&gt;</code></td><td>Définit le corps d'un tableau.</td><td>—</td></tr>
+        <tr><td><code>&lt;tfoot&gt;</code></td><td>Définit le pied d'un tableau.</td><td>—</td></tr>
+        <tr><td><code>&lt;caption&gt;</code></td><td>Définit une légende de tableau.</td><td>—</td></tr>
+        <tr><td><code>&lt;tr&gt;</code></td><td>Définit une ligne dans un tableau.</td><td>—</td></tr>
+        <tr><td><code>&lt;th&gt;</code></td><td>Définit une cellule d'en-tête dans un tableau.</td><td><div class="attrs"><span class="attr">colspan</span><span class="attr">rowspan</span></div></td></tr>
+        <tr><td><code>&lt;td&gt;</code></td><td>Définit une cellule de données dans un tableau.</td><td><div class="attrs"><span class="attr">colspan</span><span class="attr">rowspan</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 9 — FORMULAIRES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="formulaires"><span class="section-icon">⑨</span>Éléments de formulaire</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Élément</th><th>Description</th><th>Attributs / Valeurs</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>&lt;form&gt;</code></td>
+          <td>Crée un formulaire HTML.</td>
+          <td><div class="attrs"><span class="attr">action</span><span class="attr">method</span><span class="attr">target</span></div>
+            <span class="attr-label">method :</span>
+            <div class="attrs"><span class="attr">get</span><span class="attr">post</span></div>
+            <span class="attr-label">target :</span>
+            <div class="attrs"><span class="attr">_self</span><span class="attr">_blank</span><span class="attr">_parent</span><span class="attr">_top</span></div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>&lt;fieldset&gt;</code></td>
+          <td>Regroupe des éléments liés dans un formulaire.</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><code>&lt;legend&gt;</code></td>
+          <td>Définit une légende pour l'élément <code>&lt;fieldset&gt;</code>.</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><code>&lt;label&gt;</code></td>
+          <td>Définit un libellé pour un élément graphique.</td>
+          <td><div class="attrs"><span class="attr">for</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;input&gt;</code></td>
+          <td>Définit un champ de saisie.</td>
+          <td>
+            <span class="attr-label">Types :</span>
+            <div class="attrs"><span class="attr">text</span><span class="attr">email</span><span class="attr">tel</span><span class="attr">password</span><span class="attr">number</span><span class="attr">range</span><span class="attr">date</span><span class="attr">time</span><span class="attr">checkbox</span><span class="attr">radio</span><span class="attr">button</span><span class="attr">reset</span><span class="attr">submit</span></div>
+            <span class="attr-label">Attributs génériques :</span>
+            <div class="attrs"><span class="attr">name</span><span class="attr">value</span><span class="attr">placeholder</span><span class="attr">readonly</span><span class="attr">required</span><span class="attr">disabled</span><span class="attr">checked</span><span class="attr">min</span><span class="attr">max</span></div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>&lt;textarea&gt;</code></td>
+          <td>Définit une zone de saisie de texte multilignes.</td>
+          <td><div class="attrs"><span class="attr">name</span><span class="attr">cols</span><span class="attr">rows</span><span class="attr">readonly</span><span class="attr">required</span><span class="attr">disabled</span><span class="attr">placeholder</span><span class="attr">maxlength</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;select&gt;</code></td>
+          <td>Définit une liste déroulante.</td>
+          <td><div class="attrs"><span class="attr">name</span><span class="attr">required</span><span class="attr">disabled</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;datalist&gt;</code></td>
+          <td>Spécifie une liste d'options prédéfinies connectée à un élément <code>&lt;input&gt;</code>.</td>
+          <td><div class="attrs"><span class="attr">id</span></div></td>
+        </tr>
+        <tr>
+          <td><code>&lt;option&gt;</code></td>
+          <td>Définit une option dans une liste de sélection.</td>
+          <td><div class="attrs"><span class="attr">value</span><span class="attr">selected</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 10 — ÉVÉNEMENTS
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="evenements"><span class="section-icon">⑩</span>Événements HTML</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Événement</th><th>Déclenchement</th></tr></thead>
+      <tbody>
+        <tr><td><code>onblur</code></td><td>Se déclenche au moment où l'élément perd le focus.</td></tr>
+        <tr><td><code>onclick</code></td><td>Se déclenche lors d'un clic sur l'élément.</td></tr>
+        <tr><td><code>onfocus</code></td><td>Se déclenche au moment où l'élément obtient le focus.</td></tr>
+        <tr><td><code>oninput</code></td><td>Se déclenche dès que la valeur d'un élément a changé.</td></tr>
+        <tr><td><code>onload</code></td><td>Se déclenche lorsque la page est complètement chargée.</td></tr>
+        <tr><td><code>onmouseover</code></td><td>Se déclenche lorsque le pointeur de la souris survole l'élément.</td></tr>
+        <tr><td><code>onmouseout</code></td><td>Se déclenche lorsque le pointeur de la souris sort de l'élément.</td></tr>
+        <tr><td><code>onplay</code></td><td>Se déclenche lorsque la lecture d'un fichier audio/vidéo commence.</td></tr>
+        <tr><td><code>onpause</code></td><td>Se déclenche lorsqu'un élément audio/vidéo est mis en pause.</td></tr>
+        <tr><td><code>onsubmit</code></td><td>Se déclenche lorsqu'un formulaire est soumis.</td></tr>
+        <tr><td><code>onchange</code></td><td>Se déclenche lorsque la valeur d'un élément est modifiée.</td></tr>
+        <tr><td><code>onkeydown</code></td><td>Se déclenche lorsqu'une touche du clavier est pressée.</td></tr>
+        <tr><td><code>onkeyup</code></td><td>Se déclenche lorsqu'une touche du clavier est relâchée.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 11 — LABORATOIRE INTERACTIF
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="lab"><span class="section-icon">🧪</span>Laboratoire interactif</h2>
+  <div class="info-box">Modifiez le code HTML dans chaque zone et cliquez sur <strong>Run</strong> pour voir le résultat en direct.</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Balise</th><th>Description</th><th style="width:380px">Test en direct</th></tr></thead>
+      <tbody>
+
+        <tr>
+          <td><code>&lt;h1&gt; → &lt;h6&gt;</code></td>
+          <td>Titres de niveau 1 à 6</td>
+          <td><div class="lab"><textarea>&lt;h2&gt;Titre niveau 2&lt;/h2&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;p&gt;</code></td>
+          <td>Paragraphe</td>
+          <td><div class="lab"><textarea>&lt;p&gt;Bonjour le monde !&lt;/p&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;br&gt;</code></td>
+          <td>Saut de ligne</td>
+          <td><div class="lab"><textarea>Ligne 1&lt;br&gt;Ligne 2</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;hr&gt;</code></td>
+          <td>Ligne de séparation</td>
+          <td><div class="lab"><textarea>Avant&lt;hr&gt;Après</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;a&gt;</code></td>
+          <td>Lien hypertexte</td>
+          <td><div class="lab"><textarea>&lt;a href="https://google.com" target="_blank"&gt;Ouvrir Google&lt;/a&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;img&gt;</code></td>
+          <td>Image</td>
+          <td><div class="lab"><textarea>&lt;img src="https://via.placeholder.com/120x60" alt="test" width="120"&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;ul&gt; / &lt;li&gt;</code></td>
+          <td>Liste non ordonnée</td>
+          <td><div class="lab"><textarea>&lt;ul&gt;
+  &lt;li&gt;HTML&lt;/li&gt;
+  &lt;li&gt;CSS&lt;/li&gt;
+  &lt;li&gt;JavaScript&lt;/li&gt;
+&lt;/ul&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;ol&gt; / &lt;li&gt;</code></td>
+          <td>Liste ordonnée</td>
+          <td><div class="lab"><textarea>&lt;ol type="A" start="1"&gt;
+  &lt;li&gt;Première étape&lt;/li&gt;
+  &lt;li&gt;Deuxième étape&lt;/li&gt;
+&lt;/ol&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;table&gt;</code></td>
+          <td>Tableau complet</td>
+          <td><div class="lab"><textarea>&lt;table border="1" cellpadding="5"&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Nom&lt;/th&gt;&lt;th&gt;Note&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Ali&lt;/td&gt;&lt;td&gt;18&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
+&lt;/table&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>colspan / rowspan</code></td>
+          <td>Fusion de cellules</td>
+          <td><div class="lab"><textarea>&lt;table border="1"&gt;
+  &lt;tr&gt;&lt;td colspan="2"&gt;Fusion colonnes&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;B&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;form&gt;</code></td>
+          <td>Formulaire complet</td>
+          <td><div class="lab"><textarea>&lt;form&gt;
+  &lt;label&gt;Nom : &lt;input type="text" placeholder="Votre nom"&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;label&gt;Email : &lt;input type="email" placeholder="email@ex.com"&gt;&lt;/label&gt;&lt;br&gt;
+  &lt;input type="submit" value="Envoyer"&gt;
+&lt;/form&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;select&gt;</code></td>
+          <td>Liste déroulante</td>
+          <td><div class="lab"><textarea>&lt;select&gt;
+  &lt;option value="tn"&gt;Tunisie&lt;/option&gt;
+  &lt;option value="fr"&gt;France&lt;/option&gt;
+  &lt;option value="ma"&gt;Maroc&lt;/option&gt;
+&lt;/select&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;details&gt; / &lt;summary&gt;</code></td>
+          <td>Contenu accordéon</td>
+          <td><div class="lab"><textarea>&lt;details&gt;
+  &lt;summary&gt;Voir plus&lt;/summary&gt;
+  &lt;p&gt;Contenu caché visible au clic !&lt;/p&gt;
+&lt;/details&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;mark&gt;</code></td>
+          <td>Texte surligné</td>
+          <td><div class="lab"><textarea>&lt;p&gt;Mot &lt;mark&gt;important&lt;/mark&gt; à retenir.&lt;/p&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;audio&gt;</code></td>
+          <td>Lecteur audio</td>
+          <td><div class="lab"><textarea>&lt;audio controls&gt;
+  &lt;source src="son.mp3" type="audio/mpeg"&gt;
+  Votre navigateur ne supporte pas l'audio.
+&lt;/audio&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>&lt;iframe&gt;</code></td>
+          <td>Intégrer une page</td>
+          <td><div class="lab"><textarea>&lt;iframe src="https://example.com" width="300" height="150"&gt;&lt;/iframe&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  HTML5 Annexe 2024-2025 · Bac Sciences de l'informatique &nbsp;|&nbsp; Yousri Ben Hariz
+</footer>
+
+<script>
+  document.querySelectorAll(".run-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const textarea = btn.previousElementSibling;
+      const preview  = btn.nextElementSibling;
+      preview.innerHTML = textarea.value;
+    });
+  });
+</script>
+
+</body>
+</html>

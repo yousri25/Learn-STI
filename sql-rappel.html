@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SQL Rappel</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --sql: #2e7d32;
+    --sql-dark: #1b5e20;
+    --sql-mid: #388e3c;
+    --sql-light: #e8f5e9;
+    --sql-glow: rgba(46,125,50,0.10);
+    --bg: #f1faf2;
+    --card: #ffffff;
+    --text: #0d1f0f;
+    --muted: #3e6e42;
+    --border: #b2dfb4;
+    --code-bg: #e8f5e9;
+    --header-bg: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #43a047 100%);
+    --shadow: 0 2px 18px rgba(46,125,50,0.11);
+    --radius: 14px;
+    --pill-bg: #f1f8e9;
+    --pill-border: #aed581;
+    --pill-color: #33691e;
+    --orange: #e65100;
+    --orange-light: #fff3e0;
+    --orange-border: #ffcc80;
+    --blue: #1565c0;
+    --blue-light: #e3f2fd;
+    --blue-border: #90caf9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--header-bg);
+    padding: 52px 24px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0px, rgba(255,255,255,.04) 1px, transparent 1px, transparent 28px);
+  }
+  .header h1 { font-size: 2.8rem; font-weight: 800; color: #fff; letter-spacing: -1px; text-shadow: 0 2px 14px rgba(0,0,0,0.2); }
+  .header p { margin-top: 10px; color: rgba(255,255,255,0.9); font-size: 1.05rem; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.38);
+    border-radius: 99px;
+    padding: 4px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ─── NAV ─── */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    justify-content: center;
+    padding: 20px 24px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .toc a {
+    text-decoration: none;
+    background: var(--sql-light);
+    color: var(--sql-dark);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 5px 13px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    transition: all .18s;
+  }
+  .toc a:hover { background: var(--sql); color: #fff; border-color: var(--sql); }
+
+  /* ─── LAYOUT ─── */
+  .page { max-width: 1120px; margin: 0 auto; padding: 36px 20px 64px; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: var(--sql-dark);
+    margin: 46px 0 14px;
+    letter-spacing: -.3px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--border), transparent);
+    border-radius: 2px;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    background: var(--sql);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  /* ─── TABLE ─── */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  thead tr { background: var(--sql); }
+  thead th {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  tbody tr { transition: background .14s; }
+  tbody tr:hover { background: var(--sql-glow); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+  td {
+    padding: 11px 16px;
+    font-size: 0.9rem;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  td:first-child { width: 240px; }
+
+  /* ─── CODE ─── */
+  code {
+    font-family: 'Fira Code', monospace;
+    background: var(--code-bg);
+    color: #1b5e20;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  /* ─── SQL BLOCK ─── */
+  .sql-block {
+    font-family: 'Fira Code', monospace;
+    background: #1b2e1c;
+    color: #a5d6a7;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 0.83rem;
+    line-height: 1.7;
+    margin-top: 4px;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .sql-block .kw  { color: #80cbc4; font-weight: 700; }  /* keywords */
+  .sql-block .fn  { color: #fff59d; }                     /* functions */
+  .sql-block .str { color: #f48fb1; }                     /* strings */
+  .sql-block .cm  { color: #78909c; font-style: italic; } /* comments */
+  .sql-block .nb  { color: #ffcc80; }                     /* numbers */
+
+  /* ─── PILLS ─── */
+  .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+  .pill {
+    background: var(--pill-bg);
+    border: 1px solid var(--pill-border);
+    color: var(--pill-color);
+    font-size: 0.75rem;
+    padding: 2px 9px;
+    border-radius: 99px;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+  }
+
+  /* ─── NOTE BOX ─── */
+  .note {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--sql);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin: 6px 0 12px;
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .note.orange {
+    border-left-color: var(--orange);
+    background: var(--orange-light);
+    border-color: var(--orange-border);
+    color: var(--orange);
+  }
+  .note.blue {
+    border-left-color: var(--blue);
+    background: var(--blue-light);
+    border-color: var(--blue-border);
+    color: var(--blue);
+  }
+
+  /* ─── TWO-COL GRID ─── */
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .grid3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 780px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 28px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    td:first-child { width: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+  <h1>SQL — Rappel</h1>
+  <p>Types de données, opérateurs, contraintes, DDL, DML et fonctions</p>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="toc">
+  <a href="#types">Types de données</a>
+  <a href="#operateurs-comp">Comparaison</a>
+  <a href="#operateurs-log">Logiques</a>
+  <a href="#agregation">Fonctions d'agrégation</a>
+  <a href="#dates-sql">Fonctions Date</a>
+  <a href="#contraintes">Contraintes d'intégrité</a>
+  <a href="#ddl">Définition des données (DDL)</a>
+  <a href="#dml">Manipulation des données (DML)</a>
+  <a href="#exemples">Exemples complets</a>
+</nav>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — TYPES DE DONNÉES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="types"><span class="section-icon">①</span>Types de données</h2>
+  <div class="grid2">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>INT</code></td><td>Entier (nombre entier positif ou négatif).</td></tr>
+          <tr><td><code>DECIMAL</code></td><td>Réel (nombre décimal précis).</td></tr>
+          <tr><td><code>CHAR(n)</code></td><td>Chaîne de caractères de longueur fixe.</td></tr>
+          <tr><td><code>VARCHAR(n)</code></td><td>Chaîne de caractères de longueur variable dont la longueur maximale est fixée.</td></tr>
+          <tr><td><code>TEXT</code></td><td>Chaîne de caractères de longueur variable (longue).</td></tr>
+          <tr><td><code>DATE</code></td><td>Date au format <code>YYYY-MM-DD</code>.</td></tr>
+          <tr><td><code>TIME</code></td><td>Temps au format <code>HH:MM:SS</code>.</td></tr>
+          <tr><td><code>DATETIME</code></td><td>Date et Heure combinées.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── OPÉRATEURS DE COMPARAISON ── -->
+    <div>
+      <div class="table-wrap" id="operateurs-comp">
+        <table>
+          <thead><tr><th>Opérateur</th><th>Signification</th></tr></thead>
+          <tbody>
+            <tr><td><code>=</code></td><td>Égale à</td></tr>
+            <tr><td><code>&lt;&gt;</code></td><td>Différent de</td></tr>
+            <tr><td><code>&gt;</code></td><td>Supérieur à</td></tr>
+            <tr><td><code>&lt;</code></td><td>Inférieur à</td></tr>
+            <tr><td><code>&gt;=</code></td><td>Supérieur ou égale à</td></tr>
+            <tr><td><code>&lt;=</code></td><td>Inférieur ou égale à</td></tr>
+            <tr><td><code>IN</code></td><td>Dans une liste de valeurs.</td></tr>
+            <tr><td><code>BETWEEN</code></td><td>Entre deux valeurs d'un intervalle.</td></tr>
+            <tr><td><code>LIKE</code></td><td>Recherche de motif / valeur.</td></tr>
+            <tr><td><code>IS</code></td><td>Filtre les résultats contenant la valeur <code>NULL</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — OPÉRATEURS LOGIQUES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="operateurs-log"><span class="section-icon">②</span>Opérateurs logiques</h2>
+  <div class="table-wrap" style="max-width:460px">
+    <table>
+      <thead><tr><th>Opérateur</th><th>Signification</th></tr></thead>
+      <tbody>
+        <tr><td><code>AND</code></td><td>ET — les deux conditions doivent être vraies.</td></tr>
+        <tr><td><code>OR</code></td><td>OU — au moins une condition doit être vraie.</td></tr>
+        <tr><td><code>NOT</code></td><td>NON — inverse la condition.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — FONCTIONS D'AGRÉGATION
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="agregation"><span class="section-icon">③</span>Fonctions d'agrégation</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fonction</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>AVG(col)</code></td>
+          <td>Retourne la <strong>moyenne</strong> des valeurs d'une colonne.</td>
+          <td><code>SELECT AVG(note) FROM eleves;</code></td>
+        </tr>
+        <tr>
+          <td><code>COUNT(col)</code></td>
+          <td>Retourne le <strong>nombre d'enregistrements</strong>.</td>
+          <td><code>SELECT COUNT(*) FROM eleves;</code></td>
+        </tr>
+        <tr>
+          <td><code>MAX(col)</code></td>
+          <td>Retourne le <strong>maximum</strong> des valeurs d'une colonne.</td>
+          <td><code>SELECT MAX(note) FROM eleves;</code></td>
+        </tr>
+        <tr>
+          <td><code>MIN(col)</code></td>
+          <td>Retourne le <strong>minimum</strong> des valeurs d'une colonne.</td>
+          <td><code>SELECT MIN(note) FROM eleves;</code></td>
+        </tr>
+        <tr>
+          <td><code>SUM(col)</code></td>
+          <td>Retourne la <strong>somme</strong> des valeurs d'une colonne.</td>
+          <td><code>SELECT SUM(montant) FROM commandes;</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — FONCTIONS DATE SQL
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="dates-sql"><span class="section-icon">④</span>Fonctions définies sur le type DATE</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Fonction</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>DATE(expr)</code></td>
+          <td>Retourne une date extraite à partir d'une chaîne contenant une valeur au format <code>DATE</code> ou <code>DATETIME</code>.</td>
+          <td><code>SELECT DATE(NOW());</code></td>
+        </tr>
+        <tr>
+          <td><code>DAY(date)</code></td>
+          <td>Retourne le <strong>jour</strong> du mois.</td>
+          <td><code>SELECT DAY('2024-09-15'); → 15</code></td>
+        </tr>
+        <tr>
+          <td><code>MONTH(date)</code></td>
+          <td>Retourne le <strong>mois</strong>.</td>
+          <td><code>SELECT MONTH('2024-09-15'); → 9</code></td>
+        </tr>
+        <tr>
+          <td><code>YEAR(date)</code></td>
+          <td>Retourne l'<strong>année</strong>.</td>
+          <td><code>SELECT YEAR('2024-09-15'); → 2024</code></td>
+        </tr>
+        <tr>
+          <td><code>NOW()</code></td>
+          <td>Retourne la <strong>date et l'heure courantes</strong>.</td>
+          <td><code>SELECT NOW();</code></td>
+        </tr>
+        <tr>
+          <td><code>ADDDATE(date, interval)</code></td>
+          <td>Ajoute un nombre de jours ou un intervalle de temps à une date.</td>
+          <td><code>SELECT ADDDATE('2024-01-01', 30);</code></td>
+        </tr>
+        <tr>
+          <td><code>DATEDIFF(d1, d2)</code></td>
+          <td>Retourne la <strong>différence entre deux dates</strong> en jours.</td>
+          <td><code>SELECT DATEDIFF('2024-12-31','2024-01-01'); → 365</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 5 — CONTRAINTES D'INTÉGRITÉ
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="contraintes"><span class="section-icon">⑤</span>Contraintes d'intégrité</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Contrainte</th><th>Description</th><th>Exemple</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>NOT NULL</code></td>
+          <td>Interdit une valeur nulle — le champ est obligatoire.</td>
+          <td><code>nom VARCHAR(50) NOT NULL</code></td>
+        </tr>
+        <tr>
+          <td><code>DEFAULT val</code></td>
+          <td>Attribue une valeur par défaut si aucune n'est fournie.</td>
+          <td><code>statut VARCHAR(20) DEFAULT 'actif'</code></td>
+        </tr>
+        <tr>
+          <td><code>CHECK (condition)</code></td>
+          <td>Spécifie que les valeurs de la colonne doivent respecter une condition.</td>
+          <td><code>note DECIMAL CHECK (note &gt;= 0 AND note &lt;= 20)</code></td>
+        </tr>
+        <tr>
+          <td><code>PRIMARY KEY</code></td>
+          <td>Définit une <strong>clé primaire</strong> — valeur unique et non nulle, identifie chaque enregistrement.</td>
+          <td><code>id INT PRIMARY KEY</code></td>
+        </tr>
+        <tr>
+          <td><code>UNIQUE</code></td>
+          <td>Spécifie l'unicité des valeurs d'une colonne (pas de doublons).</td>
+          <td><code>email VARCHAR(100) UNIQUE</code></td>
+        </tr>
+        <tr>
+          <td><code>FOREIGN KEY</code></td>
+          <td>Définit une <strong>clé étrangère</strong> — référence la clé primaire d'une autre table.</td>
+          <td><code>FOREIGN KEY (id_classe) REFERENCES classe(id)</code></td>
+        </tr>
+        <tr>
+          <td><code>REFERENCES table(col)</code></td>
+          <td>Fait référence à une clé primaire d'une autre table (utilisé avec <code>FOREIGN KEY</code>).</td>
+          <td><code>REFERENCES eleves(id)</code></td>
+        </tr>
+        <tr>
+          <td><code>ON UPDATE CASCADE</code></td>
+          <td>Met à jour automatiquement la clé étrangère en cas de mise à jour de la clé primaire.</td>
+          <td><code>ON UPDATE CASCADE</code></td>
+        </tr>
+        <tr>
+          <td><code>ON DELETE CASCADE</code></td>
+          <td>Supprime automatiquement tous les enregistrements de la table fille suite à la suppression de l'enregistrement correspondant de la table mère.</td>
+          <td><code>ON DELETE CASCADE</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 6 — DDL (DÉFINITION DES DONNÉES)
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="ddl"><span class="section-icon">⑥</span>Définition des données (DDL)</h2>
+  <div class="note blue">DDL = <strong>Data Definition Language</strong> — permet de créer, modifier et supprimer la structure des bases de données et tables.</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Instruction</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>CREATE DATABASE nom</code></td>
+          <td>Crée une base de données.</td>
+        </tr>
+        <tr>
+          <td><code>DROP DATABASE nom</code></td>
+          <td>Supprime une base de données.</td>
+        </tr>
+        <tr>
+          <td>
+            <code>CREATE TABLE table1 (</code><br>
+            <code>&nbsp;&nbsp;col1 type [contrainte],</code><br>
+            <code>&nbsp;&nbsp;col2 type [contrainte],</code><br>
+            <code>&nbsp;&nbsp;[CONSTRAINT] [nom] [contrainte]</code><br>
+            <code>)</code>
+          </td>
+          <td>Crée une table avec ses colonnes et contraintes.</td>
+        </tr>
+        <tr>
+          <td><code>DROP TABLE table1</code></td>
+          <td>Supprime une table et toutes ses données.</td>
+        </tr>
+        <tr>
+          <td><code>ALTER TABLE table1<br>ADD colonne type [contrainte]</code></td>
+          <td>Ajoute une colonne à une table existante.</td>
+        </tr>
+        <tr>
+          <td><code>ALTER TABLE table1<br>DROP colonne</code></td>
+          <td>Supprime une colonne d'une table.</td>
+        </tr>
+        <tr>
+          <td><code>ALTER TABLE table1<br>ALTER* colonne type</code></td>
+          <td>Modifie le type d'une colonne.<br><small>* on peut utiliser <code>MODIFY</code> au lieu de <code>ALTER</code></small></td>
+        </tr>
+        <tr>
+          <td><code>ALTER TABLE table1<br>RENAME** nom1 TO nom2</code></td>
+          <td>Modifie le nom d'une colonne.<br><small>** on peut utiliser <code>CHANGE</code> au lieu de <code>RENAME</code></small></td>
+        </tr>
+        <tr>
+          <td><code>ALTER TABLE table1<br>ADD CONSTRAINT [nom] contrainte</code></td>
+          <td>Ajoute une contrainte sur une colonne d'une table.</td>
+        </tr>
+        <tr>
+          <td><code>ALTER TABLE table1<br>DROP CONSTRAINT nom</code></td>
+          <td>Supprime une contrainte.</td>
+        </tr>
+        <tr>
+          <td><code>ALTER TABLE table1<br>ENABLE / DISABLE CONSTRAINT nom</code></td>
+          <td>Active ou désactive une contrainte.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DDL Exemples -->
+  <div class="note">Exemple complet de création de table avec contraintes :</div>
+  <div class="sql-block"><span class="kw">CREATE TABLE</span> eleve (
+  id      <span class="kw">INT</span>          <span class="kw">PRIMARY KEY</span>,
+  nom     <span class="kw">VARCHAR</span>(<span class="nb">50</span>)  <span class="kw">NOT NULL</span>,
+  prenom  <span class="kw">VARCHAR</span>(<span class="nb">50</span>)  <span class="kw">NOT NULL</span>,
+  email   <span class="kw">VARCHAR</span>(<span class="nb">100</span>) <span class="kw">UNIQUE</span>,
+  note    <span class="kw">DECIMAL</span>(<span class="nb">4</span>,<span class="nb">2</span>) <span class="kw">DEFAULT</span> <span class="nb">0</span> <span class="kw">CHECK</span> (note <span class="kw">BETWEEN</span> <span class="nb">0</span> <span class="kw">AND</span> <span class="nb">20</span>),
+  id_cls  <span class="kw">INT</span>          <span class="kw">NOT NULL</span>,
+  <span class="kw">CONSTRAINT</span> fk_classe
+    <span class="kw">FOREIGN KEY</span> (id_cls) <span class="kw">REFERENCES</span> classe(id)
+    <span class="kw">ON DELETE CASCADE</span> <span class="kw">ON UPDATE CASCADE</span>
+);</div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 7 — DML (MANIPULATION DES DONNÉES)
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="dml"><span class="section-icon">⑦</span>Manipulation des données (DML)</h2>
+  <div class="note blue">DML = <strong>Data Manipulation Language</strong> — permet de sélectionner, insérer, modifier et supprimer des données.</div>
+
+  <!-- SELECT -->
+  <h3 style="color:var(--sql-dark);margin:24px 0 10px;font-size:1rem;">🔍 SELECT — Interrogation</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Clause</th><th>Rôle</th></tr></thead>
+      <tbody>
+        <tr><td><code>SELECT [DISTINCT] col1, col2 …</code></td><td>Spécification des colonnes du résultat. <code>DISTINCT</code> évite les doublons.</td></tr>
+        <tr><td><code>FROM table1 [[AS] alias] [, table2, …]</code></td><td>Spécification des tables source.</td></tr>
+        <tr><td><code>[WHERE condition]</code></td><td>Filtre les lignes selon une condition.</td></tr>
+        <tr><td><code>[GROUP BY critère]</code></td><td>Organisation du résultat en groupes.</td></tr>
+        <tr><td><code>[HAVING condition]</code></td><td>Application d'un filtre sur les groupes (après <code>GROUP BY</code>).</td></tr>
+        <tr><td><code>[ORDER BY expression [ASC/DESC]]</code></td><td>Tri du résultat par ordre croissant (<code>ASC</code>) ou décroissant (<code>DESC</code>).</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sql-block"><span class="cm">-- Syntaxe complète SELECT</span>
+<span class="kw">SELECT</span> [<span class="kw">DISTINCT</span>] expression [, col, ... <span class="kw">ou</span> *] [[<span class="kw">AS</span>] alias]
+<span class="kw">FROM</span>   table1 [[<span class="kw">AS</span>] alias] [, table2, ...]
+[<span class="kw">WHERE</span>    condition]
+[<span class="kw">GROUP BY</span> critère]
+[<span class="kw">HAVING</span>   condition]
+[<span class="kw">ORDER BY</span> expression [<span class="kw">ASC</span>/<span class="kw">DESC</span>]];</div>
+
+  <!-- INSERT -->
+  <h3 style="color:var(--sql-dark);margin:24px 0 10px;font-size:1rem;">➕ INSERT — Insertion</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Instruction</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            <code>INSERT INTO table [(liste_col)]</code><br>
+            <code>VALUES (liste_valeurs)</code>
+          </td>
+          <td>Insertion des données dans une table.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sql-block"><span class="kw">INSERT INTO</span> eleve (id, nom, prenom, note)
+<span class="kw">VALUES</span> (<span class="nb">1</span>, <span class="str">'Ben Ali'</span>, <span class="str">'Mohamed'</span>, <span class="nb">17.5</span>);</div>
+
+  <!-- UPDATE -->
+  <h3 style="color:var(--sql-dark);margin:24px 0 10px;font-size:1rem;">✏️ UPDATE — Modification</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Instruction</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            <code>UPDATE table1</code><br>
+            <code>SET colonne = expression</code><br>
+            <code>[WHERE condition]</code>
+          </td>
+          <td>Modification des valeurs d'une ou plusieurs colonnes. Sans <code>WHERE</code>, <strong>toutes</strong> les lignes sont modifiées.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sql-block"><span class="kw">UPDATE</span> eleve
+<span class="kw">SET</span>    note = <span class="nb">18</span>
+<span class="kw">WHERE</span>  id = <span class="nb">1</span>;</div>
+
+  <!-- DELETE -->
+  <h3 style="color:var(--sql-dark);margin:24px 0 10px;font-size:1rem;">🗑️ DELETE — Suppression</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Instruction</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            <code>DELETE FROM table1</code><br>
+            <code>[WHERE condition]</code>
+          </td>
+          <td>Suppression des enregistrements d'une table. Sans <code>WHERE</code>, <strong>toutes</strong> les lignes sont supprimées.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sql-block"><span class="kw">DELETE FROM</span> eleve
+<span class="kw">WHERE</span> id = <span class="nb">1</span>;</div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 8 — EXEMPLES COMPLETS
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="exemples"><span class="section-icon">⑧</span>Exemples complets</h2>
+
+  <div class="note">Utilisation des opérateurs de comparaison et logiques dans <code>WHERE</code> :</div>
+  <div class="sql-block"><span class="cm">-- Opérateurs de comparaison</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> note <span class="kw">>=</span> <span class="nb">10</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> note <span class="kw">BETWEEN</span> <span class="nb">10</span> <span class="kw">AND</span> <span class="nb">20</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> ville <span class="kw">IN</span> (<span class="str">'Tunis'</span>, <span class="str">'Sfax'</span>, <span class="str">'Sousse'</span>);
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> nom <span class="kw">LIKE</span> <span class="str">'Ben%'</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> email <span class="kw">IS NULL</span>;
+
+<span class="cm">-- Opérateurs logiques</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> note <span class="kw">>=</span> <span class="nb">10</span> <span class="kw">AND</span> ville = <span class="str">'Tunis'</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> note <span class="kw"><</span> <span class="nb">10</span> <span class="kw">OR</span> note <span class="kw">IS NULL</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE NOT</span> (ville = <span class="str">'Tunis'</span>);</div>
+
+  <div class="note" style="margin-top:16px">Utilisation des fonctions d'agrégation avec <code>GROUP BY</code> et <code>HAVING</code> :</div>
+  <div class="sql-block"><span class="cm">-- Moyenne des notes par classe</span>
+<span class="kw">SELECT</span>   id_cls, <span class="fn">AVG</span>(note) <span class="kw">AS</span> moyenne
+<span class="kw">FROM</span>     eleve
+<span class="kw">GROUP BY</span> id_cls
+<span class="kw">HAVING</span>   <span class="fn">AVG</span>(note) <span class="kw">>=</span> <span class="nb">12</span>
+<span class="kw">ORDER BY</span> moyenne <span class="kw">DESC</span>;
+
+<span class="cm">-- Nombre d'élèves par ville</span>
+<span class="kw">SELECT</span>   ville, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> nb_eleves
+<span class="kw">FROM</span>     eleve
+<span class="kw">GROUP BY</span> ville;
+
+<span class="cm">-- Note max, min et somme</span>
+<span class="kw">SELECT</span> <span class="fn">MAX</span>(note), <span class="fn">MIN</span>(note), <span class="fn">SUM</span>(note)
+<span class="kw">FROM</span>   eleve;</div>
+
+  <div class="note" style="margin-top:16px">Utilisation des fonctions de date :</div>
+  <div class="sql-block"><span class="cm">-- Élèves nés en 2005</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> <span class="fn">YEAR</span>(date_naissance) = <span class="nb">2005</span>;
+
+<span class="cm">-- Élèves nés au mois de septembre</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> eleve <span class="kw">WHERE</span> <span class="fn">MONTH</span>(date_naissance) = <span class="nb">9</span>;
+
+<span class="cm">-- Différence de jours entre inscription et aujourd'hui</span>
+<span class="kw">SELECT</span> nom, <span class="fn">DATEDIFF</span>(<span class="fn">NOW</span>(), date_inscription) <span class="kw">AS</span> jours
+<span class="kw">FROM</span>   eleve;
+
+<span class="cm">-- Ajouter 30 jours à une date</span>
+<span class="kw">SELECT</span> <span class="fn">ADDDATE</span>(date_inscription, <span class="nb">30</span>) <span class="kw">AS</span> date_limite
+<span class="kw">FROM</span>   eleve;</div>
+
+  <div class="note" style="margin-top:16px">Jointure entre deux tables (exemple avec FOREIGN KEY) :</div>
+  <div class="sql-block"><span class="cm">-- Afficher les élèves avec le nom de leur classe</span>
+<span class="kw">SELECT</span>  e.nom, e.prenom, e.note, c.nom_classe
+<span class="kw">FROM</span>    eleve e, classe c
+<span class="kw">WHERE</span>   e.id_cls = c.id
+<span class="kw">ORDER BY</span> e.nom <span class="kw">ASC</span>;</div>
+
+  <div class="note" style="margin-top:16px">Exemples DDL — Modification de structure :</div>
+  <div class="sql-block"><span class="cm">-- Ajouter une colonne</span>
+<span class="kw">ALTER TABLE</span> eleve <span class="kw">ADD</span> telephone <span class="kw">VARCHAR</span>(<span class="nb">20</span>);
+
+<span class="cm">-- Supprimer une colonne</span>
+<span class="kw">ALTER TABLE</span> eleve <span class="kw">DROP</span> telephone;
+
+<span class="cm">-- Modifier le type d'une colonne</span>
+<span class="kw">ALTER TABLE</span> eleve <span class="kw">MODIFY</span> nom <span class="kw">VARCHAR</span>(<span class="nb">100</span>);
+
+<span class="cm">-- Ajouter une contrainte CHECK</span>
+<span class="kw">ALTER TABLE</span> eleve
+<span class="kw">ADD CONSTRAINT</span> ck_note <span class="kw">CHECK</span> (note <span class="kw">BETWEEN</span> <span class="nb">0</span> <span class="kw">AND</span> <span class="nb">20</span>);
+
+<span class="cm">-- Supprimer une contrainte</span>
+<span class="kw">ALTER TABLE</span> eleve <span class="kw">DROP CONSTRAINT</span> ck_note;
+
+<span class="cm">-- Désactiver / Activer une contrainte</span>
+<span class="kw">ALTER TABLE</span> eleve <span class="kw">DISABLE CONSTRAINT</span> ck_note;
+<span class="kw">ALTER TABLE</span> eleve <span class="kw">ENABLE CONSTRAINT</span>  ck_note;</div>
+
+</div><!-- /page -->
+
+<footer>
+  SQL Annexe 2024-2025 · Bac Sciences de l'informatique  &nbsp;|&nbsp; Yousri
+</footer>
+
+</body>
+</html>

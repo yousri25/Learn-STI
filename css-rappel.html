@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>CSS3 Rappel</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --blue: #2196f3;
+    --blue-dark: #1565c0;
+    --blue-mid: #1976d2;
+    --blue-light: #e3f2fd;
+    --blue-glow: rgba(33,150,243,0.12);
+    --bg: #f0f6ff;
+    --card: #ffffff;
+    --text: #1a2333;
+    --muted: #546e8a;
+    --border: #c5daf7;
+    --code-bg: #e8f4fe;
+    --header-bg: linear-gradient(135deg, #1565c0 0%, #1e88e5 55%, #00b0ff 100%);
+    --shadow: 0 2px 18px rgba(33,150,243,0.10);
+    --radius: 14px;
+    --val-bg: #fff8e1;
+    --val-border: #ffe082;
+    --val-color: #7a5800;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--header-bg);
+    padding: 52px 24px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.035) 0px, rgba(255,255,255,.035) 1px, transparent 1px, transparent 28px);
+  }
+  .header h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.18);
+  }
+  .header p { margin-top: 10px; color: rgba(255,255,255,0.88); font-size: 1.05rem; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.38);
+    border-radius: 99px;
+    padding: 4px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ─── NAV ─── */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    justify-content: center;
+    padding: 20px 24px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .toc a {
+    text-decoration: none;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 5px 13px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    transition: all .18s;
+  }
+  .toc a:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  /* ─── LAYOUT ─── */
+  .page { max-width: 1120px; margin: 0 auto; padding: 36px 20px 64px; }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: var(--blue-dark);
+    margin: 46px 0 14px;
+    letter-spacing: -.3px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--border), transparent);
+    border-radius: 2px;
+  }
+  .section-icon {
+    width: 32px; height: 32px;
+    background: var(--blue);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* ─── TABLE ─── */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); }
+  thead tr { background: var(--blue); }
+  thead th {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+  }
+  tbody tr { transition: background .14s; }
+  tbody tr:hover { background: var(--blue-glow); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+  td {
+    padding: 11px 16px;
+    font-size: 0.9rem;
+    vertical-align: middle;
+    line-height: 1.55;
+  }
+  td:first-child { width: 210px; }
+
+  /* ─── CODE ─── */
+  code {
+    font-family: 'Fira Code', monospace;
+    background: var(--code-bg);
+    color: #0d47a1;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    border: 1px solid #bbdefb;
+    white-space: nowrap;
+  }
+
+  /* ─── VALUE PILLS ─── */
+  .vals { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+  .val {
+    background: var(--val-bg);
+    border: 1px solid var(--val-border);
+    color: var(--val-color);
+    font-size: 0.75rem;
+    padding: 2px 9px;
+    border-radius: 99px;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+  }
+  .val-label {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-top: 5px;
+    display: block;
+  }
+
+  /* ─── NOTE BOX ─── */
+  .note {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin: 6px 0 12px;
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ─── INTERACTIVE LAB ─── */
+  .lab { background: var(--code-bg); border-radius: 10px; padding: 10px; }
+  .lab textarea {
+    width: 100%;
+    height: 80px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.82rem;
+    resize: vertical;
+    background: #fff;
+    color: var(--text);
+    transition: border .15s;
+  }
+  .lab textarea:focus { outline: none; border-color: var(--blue); }
+  .run-btn {
+    margin-top: 6px;
+    padding: 5px 14px;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    transition: background .15s, transform .1s;
+  }
+  .run-btn:hover { background: var(--blue-dark); transform: translateY(-1px); }
+  .preview {
+    margin-top: 8px;
+    padding: 10px;
+    border: 1px dashed var(--blue);
+    border-radius: 7px;
+    background: #fff;
+    min-height: 30px;
+    font-size: 0.9rem;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 28px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 2rem; }
+    td:first-child { width: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">Bac Sciences Informatique · STI · 2024-2025</div>
+  <h1>CSS3 — Rappel</h1>
+  <p>Tous les sélecteurs, propriétés et valeurs à connaître pour le Bac</p>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="toc">
+  <a href="#selecteurs">Sélecteurs</a>
+  <a href="#texte">Mise en forme du texte</a>
+  <a href="#listes">Propriétés des listes</a>
+  <a href="#arriere-plan">Arrière-plan</a>
+  <a href="#boites">Propriétés des boîtes</a>
+  <a href="#bordures">Bordures</a>
+  <a href="#tableaux">Tableaux</a>
+  <a href="#images">Images</a>
+  <a href="#transformation">Transformation</a>
+  <a href="#transition">Transition</a>
+  <a href="#animation">Animation</a>
+  <a href="#lab">Laboratoire</a>
+</nav>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — SÉLECTEURS
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="selecteurs"><span class="section-icon">①</span>Sélecteurs</h2>
+  <div class="note">Pour grouper plusieurs sélecteurs dans une règle, il suffit de les lister en les séparant par des virgules <code>,</code></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Sélecteur</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>*</code></td><td>Sélectionne <strong>tous</strong> les éléments.</td></tr>
+        <tr><td><code>element</code></td><td>Sélectionne tous les éléments de type <em>element</em>.</td></tr>
+        <tr><td><code>#id</code></td><td>Cible un élément en fonction de la valeur de son attribut <strong>id</strong>.</td></tr>
+        <tr><td><code>.class</code></td><td>Cible les éléments en fonction de la valeur de leur attribut <strong>class</strong>.</td></tr>
+        <tr><td><code>element[attr]</code></td><td>Cible les éléments qui possèdent l'attribut <em>attr</em>.</td></tr>
+        <tr><td><code>element[attr=valeur]</code></td><td>Cible les éléments en fonction de la valeur de l'attribut <em>attr</em>.</td></tr>
+        <tr><td><code>element.class</code></td><td>Cible tous les éléments de type <em>element</em> en fonction de la valeur de leur attribut <em>class</em>.</td></tr>
+        <tr>
+          <td><code>a:link</code></td>
+          <td>Cible tous les liens <strong>non visités</strong>.</td>
+        </tr>
+        <tr>
+          <td><code>a:visited</code></td>
+          <td>Cible tous les liens <strong>visités</strong>.</td>
+        </tr>
+        <tr>
+          <td><code>a:hover</code></td>
+          <td>Cible l'élément au moment où l'utilisateur le survole avec le pointeur de la souris.</td>
+        </tr>
+        <tr>
+          <td><code>a:active</code></td>
+          <td>Cible tous les liens <strong>activés</strong>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — MISE EN FORME DU TEXTE
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="texte"><span class="section-icon">②</span>Propriétés de mise en forme du texte</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Valeurs principales</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>font-family</code></td>
+          <td>Spécifie les noms de polices possibles par ordre de préférence.</td>
+          <td><span class="val-label">Exemples :</span><div class="vals"><span class="val">Arial</span><span class="val">Times New Roman</span><span class="val">monospace</span><span class="val">sans-serif</span></div></td>
+        </tr>
+        <tr>
+          <td><code>font-weight</code></td>
+          <td>Spécifie la manière dont les caractères d'un texte doivent être affichés.</td>
+          <td><div class="vals"><span class="val">bold</span><span class="val">bolder</span><span class="val">lighter</span><span class="val">100…900</span></div></td>
+        </tr>
+        <tr>
+          <td><code>font-style</code></td>
+          <td>Spécifie le style d'un texte.</td>
+          <td><div class="vals"><span class="val">normal</span><span class="val">italic</span><span class="val">oblique</span></div></td>
+        </tr>
+        <tr>
+          <td><code>font-size</code></td>
+          <td>Spécifie la taille d'une police.</td>
+          <td><div class="vals"><span class="val">12px</span><span class="val">1.5em</span><span class="val">80%</span><span class="val">large</span></div></td>
+        </tr>
+        <tr>
+          <td><code>font</code></td>
+          <td>Super-propriété de font. Combine <code>font-family</code>, <code>font-weight</code>, <code>font-style</code>, <code>font-size</code>.</td>
+          <td><span class="val-label">Syntaxe :</span><div class="vals"><span class="val">bold italic 16px Arial</span></div></td>
+        </tr>
+        <tr>
+          <td><code>text-align</code></td>
+          <td>Spécifie l'alignement horizontal d'un texte.</td>
+          <td><div class="vals"><span class="val">left</span><span class="val">center</span><span class="val">right</span><span class="val">justify</span></div></td>
+        </tr>
+        <tr>
+          <td><code>text-shadow</code></td>
+          <td>Définit une ombre au texte.</td>
+          <td><span class="val-label">Syntaxe : h-offset v-offset blur color</span><div class="vals"><span class="val">2px 2px 4px #000</span></div></td>
+        </tr>
+        <tr>
+          <td><code>text-transform</code></td>
+          <td>Spécifie la façon de transformer les caractères d'un texte en majuscules ou en minuscules.</td>
+          <td><div class="vals"><span class="val">uppercase</span><span class="val">lowercase</span><span class="val">capitalize</span><span class="val">none</span></div></td>
+        </tr>
+        <tr>
+          <td><code>color</code></td>
+          <td>Spécifie la couleur du texte.</td>
+          <td><div class="vals"><span class="val">red</span><span class="val">#ff0000</span><span class="val">rgb(255,0,0)</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — PROPRIÉTÉS DES LISTES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="listes"><span class="section-icon">③</span>Propriétés des listes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Valeurs principales</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>list-style-type</code></td>
+          <td>Définit le type de marqueur d'éléments de liste.</td>
+          <td><div class="vals"><span class="val">disc</span><span class="val">circle</span><span class="val">square</span><span class="val">upper-roman</span><span class="val">lower-alpha</span><span class="val">none</span></div></td>
+        </tr>
+        <tr>
+          <td><code>list-style-position</code></td>
+          <td>Spécifie la position des marqueurs d'éléments d'une liste à puces.</td>
+          <td><div class="vals"><span class="val">outside</span><span class="val">inside</span></div></td>
+        </tr>
+        <tr>
+          <td><code>list-style-image</code></td>
+          <td>Spécifie une image comme marqueur d'éléments de liste.</td>
+          <td><div class="vals"><span class="val">url("img.png")</span><span class="val">none</span></div></td>
+        </tr>
+        <tr>
+          <td><code>list-style</code></td>
+          <td>Super-propriété de liste. Combine <code>list-style-type</code>, <code>list-style-position</code>, <code>list-style-image</code>.</td>
+          <td><div class="vals"><span class="val">square inside</span><span class="val">none</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — ARRIÈRE-PLAN
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="arriere-plan"><span class="section-icon">④</span>Propriétés d'arrière-plan</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Valeurs principales</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>background-color</code></td>
+          <td>Définit la couleur d'arrière-plan d'un élément.</td>
+          <td><div class="vals"><span class="val">#fff</span><span class="val">transparent</span><span class="val">rgb(0,0,0)</span></div></td>
+        </tr>
+        <tr>
+          <td><code>background-image</code></td>
+          <td>Définit une image d'arrière-plan pour un élément.</td>
+          <td><div class="vals"><span class="val">url("img.jpg")</span><span class="val">none</span></div></td>
+        </tr>
+        <tr>
+          <td><code>background-repeat</code></td>
+          <td>Définit la façon dont une image d'arrière-plan est répétée.</td>
+          <td><div class="vals"><span class="val">repeat</span><span class="val">repeat-x</span><span class="val">repeat-y</span><span class="val">no-repeat</span></div></td>
+        </tr>
+        <tr>
+          <td><code>background-size</code></td>
+          <td>Spécifie la taille d'une image d'arrière-plan.</td>
+          <td><div class="vals"><span class="val">cover</span><span class="val">contain</span><span class="val">100px 50px</span><span class="val">100%</span></div></td>
+        </tr>
+        <tr>
+          <td><code>background</code></td>
+          <td>Super-propriété d'arrière-plan. Combine <code>background-color</code>, <code>background-image</code>, <code>background-repeat</code>, <code>background-size</code>.</td>
+          <td><div class="vals"><span class="val">#fff url("bg.png") no-repeat center</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 5 — PROPRIÉTÉS DES BOÎTES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="boites"><span class="section-icon">⑤</span>Propriétés des boîtes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Valeurs principales</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>width</code></td>
+          <td>Définit la largeur d'un élément.</td>
+          <td><div class="vals"><span class="val">200px</span><span class="val">50%</span><span class="val">auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>height</code></td>
+          <td>Définit la hauteur d'un élément.</td>
+          <td><div class="vals"><span class="val">100px</span><span class="val">50%</span><span class="val">auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>position</code></td>
+          <td>Spécifie le type de la méthode de positionnement utilisée pour un élément.</td>
+          <td><div class="vals"><span class="val">static</span><span class="val">relative</span><span class="val">absolute</span><span class="val">fixed</span><span class="val">sticky</span></div></td>
+        </tr>
+        <tr>
+          <td><code>top</code></td>
+          <td>Spécifie la position verticale, par rapport au haut, d'un élément positionné.</td>
+          <td><div class="vals"><span class="val">0</span><span class="val">20px</span><span class="val">auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>bottom</code></td>
+          <td>Spécifie la position verticale, par rapport au bas, d'un élément positionné.</td>
+          <td><div class="vals"><span class="val">0</span><span class="val">20px</span><span class="val">auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>left</code></td>
+          <td>Spécifie la position horizontale, par rapport à la gauche, d'un élément positionné.</td>
+          <td><div class="vals"><span class="val">0</span><span class="val">20px</span><span class="val">auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>right</code></td>
+          <td>Spécifie la position horizontale, par rapport à la droite, d'un élément positionné.</td>
+          <td><div class="vals"><span class="val">0</span><span class="val">20px</span><span class="val">auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>float</code></td>
+          <td>Place / Fait flotter un élément dans un conteneur.</td>
+          <td><div class="vals"><span class="val">left</span><span class="val">right</span><span class="val">none</span></div></td>
+        </tr>
+        <tr>
+          <td><code>padding</code></td>
+          <td>Propriété abrégée qui définit la marge intérieure d'un élément des 4 côtés.</td>
+          <td><div class="vals"><span class="val">10px</span><span class="val">10px 20px</span><span class="val">5px 10px 15px 20px</span></div></td>
+        </tr>
+        <tr>
+          <td><code>margin</code></td>
+          <td>Définit les marges d'un élément.</td>
+          <td><div class="vals"><span class="val">10px</span><span class="val">auto</span><span class="val">0 auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>box-shadow</code></td>
+          <td>Ajoute des ombres à la boîte d'un élément.</td>
+          <td><span class="val-label">Syntaxe : h-offset v-offset blur spread color</span><div class="vals"><span class="val">2px 2px 5px #ccc</span><span class="val">inset 0 0 10px #000</span></div></td>
+        </tr>
+        <tr>
+          <td><code>display</code></td>
+          <td>Spécifie le comportement d'affichage d'un élément.</td>
+          <td><div class="vals"><span class="val">inline</span><span class="val">block</span><span class="val">inline-block</span><span class="val">none</span><span class="val">flex</span></div></td>
+        </tr>
+        <tr>
+          <td><code>overflow</code></td>
+          <td>Spécifie le comportement du contenu lorsqu'il déborde de la boîte d'un élément.</td>
+          <td><div class="vals"><span class="val">visible</span><span class="val">hidden</span><span class="val">clip</span><span class="val">scroll</span><span class="val">auto</span></div></td>
+        </tr>
+        <tr>
+          <td><code>opacity</code></td>
+          <td>Définit le niveau de transparence.</td>
+          <td><div class="vals"><span class="val">0</span><span class="val">0.5</span><span class="val">1</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 6 — BORDURES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="bordures"><span class="section-icon">⑥</span>Propriétés des bordures</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Valeurs principales</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>border-color</code></td>
+          <td>Définit la couleur des bordures d'un élément.</td>
+          <td><div class="vals"><span class="val">red</span><span class="val">#333</span><span class="val">transparent</span></div></td>
+        </tr>
+        <tr>
+          <td><code>border-style</code></td>
+          <td>Définit le style des bordures d'un élément.</td>
+          <td><div class="vals"><span class="val">solid</span><span class="val">dashed</span><span class="val">dotted</span><span class="val">double</span><span class="val">none</span></div></td>
+        </tr>
+        <tr>
+          <td><code>border-radius</code></td>
+          <td>Définit le rayon des coins arrondis d'un élément.</td>
+          <td><div class="vals"><span class="val">5px</span><span class="val">50%</span><span class="val">10px 20px</span></div></td>
+        </tr>
+        <tr>
+          <td><code>border-width</code></td>
+          <td>Définit la largeur des bordures d'un élément.</td>
+          <td><div class="vals"><span class="val">medium</span><span class="val">thin</span><span class="val">thick</span><span class="val">2px</span></div></td>
+        </tr>
+        <tr>
+          <td><code>border</code></td>
+          <td>Super-propriété de bordure. Combine <code>border-color</code>, <code>border-style</code>, <code>border-width</code>, <code>border-radius</code>.</td>
+          <td><div class="vals"><span class="val">1px solid #000</span><span class="val">2px dashed red</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 7 — PROPRIÉTÉS DES TABLEAUX
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="tableaux"><span class="section-icon">⑦</span>Propriétés des tableaux</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Valeurs</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>table-layout</code></td>
+          <td>Définit la façon de disposer les cellules, lignes et colonnes d'un tableau.</td>
+          <td><div class="vals"><span class="val">auto</span><span class="val">fixed</span></div></td>
+        </tr>
+        <tr>
+          <td><code>border-collapse</code></td>
+          <td>Définit si les bordures des cellules sont fusionnées ou séparées.</td>
+          <td><div class="vals"><span class="val">separate</span><span class="val">collapse</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 8 — PROPRIÉTÉS DES IMAGES
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="images"><span class="section-icon">⑧</span>Propriétés des images</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Valeurs</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>filter</code></td>
+          <td>Définit des filtres graphiques sur un élément.</td>
+          <td><div class="vals"><span class="val">blur(5px)</span><span class="val">grayscale(100%)</span><span class="val">invert(1)</span><span class="val">brightness(0.5)</span><span class="val">contrast(200%)</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 9 — TRANSFORMATION
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="transformation"><span class="section-icon">⑨</span>Transformation</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Fonctions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>transform</code></td>
+          <td>Applique un effet de transformation 2D ou 3D à un élément.</td>
+          <td>
+            <div class="vals">
+              <span class="val">rotate(45deg)</span>
+              <span class="val">skew(10deg, 5deg)</span>
+              <span class="val">scale(1.5)</span>
+              <span class="val">translate(50px, 20px)</span>
+              <span class="val">scaleX(2)</span>
+              <span class="val">scaleY(0.5)</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 10 — TRANSITION
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="transition"><span class="section-icon">⑩</span>Transition</h2>
+  <div class="note">Important : pour exprimer les mesures des dimensions, se limiter aux unités <strong>pixel (px)</strong> et <strong>pourcentage (%)</strong>.</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Description</th><th>Exemple de valeur</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>transition-delay</code></td>
+          <td>Spécifie le délai nécessaire avant que la transition commence.</td>
+          <td><div class="vals"><span class="val">0.5s</span><span class="val">200ms</span></div></td>
+        </tr>
+        <tr>
+          <td><code>transition-duration</code></td>
+          <td>Spécifie la durée de la transition.</td>
+          <td><div class="vals"><span class="val">0.3s</span><span class="val">1s</span></div></td>
+        </tr>
+        <tr>
+          <td><code>transition-property</code></td>
+          <td>Spécifie les propriétés CSS sur lesquelles l'effet de transition sera appliqué.</td>
+          <td><div class="vals"><span class="val">all</span><span class="val">color</span><span class="val">background</span><span class="val">opacity</span></div></td>
+        </tr>
+        <tr>
+          <td><code>transition</code></td>
+          <td>Super-propriété de transition. Combine <code>transition-property</code>, <code>transition-duration</code>, <code>transition-delay</code>.</td>
+          <td><div class="vals"><span class="val">all 0.3s ease 0s</span><span class="val">color 0.5s linear</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 11 — ANIMATION
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="animation"><span class="section-icon">⑪</span>Animation</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété / Règle</th><th>Description</th><th>Exemple de valeur</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>@keyframes</code></td>
+          <td>Spécifie les états clés (étapes) de l'animation.</td>
+          <td><div class="vals"><span class="val">from { } to { }</span><span class="val">0% { } 100% { }</span></div></td>
+        </tr>
+        <tr>
+          <td><code>animation-name</code></td>
+          <td>Spécifie le nom de l'animation (doit correspondre au nom du <code>@keyframes</code>).</td>
+          <td><div class="vals"><span class="val">monAnimation</span><span class="val">none</span></div></td>
+        </tr>
+        <tr>
+          <td><code>animation-delay</code></td>
+          <td>Spécifie le délai nécessaire avant que l'animation commence.</td>
+          <td><div class="vals"><span class="val">0s</span><span class="val">1s</span><span class="val">-0.5s</span></div></td>
+        </tr>
+        <tr>
+          <td><code>animation-duration</code></td>
+          <td>Spécifie la durée de l'animation.</td>
+          <td><div class="vals"><span class="val">1s</span><span class="val">500ms</span></div></td>
+        </tr>
+        <tr>
+          <td><code>animation-iteration-count</code></td>
+          <td>Spécifie le nombre de répétitions de l'animation.</td>
+          <td><div class="vals"><span class="val">1</span><span class="val">3</span><span class="val">infinite</span></div></td>
+        </tr>
+        <tr>
+          <td><code>animation-direction</code></td>
+          <td>Définit la direction de l'animation.</td>
+          <td><div class="vals"><span class="val">normal</span><span class="val">reverse</span><span class="val">alternate</span><span class="val">alternate-reverse</span></div></td>
+        </tr>
+        <tr>
+          <td><code>animation</code></td>
+          <td>Super-propriété de l'animation. Combine <code>animation-name</code>, <code>animation-duration</code>, <code>animation-delay</code>, <code>animation-iteration-count</code>, <code>animation-direction</code>.</td>
+          <td><div class="vals"><span class="val">nom 1s 0s infinite normal</span><span class="val">slide 0.5s ease-in</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 12 — LABORATOIRE INTERACTIF
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" id="lab"><span class="section-icon">🧪</span>Laboratoire interactif</h2>
+  <div class="note">Modifiez le code CSS dans chaque zone et cliquez sur <strong>Run</strong> pour voir le résultat en direct.</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Propriété</th><th>Ce qu'on teste</th><th style="width:400px">Test en direct</th></tr></thead>
+      <tbody>
+
+        <tr>
+          <td><code>color / font</code></td>
+          <td>Couleur et police du texte</td>
+          <td><div class="lab"><textarea>&lt;p style="color: #1565c0; font-size: 20px; font-weight: bold; font-family: Georgia;"&gt;Texte stylisé !&lt;/p&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>text-align / text-transform</code></td>
+          <td>Alignement et transformation</td>
+          <td><div class="lab"><textarea>&lt;p style="text-align: center; text-transform: uppercase; letter-spacing: 4px;"&gt;bonjour le monde&lt;/p&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>text-shadow</code></td>
+          <td>Ombre sur le texte</td>
+          <td><div class="lab"><textarea>&lt;p style="font-size:28px; font-weight:bold; text-shadow: 3px 3px 6px #1565c0;"&gt;Ombre CSS&lt;/p&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>background</code></td>
+          <td>Arrière-plan couleur et image</td>
+          <td><div class="lab"><textarea>&lt;div style="background-color:#e3f2fd; padding:20px; border-radius:8px;"&gt;Boîte avec fond coloré&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>border / border-radius</code></td>
+          <td>Bordures et coins arrondis</td>
+          <td><div class="lab"><textarea>&lt;div style="border: 3px dashed #1565c0; border-radius: 16px; padding: 14px;"&gt;Bordure arrondie&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>box-shadow</code></td>
+          <td>Ombre de boîte</td>
+          <td><div class="lab"><textarea>&lt;div style="box-shadow: 4px 4px 12px #90caf9; padding:16px; background:#fff; border-radius:8px;"&gt;Ombre portée&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>opacity</code></td>
+          <td>Transparence</td>
+          <td><div class="lab"><textarea>&lt;div style="background:#1565c0; color:#fff; padding:14px; opacity:0.5; border-radius:8px;"&gt;Opacité 50%&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>list-style</code></td>
+          <td>Style de liste</td>
+          <td><div class="lab"><textarea>&lt;ul style="list-style-type: square; list-style-position: inside; color:#1565c0;"&gt;
+  &lt;li&gt;HTML5&lt;/li&gt;
+  &lt;li&gt;CSS3&lt;/li&gt;
+  &lt;li&gt;JavaScript&lt;/li&gt;
+&lt;/ul&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>transform</code></td>
+          <td>Rotation et mise à l'échelle</td>
+          <td><div class="lab"><textarea>&lt;div style="display:inline-block; background:#1565c0; color:#fff; padding:12px 24px; border-radius:8px; transform: rotate(-5deg) scale(1.1);"&gt;Transformé !&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>filter</code></td>
+          <td>Filtres d'image</td>
+          <td><div class="lab"><textarea>&lt;div style="background: linear-gradient(135deg,#1565c0,#00b0ff); width:100px; height:60px; border-radius:8px; filter: grayscale(100%);"&gt;&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>transition</code></td>
+          <td>Effet de transition au survol</td>
+          <td><div class="lab"><textarea>&lt;style&gt;
+.btn-test {
+  background: #1565c0;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-block;
+  transition: background 0.4s ease, transform 0.3s;
+  cursor: pointer;
+}
+.btn-test:hover {
+  background: #00b0ff;
+  transform: scale(1.08);
+}
+&lt;/style&gt;
+&lt;div class="btn-test"&gt;Survolez-moi !&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>animation / @keyframes</code></td>
+          <td>Animation CSS</td>
+          <td><div class="lab"><textarea>&lt;style&gt;
+@keyframes glisser {
+  0%   { transform: translateX(0); background: #1565c0; }
+  50%  { transform: translateX(80px); background: #00b0ff; }
+  100% { transform: translateX(0); background: #1565c0; }
+}
+.boite-anim {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: #1565c0;
+  animation: glisser 2s infinite alternate;
+}
+&lt;/style&gt;
+&lt;div class="boite-anim"&gt;&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>position</code></td>
+          <td>Positionnement absolu / relatif</td>
+          <td><div class="lab"><textarea>&lt;div style="position:relative; height:80px; background:#e3f2fd; border-radius:8px;"&gt;
+  Parent relatif
+  &lt;span style="position:absolute; bottom:8px; right:12px; background:#1565c0; color:#fff; padding:4px 10px; border-radius:6px;"&gt;Absolu&lt;/span&gt;
+&lt;/div&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+        <tr>
+          <td><code>a:hover</code></td>
+          <td>Pseudo-classes de liens</td>
+          <td><div class="lab"><textarea>&lt;style&gt;
+.lien-test { color: #1565c0; text-decoration: none; font-weight: bold; transition: color 0.3s; }
+.lien-test:hover { color: #00b0ff; text-decoration: underline; }
+&lt;/style&gt;
+&lt;a class="lien-test" href="#">Survolez ce lien&lt;/a&gt;</textarea><button class="run-btn">▶ Run</button><div class="preview"></div></div></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  CSS3 Annexe 2024-2025 · Bac Sciences de l'informatique &nbsp;|&nbsp; Yousri Ben Hariz
+</footer>
+
+<script>
+  document.querySelectorAll(".run-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const textarea = btn.previousElementSibling;
+      const preview  = btn.nextElementSibling;
+      preview.innerHTML = textarea.value;
+    });
+  });
+</script>
+
+</body>
+</html>
