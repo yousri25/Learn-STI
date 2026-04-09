@@ -2,7 +2,7 @@
 
 A simple website to help students learn STI (Sciences et Technologies de l’Informatique) in an easy and organized way.
 
-## 🌐 Live Demo
+## 🌐 Live View
 
 https://yousri25.github.io/Learn-STI
 
